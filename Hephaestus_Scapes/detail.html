@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>擬真岩洞躲避屋 - Hephaestus Scapes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>body { font-family: 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; }</style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <!-- 簡易導覽列 -->
+    <nav class="container mx-auto px-6 py-4 flex justify-between items-center border-b border-stone-200">
+        <div class="space-x-6 text-sm text-stone-500 font-medium hidden md:flex items-center">
+            <a href="javascript:history.back()" class="hover:text-stone-900 transition">↶ 回上一頁</a>
+            <a href="index.html" class="hover:text-stone-900 transition">⌂ 返回首頁</a>
+        </div>
+    </nav>
+
+    <!-- 商品細節區塊 -->
+    <section class="container mx-auto px-6 py-12 flex flex-col md:flex-row gap-12">
+        
+        <!-- 左側：商品圖片庫 -->
+        <div class="md:w-1/2 flex flex-col gap-4">
+            <img src="https://placehold.co/800x600/D6D3D1/57534E?text=Main+Product+Image" alt="岩洞躲避屋主圖" class="w-full rounded-2xl shadow-sm object-cover h-96">
+            <div class="grid grid-cols-4 gap-4">
+                <!-- 縮圖預留位置 -->
+                <img src="https://placehold.co/200x200/E7E5E4/57534E?text=Pic+1" class="w-full rounded-lg cursor-pointer border-2 border-emerald-600">
+                <img src="https://placehold.co/200x200/E7E5E4/57534E?text=Pic+2" class="w-full rounded-lg cursor-pointer hover:opacity-75 transition">
+                <img src="https://placehold.co/200x200/E7E5E4/57534E?text=Pic+3" class="w-full rounded-lg cursor-pointer hover:opacity-75 transition">
+                <img src="https://placehold.co/200x200/E7E5E4/57534E?text=Pic+4" class="w-full rounded-lg cursor-pointer hover:opacity-75 transition">
+            </div>
+        </div>
+
+        <!-- 右側：商品資訊與選單 -->
+        <div class="md:w-1/2 flex flex-col justify-center">
+            <div class="text-sm text-emerald-700 font-bold mb-2">爬寵造景系列</div>
+            <h1 class="text-4xl font-extrabold text-stone-800 mb-4">擬真岩洞躲避屋 (附水盆)</h1>
+            <div class="text-2xl text-stone-900 mb-6">NT$ 850</div>
+            
+            <p class="text-stone-600 mb-8 leading-relaxed">
+                專為豹紋守宮與睫角守宮設計的無毒庇護所。運用 3D 列印技術打造出複雜的岩石風化紋理，頂部平坦設計可作為加溫區休息站。一體成型的右側水盆平滑防水，方便日常清潔。
+            </p>
+
+            <!-- 規格與材質選擇 (UI 展示用) -->
+            <div class="mb-8 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-stone-700 mb-1">尺寸規格</label>
+                    <select class="w-full border border-stone-300 rounded-lg p-3 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option>標準版 (15cm x 12cm x 8cm)</option>
+                        <option>大型版 (20cm x 15cm x 10cm) +NT$300</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-stone-700 mb-1">列印材質與製程</label>
+                    <select class="w-full border border-stone-300 rounded-lg p-3 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option>FDM 環保無毒 PLA (消光岩石灰)</option>
+                        <option>FDM 耐溫 PETG (深邃黑)</option>
+                        <option>MJF 工業級 PA12 (高強度耐水) +NT$500</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 兩階段計畫的按鈕：目前僅做 UI，未來串接金流 -->
+            <button class="w-full bg-emerald-700 text-white text-lg font-bold py-4 rounded-xl shadow-lg hover:bg-emerald-800 transition mb-4">
+                加入購物車 (建置中)
+            </button>
+            <p class="text-xs text-center text-stone-400">✅ 支援 7-11 賣貨便 / 信用卡 / 匯款（系統串接準備中）</p>
+
+        </div>
+    </section>
+
+</body>
+</html>
