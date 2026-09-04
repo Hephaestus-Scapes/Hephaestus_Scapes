@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hephaestus Scapes | 3D 列印特寵造景與活體競標</title>
     
-    <!-- 這裡是你剛剛貼上的 SEO 標籤 -->
+    <!-- SEO 搜尋引擎專用標籤 -->
     <meta name="description" content="Hephaestus Scapes 赫菲斯微景 - 專注於3D列印特寵造景、爬蟲躲避屋、仿生漂流木及水族裝飾。嚴選豹紋守宮、肥尾守宮與蚺蛇活體競標。">
     <meta name="keywords" content="3D列印造景, 躲避屋, 爬蟲, 豹紋守宮, 肥尾守宮, 蚺蛇, 水族造景">
     
@@ -21,8 +21,9 @@
 
     <!-- 導覽列 -->
     <nav class="container mx-auto px-6 py-6 flex justify-between items-center">
-        <div class="text-3xl md:text-4xl font-bold text-stone-800 tracking-wider flex items-center">
-            Hephaestus Scapes <span class="ml-3 text-2xl md:text-3xl font-medium text-stone-600">| 赫菲斯微景</span>
+        <!-- 修正：手機版字體縮小、允許自動折行 -->
+        <div class="text-xl md:text-4xl font-bold text-stone-800 tracking-tight md:tracking-wider flex flex-wrap items-baseline">
+            Hephaestus Scapes <span class="ml-2 md:ml-3 text-sm md:text-3xl font-medium text-stone-600">| 赫菲斯微景</span>
         </div>
         <div class="space-x-6 text-sm text-stone-500 font-medium hidden md:block">
             <a href="#" class="hover:text-stone-900 transition">首頁</a>
@@ -35,21 +36,22 @@
     <!-- Hero Section 主視覺 (無縫輪播) -->
     <section class="container mx-auto px-6 py-12 flex flex-col md:flex-row items-center gap-12">
         <div class="md:w-1/2">
-            <h1 class="text-5xl font-extrabold leading-tight mb-6 text-stone-800">
+            <!-- 修正：手機版大標題縮小 -->
+            <h1 class="text-3xl md:text-5xl font-extrabold leading-snug md:leading-tight mb-6 text-stone-800">
                 數位工藝打造<br><span class="text-emerald-700">會呼吸的自然生態</span>
             </h1>
-            <p class="text-lg text-stone-500 mb-8 leading-relaxed">
+            <p class="text-base md:text-lg text-stone-500 mb-8 leading-relaxed">
                 結合精準的 3D 列印技術與自然仿生設計，為您的爬寵與水族提供兼具美感與實用性的完美棲地。同時嚴選優質特寵活體，為您尋找最投緣的生態夥伴。
             </p>
-            <!-- 按鈕順序：探索造景 ➔ 前往活體競標(置中) ➔ 客製化諮詢 -->
-            <div class="flex gap-4 flex-wrap">
-                <a href="#products" class="inline-block bg-stone-800 text-white px-8 py-3 rounded-full shadow-lg hover:bg-stone-900 transition font-medium">
+            <!-- 修正：手機版按鈕內縮微調、間距縮小 -->
+            <div class="flex gap-3 md:gap-4 flex-wrap">
+                <a href="#products" class="inline-block bg-stone-800 text-white px-6 py-2.5 md:px-8 md:py-3 rounded-full shadow-lg hover:bg-stone-900 transition text-sm md:text-base font-medium">
                     探索造景
                 </a>
-                <a href="#auctions" class="inline-block bg-yellow-500 text-stone-900 px-8 py-3 rounded-full shadow-lg hover:bg-yellow-600 transition font-bold">
+                <a href="#auctions" class="inline-block bg-yellow-500 text-stone-900 px-6 py-2.5 md:px-8 md:py-3 rounded-full shadow-lg hover:bg-yellow-600 transition text-sm md:text-base font-bold">
                     前往活體競標
                 </a>
-                <button onclick="openModal()" class="inline-block bg-emerald-700 text-white px-8 py-3 rounded-full shadow-lg hover:bg-emerald-800 transition font-medium">
+                <button onclick="openModal()" class="inline-block bg-emerald-700 text-white px-6 py-2.5 md:px-8 md:py-3 rounded-full shadow-lg hover:bg-emerald-800 transition text-sm md:text-base font-medium">
                     客製化諮詢
                 </button>
             </div>
@@ -115,7 +117,6 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- 豹紋守宮 -->
                 <a href="auction.html" class="group block relative rounded-2xl overflow-hidden shadow-lg h-72">
                     <img src="https://placehold.co/600x600/FDE68A/92400E?text=Leopard+Gecko" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
@@ -128,7 +129,6 @@
                     </div>
                 </a>
 
-                <!-- 肥尾守宮 (已修正正確連結) -->
                 <a href="auction-fattail.html" class="group block relative rounded-2xl overflow-hidden shadow-lg h-72">
                     <img src="https://placehold.co/600x600/94A3B8/1E293B?text=Fat-Tail+Gecko" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
@@ -141,7 +141,6 @@
                     </div>
                 </a>
 
-                <!-- 蚺蛇 (已修正正確連結) -->
                 <a href="auction-boa.html" class="group block relative rounded-2xl overflow-hidden shadow-lg h-72">
                     <img src="https://placehold.co/600x600/A3E635/166534?text=Boas+and+Pythons" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
