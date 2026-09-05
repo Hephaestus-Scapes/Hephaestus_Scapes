@@ -22,10 +22,16 @@
     <!-- 滿版主視覺區塊 (Hero Section) -->
     <section class="relative w-full h-[85vh] md:h-screen bg-stone-900 overflow-hidden">
         
-        <!-- 背景大圖 (請確保檔名為 主頁背景.png) -->
-        <img src="主頁背景.png" alt="Hephaestus Scapes 品牌背景" class="absolute inset-0 w-full h-full object-cover opacity-90">
+        <!-- 背景圖片淡入淡出輪播容器 -->
+        <div class="absolute inset-0 w-full h-full overflow-hidden">
+            <img id="bg-slide1" src="主頁背景1.png" alt="品牌背景一" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-100">
+            <img id="bg-slide2" src="主頁背景2.png" alt="品牌背景二" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-0">
+        </div>
         
-        <!-- 浮動導覽列 (與背景融合) -->
+        <!-- 漸層遮罩 (若覺得背景太暗，可將 bg-black/70 改為 bg-black/30 或整行刪除) -->
+        <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-transparent"></div>
+
+        <!-- 浮動導覽列 -->
         <nav class="absolute top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center text-white">
             <div class="text-xl md:text-3xl font-bold tracking-tight md:tracking-wider flex flex-wrap items-baseline drop-shadow-lg">
                 Hephaestus Scapes <span class="ml-2 md:ml-3 text-sm md:text-xl font-medium text-stone-300">| 赫菲斯微景</span>
@@ -38,7 +44,7 @@
             </div>
         </nav>
 
-        <!-- 主視覺內容區 (對齊設計圖：左上文字、右上按鈕) -->
+        <!-- 主視覺內容區 -->
         <div class="container mx-auto px-6 relative z-10 h-full pt-32 pb-10 flex flex-col md:flex-row justify-between items-start">
             
             <!-- 左側：品牌精神文字 -->
@@ -70,12 +76,12 @@
         </div>
     </section>
 
-    <!-- 區塊一：標準造景系列 (含移下來的輪播圖) -->
+    <!-- 區塊一：標準造景系列 (含過場輪播圖) -->
     <section id="products" class="bg-white py-24">
         <div class="container mx-auto px-6">
             <h2 class="text-3xl md:text-4xl font-extrabold text-center mb-12 text-stone-800 tracking-wider">標準造景系列</h2>
             
-            <!-- 移至此處的滑動式輪播圖 -->
+            <!-- 輪播圖展示 -->
             <div class="relative w-full h-[300px] md:h-[450px] rounded-2xl overflow-hidden drop-shadow-xl mb-16 bg-stone-100 border border-stone-200">
                 <div id="carousel-track" class="flex w-[600%] h-full transition-transform duration-700 ease-in-out">
                     <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖1.png" class="w-full h-full object-cover"></div>
@@ -83,7 +89,6 @@
                     <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖3.png" class="w-full h-full object-cover"></div>
                     <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖4.png" class="w-full h-full object-cover"></div>
                     <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖5.png" class="w-full h-full object-cover"></div>
-                    <!-- 循環用的假圖 -->
                     <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖1.png" class="w-full h-full object-cover"></div>
                 </div>
             </div>
@@ -233,9 +238,24 @@
         </div>
     </div>
 
-    <!-- JavaScript -->
+    <!-- JavaScript 邏輯 -->
     <script>
-        // 處理輪播圖
+        // 1. 主視覺背景圖兩張循環淡出淡入 (每 4 秒切換)
+        let currentBgIndex = 1;
+        const totalBgs = 2;
+        setInterval(() => {
+            const currentImg = document.getElementById('bg-slide' + currentBgIndex);
+            currentImg.classList.remove('opacity-100');
+            currentImg.classList.add('opacity-0');
+
+            currentBgIndex = currentBgIndex % totalBgs + 1; // 1 變 2，2 變 1
+
+            const nextImg = document.getElementById('bg-slide' + currentBgIndex);
+            nextImg.classList.remove('opacity-0');
+            nextImg.classList.add('opacity-100');
+        }, 4000); // 4000 毫秒 = 4 秒
+
+        // 2. 下方標準造景系列的滑動輪播圖
         let currentSlideIndex = 0;
         const track = document.getElementById('carousel-track');
         const totalRealSlides = 5; 
@@ -254,7 +274,7 @@
             }
         }, 3000); 
 
-        // 處理 Modal
+        // 3. 處理 Modal 彈窗
         const modal = document.getElementById('customModal');
         function openModal() {
             modal.classList.remove('opacity-0', 'pointer-events-none');
