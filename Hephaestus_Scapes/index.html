@@ -28,7 +28,7 @@
             <img id="bg-slide2" src="主頁背景2.png" alt="品牌背景二" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-0">
         </div>
         
-        <!-- 漸層遮罩 (若覺得背景太暗，可將 bg-black/70 改為 bg-black/30 或整行刪除) -->
+        <!-- 漸層遮罩 -->
         <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-transparent"></div>
 
         <!-- 浮動導覽列 -->
@@ -240,7 +240,7 @@
 
     <!-- JavaScript 邏輯 -->
     <script>
-        // 1. 主視覺背景圖兩張循環淡出淡入 (每 4 秒切換)
+        // 1. 主視覺背景圖兩張循環淡出淡入 (改為每 6 秒切換一次，停留時間更久)
         let currentBgIndex = 1;
         const totalBgs = 2;
         setInterval(() => {
@@ -253,7 +253,7 @@
             const nextImg = document.getElementById('bg-slide' + currentBgIndex);
             nextImg.classList.remove('opacity-0');
             nextImg.classList.add('opacity-100');
-        }, 4000); // 4000 毫秒 = 4 秒
+        }, 6000); // 6000 毫秒 = 6 秒
 
         // 2. 下方標準造景系列的滑動輪播圖
         let currentSlideIndex = 0;
