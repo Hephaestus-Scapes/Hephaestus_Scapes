@@ -4,267 +4,516 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hephaestus Scapes | 3D 列印爬蟲微縮棲息造景</title>
-    
-    <!-- SEO 搜尋引擎專用標籤 -->
-    <meta name="description" content="Hephaestus Scapes 赫菲斯微景 - 專注於3D列印特寵造景、爬蟲微縮棲息造景、仿生漂流木及水族裝飾。嚴選豹紋守宮、肥尾守宮與蚺蛇活體競標。">
+
+    <meta name="description" content="Hephaestus Scapes 赫菲斯微景 - 專注於3D列印特寵造景、爬蟲微縮棲息造景、仿生漂流木及水族裝飾。">
     <meta name="keywords" content="3D列印造景, 爬蟲微縮棲息造景, 守宮躲避屋, 爬蟲, 豹紋守宮, 肥尾守宮, 蚺蛇, 水族造景">
-    
-    <!-- 載入 Tailwind CSS -->
+
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+        :root {
+            --ink: #0f1718;
+            --forest: #17251f;
+            --warm: #f1eee6;
+            --muted: #a8afa8;
+            --moss: #6f8062;
+            --brass: #b99a63;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background: var(--ink);
+        }
+
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .hero-copy {
+            text-shadow: 0 5px 30px rgba(0,0,0,.45);
+        }
+
+        .glass-nav {
+            background: linear-gradient(to bottom, rgba(7,14,15,.60), rgba(7,14,15,.10));
+            backdrop-filter: blur(8px);
+        }
+
+        .section-kicker {
+            letter-spacing: .26em;
+            text-transform: uppercase;
+        }
+
+        .image-frame img {
+            transition: transform .8s cubic-bezier(.2,.7,.2,1);
+        }
+
+        .image-frame:hover img {
+            transform: scale(1.025);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity .8s ease, transform .8s ease;
+        }
+
+        .reveal.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
-<body class="bg-stone-50 text-stone-800">
 
-    <!-- 滿版主視覺區塊 (Hero Section) -->
-    <section class="relative w-full h-[85vh] md:h-screen bg-stone-900 overflow-hidden">
-        
-        <!-- 背景圖片淡入淡出輪播容器 -->
-        <div class="absolute inset-0 w-full h-full overflow-hidden">
-            <img id="bg-slide1" src="主頁背景1.png" alt="品牌背景一" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-100">
-            <img id="bg-slide2" src="主頁背景2.png" alt="品牌背景二" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 opacity-0">
+<body class="text-stone-100">
+
+    <!-- =========================================================
+         HERO (兩張主圖循環淡入淡出)
+    ========================================================== -->
+    <header class="relative min-h-screen overflow-hidden bg-[#0f1718]">
+        <div class="absolute inset-0">
+            <img id="bg-slide1"
+                 src="主頁背景1.png"
+                 alt="Hephaestus Scapes 微縮棲地作品"
+                 class="absolute inset-0 w-full h-full object-cover opacity-100 transition-opacity duration-1000">
+            <img id="bg-slide2"
+                 src="主頁背景2.png"
+                 alt="Hephaestus Scapes 微景觀作品"
+                 class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
+
+            <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/25 to-black/10"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0f1718] via-transparent to-black/35"></div>
         </div>
-        
-        <!-- 漸層遮罩 -->
-        <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-transparent"></div>
 
-        <!-- 浮動導覽列 -->
-        <nav class="absolute top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center text-white">
-            <div class="text-xl md:text-3xl font-bold tracking-tight md:tracking-wider flex flex-wrap items-baseline drop-shadow-lg">
-                Hephaestus Scapes <span class="ml-2 md:ml-3 text-sm md:text-xl font-medium text-stone-300">| 赫菲斯微景</span>
-            </div>
-            <div class="space-x-8 text-sm font-bold hidden md:block drop-shadow-md">
-                <a href="#" class="hover:text-emerald-400 transition">首頁</a>
-                <a href="#products" class="hover:text-emerald-400 transition">造景目錄</a>
-                <a href="#auctions" class="hover:text-emerald-400 transition">活體競標</a>
-                <a href="javascript:void(0)" onclick="openModal()" class="hover:text-emerald-400 transition text-emerald-300">客製服務</a>
+        <!-- 導覽列 -->
+        <nav class="glass-nav fixed top-0 left-0 right-0 z-50">
+            <div class="max-w-[1500px] mx-auto px-6 md:px-10 h-20 md:h-24 flex items-center justify-between">
+                <a href="#" class="text-white leading-none">
+                    <div class="text-lg md:text-2xl font-semibold tracking-[0.04em]">Hephaestus Scapes</div>
+                    <div class="mt-2 text-[10px] md:text-xs text-stone-300 tracking-[0.32em]">赫菲斯微景</div>
+                </a>
+
+                <div class="hidden md:flex items-center gap-9 text-sm text-stone-200">
+                    <a href="#products" class="hover:text-white transition">作品</a>
+                    <a href="#auctions" class="hover:text-white transition">活體</a>
+                    <button onclick="openModal()" class="hover:text-white transition">客製化</button>
+                </div>
+
+                <button onclick="openModal()"
+                        class="md:hidden border border-white/25 rounded-full px-4 py-2 text-xs tracking-wider">
+                    客製化
+                </button>
             </div>
         </nav>
 
-        <!-- 主視覺內容區 -->
-        <div class="container mx-auto px-6 relative z-10 h-full pt-32 pb-10 flex flex-col md:flex-row justify-between items-start">
-            
-            <!-- 左側：品牌精神文字 -->
-            <div class="text-white max-w-2xl mt-4">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-widest leading-snug mb-6 drop-shadow-2xl">
-                    將自然之美，<br>微縮於方寸之間
+        <!-- Hero 文案 -->
+        <div class="relative z-10 min-h-screen max-w-[1500px] mx-auto px-6 md:px-10 flex items-end pb-16 md:pb-24 pt-32">
+            <div class="hero-copy max-w-3xl">
+                <p class="section-kicker text-xs md:text-sm text-stone-300 mb-6">
+                    Digital Craft · Living Nature
+                </p>
+
+                <h1 class="text-5xl md:text-7xl xl:text-[92px] font-semibold tracking-[-0.03em] leading-[1.05]">
+                    將自然之美，<br>
+                    微縮於方寸之間。
                 </h1>
-                <p class="text-base md:text-lg text-stone-200 leading-relaxed font-light drop-shadow-lg mb-2">
-                    專為兩棲爬蟲打造的微觀造景。
-                </p>
-                <p class="text-base md:text-lg text-stone-200 leading-relaxed font-light drop-shadow-lg">
-                    以數位工藝重新詮釋自然地貌、古老遺跡與棲息環境，<br class="hidden md:block">打造兼具功能與景觀美學的微型棲地。
-                </p>
-            </div>
 
-            <!-- 右側：行動呼籲按鈕 (垂直排列，半透明玻璃質感) -->
-            <div class="flex flex-row md:flex-col gap-3 md:gap-5 mt-10 md:mt-4 flex-wrap md:flex-nowrap w-full md:w-auto">
-                <a href="#products" class="flex-1 md:flex-none text-center px-8 py-3.5 border border-white/40 bg-black/20 text-white hover:bg-white hover:text-stone-900 rounded-lg backdrop-blur-md transition-all tracking-widest font-bold shadow-lg">
-                    探索造景
-                </a>
-                <a href="#auctions" class="flex-1 md:flex-none text-center px-8 py-3.5 border border-yellow-500/50 bg-yellow-500/20 text-yellow-300 hover:bg-yellow-400 hover:text-stone-900 rounded-lg backdrop-blur-md transition-all tracking-widest font-bold shadow-lg">
-                    活體競標
-                </a>
-                <button onclick="openModal()" class="flex-1 md:flex-none text-center px-8 py-3.5 border border-emerald-500/50 bg-emerald-600/40 text-white hover:bg-emerald-600 rounded-lg backdrop-blur-md transition-all tracking-widest font-bold shadow-lg">
-                    客製化諮詢
-                </button>
-            </div>
+                <p class="mt-7 max-w-xl text-base md:text-lg leading-8 text-stone-200">
+                    以數位工藝重新詮釋自然地貌、古老遺跡與棲息環境，
+                    打造兼具功能與景觀美學的微型棲地。
+                </p>
 
+                <div class="mt-9 flex flex-wrap items-center gap-4">
+                    <a href="#products"
+                       class="inline-flex items-center gap-3 rounded-full bg-[#f1eee6] text-[#0f1718] px-7 py-3.5 font-semibold hover:scale-[1.02] transition">
+                        探索作品
+                        <span aria-hidden="true">↘</span>
+                    </a>
+
+                    <button onclick="openModal()"
+                            class="inline-flex items-center gap-3 rounded-full border border-white/30 bg-black/10 px-7 py-3.5 text-white backdrop-blur-sm hover:bg-white/10 transition">
+                        客製你的微型世界
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute right-6 md:right-10 bottom-8 z-10 hidden md:flex items-center gap-3 text-xs text-stone-300 tracking-[.18em]">
+            <span class="block w-10 h-px bg-white/40"></span>
+            SCROLL TO EXPLORE
+        </div>
+    </header>
+
+    <!-- =========================================================
+         BRAND STATEMENT
+    ========================================================== -->
+    <section class="bg-[#0f1718] py-24 md:py-36 border-b border-white/5">
+        <div class="max-w-[1200px] mx-auto px-6 md:px-10 text-center reveal">
+            <p class="section-kicker text-[#b99a63] text-xs md:text-sm mb-7">
+                A World Within A World
+            </p>
+            <h2 class="text-3xl md:text-5xl lg:text-6xl font-medium leading-tight tracking-tight">
+                一方玻璃之內，<br class="hidden md:block">
+                可以是一座森林，也可以是一個完整世界。
+            </h2>
+            <p class="mt-8 max-w-2xl mx-auto text-stone-400 leading-8 text-base md:text-lg">
+                我們不只製作造景物件，而是從動物習性、空間比例與視覺構成出發，
+                把躲藏、攀爬、休息與觀看體驗整合成一個棲地。
+            </p>
         </div>
     </section>
 
-    <!-- 區塊一：標準造景系列 (含過場輪播圖) -->
-    <section id="products" class="bg-white py-24">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl md:text-4xl font-extrabold text-center mb-12 text-stone-800 tracking-wider">標準造景系列</h2>
-            
-            <!-- 輪播圖展示 -->
-            <div class="relative w-full h-[300px] md:h-[450px] rounded-2xl overflow-hidden drop-shadow-xl mb-16 bg-stone-100 border border-stone-200">
+    <!-- =========================================================
+         FEATURED / STANDARD SCAPES (含複數張躲避屋展示滾動圖片)
+    ========================================================== -->
+    <section id="products" class="bg-[#f1eee6] text-[#18201d] py-24 md:py-32">
+        <div class="max-w-[1500px] mx-auto px-6 md:px-10">
+
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-16 reveal">
+                <div>
+                    <p class="section-kicker text-xs text-stone-500 mb-4">Standard Scapes</p>
+                    <h2 class="text-4xl md:text-6xl font-semibold tracking-tight">精選造景作品</h2>
+                </div>
+                <p class="max-w-lg text-stone-600 leading-7">
+                    從岩洞、樹洞到模組化棲地，以耐用材料結合擬真紋理，
+                    讓功能性藏在自然的外觀裡。
+                </p>
+            </div>
+
+            <!-- 躲避屋展示複數張圖片自動滾動輪播區塊 -->
+            <div class="relative w-full h-[300px] md:h-[480px] rounded-[24px] overflow-hidden drop-shadow-xl mb-16 bg-stone-200 border border-stone-300 reveal">
                 <div id="carousel-track" class="flex w-[600%] h-full transition-transform duration-700 ease-in-out">
-                    <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖1.png" class="w-full h-full object-cover"></div>
-                    <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖2.png" class="w-full h-full object-cover"></div>
-                    <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖3.png" class="w-full h-full object-cover"></div>
-                    <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖4.png" class="w-full h-full object-cover"></div>
-                    <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖5.png" class="w-full h-full object-cover"></div>
-                    <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖1.png" class="w-full h-full object-cover"></div>
+                    <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖1.png" class="w-full h-full object-cover" alt="造景圖1"></div>
+                    <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖2.png" class="w-full h-full object-cover" alt="造景圖2"></div>
+                    <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖3.png" class="w-full h-full object-cover" alt="造景圖3"></div>
+                    <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖4.png" class="w-full h-full object-cover" alt="造景圖4"></div>
+                    <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖5.png" class="w-full h-full object-cover" alt="造景圖5"></div>
+                    <!-- 循環複製的第一張 -->
+                    <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖1.png" class="w-full h-full object-cover" alt="造景圖1"></div>
                 </div>
             </div>
 
-            <!-- 產品卡片 Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                <div class="bg-stone-50 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-100 flex flex-col">
-                    <img src="主頁大圖1.png" alt="岩洞爬蟲微縮棲息造景" class="w-full h-56 object-cover">
-                    <div class="p-6 flex flex-col flex-grow">
-                        <h3 class="text-xl font-bold mb-2">擬真岩洞微縮棲地</h3>
-                        <p class="text-stone-500 text-sm mb-6 line-clamp-2 flex-grow">帶有豐富風化紋理與活苔蘚細節，頂部平坦設計方便守宮攀爬與休息，內建水盆空間。</p>
-                        <a href="product.html" class="block text-center bg-stone-800 text-white px-4 py-3 rounded-lg hover:bg-stone-900 hover:shadow-md transition font-bold tracking-wide">
-                            查看細節 / 購買
+            <!-- 主打作品：大圖 -->
+            <article class="grid lg:grid-cols-[1.5fr_.7fr] gap-8 lg:gap-12 items-stretch mb-16 reveal">
+                <a href="product.html"
+                   class="image-frame group relative min-h-[420px] md:min-h-[620px] overflow-hidden rounded-[28px] bg-stone-300">
+                    <img src="主頁大圖1.png"
+                         alt="擬真岩洞微縮棲地"
+                         class="absolute inset-0 w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent"></div>
+
+                    <div class="absolute left-6 right-6 bottom-6 md:left-9 md:right-9 md:bottom-8 flex justify-between items-end gap-6 text-white">
+                        <div>
+                            <p class="text-xs uppercase tracking-[.2em] text-stone-300 mb-3">Featured Habitat</p>
+                            <h3 class="text-3xl md:text-5xl font-semibold">擬真岩洞微縮棲地</h3>
+                        </div>
+                        <div class="hidden md:grid place-items-center w-14 h-14 rounded-full border border-white/40 bg-black/15 backdrop-blur">
+                            ↗
+                        </div>
+                    </div>
+                </a>
+
+                <div class="flex flex-col justify-between py-2">
+                    <div>
+                        <p class="text-sm text-stone-500 mb-5 tracking-wider">01 / WEATHERED CAVERN</p>
+                        <p class="text-xl md:text-2xl leading-9 text-stone-700">
+                            帶有豐富風化紋理與活苔蘚細節，
+                            頂部平坦設計方便守宮攀爬與休息，
+                            並整合躲藏與水盆空間。
+                        </p>
+                    </div>
+
+                    <div class="pt-10 border-t border-stone-300 mt-10">
+                        <a href="product.html"
+                           class="inline-flex items-center justify-between w-full text-lg font-semibold group">
+                            查看作品細節
+                            <span class="group-hover:translate-x-1 transition">→</span>
                         </a>
                     </div>
                 </div>
+            </article>
 
-                <div class="bg-stone-200 rounded-2xl overflow-hidden border border-stone-300 opacity-80 flex flex-col">
-                    <img src="https://placehold.co/400x300/D6D3D1/57534E?text=Driftwood" class="w-full h-56 object-cover grayscale">
-                    <div class="p-6 flex flex-col flex-grow">
-                        <h3 class="text-xl font-bold mb-2 text-stone-500">仿生漂流木</h3>
-                        <p class="text-stone-500 text-sm mb-6 line-clamp-2 flex-grow">複雜幾何枝幹設計，重量輕盈不壓迫底床，適合攀爬類爬寵與水草附著生長。</p>
-                        <button disabled class="w-full border-2 border-stone-400 text-stone-500 bg-stone-300 px-4 py-3 rounded-lg cursor-not-allowed font-bold tracking-wide">敬請期待</button>
+            <!-- 次要作品 -->
+            <div class="grid md:grid-cols-2 gap-8 reveal">
+                <article class="group">
+                    <div class="image-frame relative h-[320px] md:h-[430px] overflow-hidden rounded-[24px] bg-stone-300">
+                        <img src="主頁大圖2.png"
+                             alt="仿生漂流木"
+                             class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent"></div>
+                        <span class="absolute left-6 bottom-6 text-white text-sm tracking-[.18em]">COMING SOON</span>
                     </div>
+                    <div class="pt-5 flex items-start justify-between gap-6">
+                        <div>
+                            <h3 class="text-2xl font-semibold">仿生漂流木</h3>
+                            <p class="mt-2 text-stone-600">攀爬結構、附生植物與視覺層次一次整合。</p>
+                        </div>
+                        <span class="text-stone-400">02</span>
+                    </div>
+                </article>
+
+                <article class="group">
+                    <div class="image-frame relative h-[320px] md:h-[430px] overflow-hidden rounded-[24px] bg-stone-300">
+                        <img src="主頁大圖3.png"
+                             alt="水族專用造景"
+                             class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent"></div>
+                        <span class="absolute left-6 bottom-6 text-white text-sm tracking-[.18em]">COMING SOON</span>
+                    </div>
+                    <div class="pt-5 flex items-start justify-between gap-6">
+                        <div>
+                            <h3 class="text-2xl font-semibold">水族專用造景</h3>
+                            <p class="mt-2 text-stone-600">模組化躲藏空間，為水下景觀保留自然感。</p>
+                        </div>
+                        <span class="text-stone-400">03</span>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- =========================================================
+         PROCESS / VALUE
+    ========================================================== -->
+    <section class="bg-[#17251f] py-24 md:py-32">
+        <div class="max-w-[1300px] mx-auto px-6 md:px-10 reveal">
+            <div class="grid lg:grid-cols-3 gap-10 lg:gap-16">
+                <div class="lg:col-span-1">
+                    <p class="section-kicker text-[#b99a63] text-xs mb-5">Designed For Living</p>
+                    <h2 class="text-4xl md:text-5xl font-semibold leading-tight">
+                        不只好看，<br>也為生命而設計。
+                    </h2>
                 </div>
 
-                <div class="bg-stone-200 rounded-2xl overflow-hidden border border-stone-300 opacity-80 flex flex-col">
-                    <img src="https://placehold.co/400x300/D6D3D1/57534E?text=Aqua+Scapes" class="w-full h-56 object-cover grayscale">
-                    <div class="p-6 flex flex-col flex-grow">
-                        <h3 class="text-xl font-bold mb-2 text-stone-500">水族專用造景</h3>
-                        <p class="text-stone-500 text-sm mb-6 line-clamp-2 flex-grow">專為水族缸設計的模組化配件與躲避空間，採用安全無毒、抗水流的特殊材質打造。</p>
-                        <button disabled class="w-full border-2 border-stone-400 text-stone-500 bg-stone-300 px-4 py-3 rounded-lg cursor-not-allowed font-bold tracking-wide">敬請期待</button>
+                <div class="lg:col-span-2 grid md:grid-cols-3 gap-8">
+                    <div class="border-t border-white/15 pt-6">
+                        <p class="text-2xl mb-5">01</p>
+                        <h3 class="text-xl font-semibold mb-3">數位塑形</h3>
+                        <p class="text-stone-400 leading-7">以 3D 建模控制比例、洞口、坡度與結構。</p>
+                    </div>
+                    <div class="border-t border-white/15 pt-6">
+                        <p class="text-2xl mb-5">02</p>
+                        <h3 class="text-xl font-semibold mb-3">仿生紋理</h3>
+                        <p class="text-stone-400 leading-7">從岩石、朽木與地貌汲取表面語言。</p>
+                    </div>
+                    <div class="border-t border-white/15 pt-6">
+                        <p class="text-2xl mb-5">03</p>
+                        <h3 class="text-xl font-semibold mb-3">棲地功能</h3>
+                        <p class="text-stone-400 leading-7">把躲藏、攀爬、休息與清潔需求藏進設計。</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 區塊二：活體競標區 -->
-    <section id="auctions" class="bg-stone-100 py-24 border-y border-stone-200">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-extrabold text-stone-800 mb-4 tracking-wider">嚴選活體競標</h2>
-                <p class="text-stone-500 max-w-2xl mx-auto text-lg">點擊物種進入專屬相簿目錄，挑選您心儀的個體，並透過專屬 LINE 社群參與競標。</p>
+    <!-- =========================================================
+         LIVE AUCTION
+    ========================================================== -->
+    <section id="auctions" class="bg-[#101718] py-24 md:py-32">
+        <div class="max-w-[1500px] mx-auto px-6 md:px-10">
+
+            <div class="text-center mb-14 md:mb-18 reveal">
+                <p class="section-kicker text-[#b99a63] text-xs mb-5">Find Your Companion</p>
+                <h2 class="text-4xl md:text-6xl font-semibold tracking-tight">嚴選活體競標</h2>
+                <p class="text-stone-400 max-w-2xl mx-auto mt-6 leading-7">
+                    依物種瀏覽個體相簿，挑選你心儀的夥伴，再透過專屬社群參與競標。
+                </p>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <a href="auction.html" class="group block relative rounded-2xl overflow-hidden shadow-lg h-[22rem]">
-                    <img src="https://placehold.co/600x600/FDE68A/92400E?text=Leopard+Gecko" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-                    <div class="absolute bottom-8 left-8 right-8 flex justify-between items-end">
-                        <div>
-                            <h3 class="text-white text-3xl font-bold mb-1 tracking-wide">豹紋守宮</h3>
-                            <p class="text-stone-300 text-sm tracking-wider">Leopard Gecko</p>
+
+            <div class="grid md:grid-cols-3 gap-6 reveal">
+                <a href="auction.html"
+                   class="group relative overflow-hidden rounded-[24px] h-[440px] md:h-[520px] bg-stone-800">
+                    <img src="https://placehold.co/900x1200/8A6C4A/F4E7D0?text=Leopard+Gecko"
+                         alt="豹紋守宮"
+                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent"></div>
+                    <div class="absolute left-7 right-7 bottom-7">
+                        <p class="text-xs tracking-[.18em] text-stone-300 mb-3">LEOPARD GECKO</p>
+                        <div class="flex items-end justify-between gap-4">
+                            <h3 class="text-3xl font-semibold">豹紋守宮</h3>
+                            <span class="text-2xl group-hover:translate-x-1 transition">↗</span>
                         </div>
-                        <div class="bg-emerald-600 text-white text-sm font-bold px-4 py-2 rounded-lg flex items-center shadow-lg">查看目錄 ➔</div>
                     </div>
                 </a>
 
-                <a href="auction-fattail.html" class="group block relative rounded-2xl overflow-hidden shadow-lg h-[22rem]">
-                    <img src="https://placehold.co/600x600/94A3B8/1E293B?text=Fat-Tail+Gecko" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-                    <div class="absolute bottom-8 left-8 right-8 flex justify-between items-end">
-                        <div>
-                            <h3 class="text-white text-3xl font-bold mb-1 tracking-wide">肥尾守宮</h3>
-                            <p class="text-stone-300 text-sm tracking-wider">African Fat-Tailed Gecko</p>
+                <a href="auction-fattail.html"
+                   class="group relative overflow-hidden rounded-[24px] h-[440px] md:h-[520px] bg-stone-800">
+                    <img src="https://placehold.co/900x1200/596567/E7ECEC?text=Fat-Tail+Gecko"
+                         alt="肥尾守宮"
+                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent"></div>
+                    <div class="absolute left-7 right-7 bottom-7">
+                        <p class="text-xs tracking-[.18em] text-stone-300 mb-3">AFRICAN FAT-TAILED GECKO</p>
+                        <div class="flex items-end justify-between gap-4">
+                            <h3 class="text-3xl font-semibold">肥尾守宮</h3>
+                            <span class="text-2xl group-hover:translate-x-1 transition">↗</span>
                         </div>
-                        <div class="bg-emerald-600 text-white text-sm font-bold px-4 py-2 rounded-lg flex items-center shadow-lg">查看目錄 ➔</div>
                     </div>
                 </a>
 
-                <a href="auction-boa.html" class="group block relative rounded-2xl overflow-hidden shadow-lg h-[22rem]">
-                    <img src="https://placehold.co/600x600/A3E635/166534?text=Boas+and+Pythons" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-                    <div class="absolute bottom-8 left-8 right-8 flex justify-between items-end">
-                        <div>
-                            <h3 class="text-white text-3xl font-bold mb-1 tracking-wide">蚺蛇 / 蟒蛇</h3>
-                            <p class="text-stone-300 text-sm tracking-wider">Boas & Pythons</p>
+                <a href="auction-boa.html"
+                   class="group relative overflow-hidden rounded-[24px] h-[440px] md:h-[520px] bg-stone-800">
+                    <img src="https://placehold.co/900x1200/34463A/DBE8DD?text=Boas+%26+Pythons"
+                         alt="蚺蛇與蟒蛇"
+                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent"></div>
+                    <div class="absolute left-7 right-7 bottom-7">
+                        <p class="text-xs tracking-[.18em] text-stone-300 mb-3">BOAS & PYTHONS</p>
+                        <div class="flex items-end justify-between gap-4">
+                            <h3 class="text-3xl font-semibold">蚺蛇 / 蟒蛇</h3>
+                            <span class="text-2xl group-hover:translate-x-1 transition">↗</span>
                         </div>
-                        <div class="bg-emerald-600 text-white text-sm font-bold px-4 py-2 rounded-lg flex items-center shadow-lg">查看目錄 ➔</div>
                     </div>
                 </a>
             </div>
+        </div>
+    </section>
+
+    <!-- =========================================================
+         CUSTOM CTA
+    ========================================================== -->
+    <section class="relative overflow-hidden bg-[#17251f] py-28 md:py-40">
+        <div class="absolute inset-0 opacity-25">
+            <img src="主頁大圖5.png" alt="" class="w-full h-full object-cover">
+        </div>
+        <div class="absolute inset-0 bg-[#0f1718]/70"></div>
+
+        <div class="relative z-10 max-w-[1000px] mx-auto px-6 text-center reveal">
+            <p class="section-kicker text-[#b99a63] text-xs mb-6">Custom Habitat</p>
+            <h2 class="text-4xl md:text-7xl font-semibold tracking-tight leading-tight">
+                你的想像，<br>我們替你造景。
+            </h2>
+            <p class="mt-7 text-stone-300 max-w-xl mx-auto leading-8">
+                從缸體尺寸、飼養物種、功能需求到視覺風格，
+                一起把腦中的畫面變成可以真正生活的微型世界。
+            </p>
+            <button onclick="openModal()"
+                    class="mt-9 rounded-full bg-[#f1eee6] text-[#0f1718] px-8 py-4 font-semibold hover:scale-[1.02] transition">
+                開始客製化
+            </button>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-stone-900 text-stone-400 py-16">
-        <div class="container mx-auto px-6 text-center">
-            <h4 class="text-white text-xl font-bold mb-4 tracking-widest">Hephaestus Scapes</h4>
-            <p class="mb-2 text-stone-300">專業 3D 列印爬蟲微縮棲息造景設計</p>
-            <p class="mb-8 hover:text-white transition cursor-pointer font-light">hello@yourbrand.com</p>
-            <p class="text-sm text-stone-600">&copy; 2026 Hephaestus Scapes. All rights reserved.</p>
+    <footer class="bg-[#0a1011] text-stone-500 py-14">
+        <div class="max-w-[1500px] mx-auto px-6 md:px-10 flex flex-col md:flex-row gap-8 md:items-end md:justify-between">
+            <div>
+                <div class="text-white text-xl font-semibold">Hephaestus Scapes</div>
+                <div class="mt-2 text-xs tracking-[.25em]">赫菲斯微景</div>
+            </div>
+
+            <div class="text-sm md:text-right leading-7">
+                <p>3D 列印爬蟲微縮棲息造景設計</p>
+                <p>hello@yourbrand.com</p>
+                <p class="mt-2 text-stone-700">&copy; 2026 Hephaestus Scapes.</p>
+            </div>
         </div>
     </footer>
 
-    <!-- 客製化表單 Modal -->
-    <div id="customModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="bg-white w-full max-w-2xl mx-4 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div class="flex justify-between items-center px-8 py-6 border-b border-stone-100 bg-stone-50">
-                <h3 class="text-2xl font-bold text-stone-800 tracking-wide">專屬客製化需求</h3>
-                <button onclick="closeModal()" class="text-stone-400 hover:text-stone-700 text-3xl leading-none">&times;</button>
+    <!-- =========================================================
+         CUSTOM MODAL
+    ========================================================== -->
+    <div id="customModal"
+         class="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 opacity-0 pointer-events-none transition-opacity duration-300">
+
+        <div class="bg-[#f5f2eb] text-stone-800 w-full max-w-2xl mx-4 rounded-[24px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="flex justify-between items-center px-7 md:px-8 py-6 border-b border-stone-200">
+                <div>
+                    <p class="text-xs uppercase tracking-[.22em] text-stone-500 mb-2">Custom Habitat</p>
+                    <h3 class="text-2xl font-semibold">專屬客製化需求</h3>
+                </div>
+                <button onclick="closeModal()"
+                        class="w-10 h-10 rounded-full border border-stone-300 text-stone-500 hover:bg-stone-200 text-xl">
+                    ×
+                </button>
             </div>
-            <div class="p-8 overflow-y-auto no-scrollbar">
-                <p class="text-stone-500 mb-6 text-sm leading-relaxed">請告訴我們您的缸體環境與設計想法，附上參考圖片能幫助我們更精準地為您進行 3D 結構評估。</p>
+
+            <div class="p-7 md:p-8 overflow-y-auto no-scrollbar">
+                <p class="text-stone-600 mb-7 text-sm leading-7">
+                    請告訴我們您的缸體環境與設計想法，附上參考圖片能幫助我們更精準地進行 3D 結構評估。
+                </p>
+
                 <form class="space-y-5">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="grid md:grid-cols-2 gap-5">
                         <div>
-                            <label class="block text-sm font-bold text-stone-700 mb-2">聯絡方式 (LINE ID 或 Email)</label>
-                            <input type="text" placeholder="以便聯繫報價" class="w-full border border-stone-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-stone-50">
+                            <label class="block text-sm font-semibold mb-2">聯絡方式</label>
+                            <input type="text" placeholder="LINE ID 或 Email"
+                                   class="w-full border border-stone-300 rounded-xl p-3.5 bg-white focus:outline-none focus:ring-2 focus:ring-[#6f8062]">
                         </div>
                         <div>
-                            <label class="block text-sm font-bold text-stone-700 mb-2">適用物種</label>
-                            <input type="text" placeholder="例如：睫角守宮、球蟒" class="w-full border border-stone-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-stone-50">
+                            <label class="block text-sm font-semibold mb-2">適用物種</label>
+                            <input type="text" placeholder="例如：睫角守宮、球蟒"
+                                   class="w-full border border-stone-300 rounded-xl p-3.5 bg-white focus:outline-none focus:ring-2 focus:ring-[#6f8062]">
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                    <div class="grid md:grid-cols-2 gap-5">
                         <div>
-                            <label class="block text-sm font-bold text-stone-700 mb-2">預計尺寸 (長 x 寬 x 高 cm)</label>
-                            <input type="text" placeholder="例如：20 x 15 x 10" class="w-full border border-stone-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-stone-50">
+                            <label class="block text-sm font-semibold mb-2">預計尺寸</label>
+                            <input type="text" placeholder="例如：20 × 15 × 10 cm"
+                                   class="w-full border border-stone-300 rounded-xl p-3.5 bg-white focus:outline-none focus:ring-2 focus:ring-[#6f8062]">
                         </div>
                         <div>
-                            <label class="block text-sm font-bold text-stone-700 mb-2">希望風格</label>
-                            <select class="w-full border border-stone-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-stone-50">
+                            <label class="block text-sm font-semibold mb-2">希望風格</label>
+                            <select class="w-full border border-stone-300 rounded-xl p-3.5 bg-white focus:outline-none focus:ring-2 focus:ring-[#6f8062]">
                                 <option>岩石風化感</option>
-                                <option>自然仿木/樹洞</option>
+                                <option>自然仿木 / 樹洞</option>
                                 <option>幾何參數化設計</option>
-                                <option>水族專用沉木/模組</option>
+                                <option>水族專用沉木 / 模組</option>
                             </select>
                         </div>
                     </div>
+
                     <div>
-                        <label class="block text-sm font-bold text-stone-700 mb-2">上傳參考圖片</label>
-                        <input type="file" class="w-full border border-stone-300 rounded-lg p-2 text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 cursor-pointer bg-stone-50">
+                        <label class="block text-sm font-semibold mb-2">上傳參考圖片</label>
+                        <input type="file"
+                               class="w-full border border-stone-300 rounded-xl p-3 bg-white text-stone-500">
                     </div>
+
                     <div>
-                        <label class="block text-sm font-bold text-stone-700 mb-2">詳細需求描述</label>
-                        <textarea rows="4" placeholder="請描述您的功能需求..." class="w-full border border-stone-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-stone-50"></textarea>
+                        <label class="block text-sm font-semibold mb-2">詳細需求描述</label>
+                        <textarea rows="4" placeholder="請描述您的功能需求..."
+                                  class="w-full border border-stone-300 rounded-xl p-3.5 bg-white focus:outline-none focus:ring-2 focus:ring-[#6f8062]"></textarea>
                     </div>
-                    <div class="pt-4">
-                        <button type="button" onclick="alert('前端介面展示：未來將串接後台系統送出資料！'); closeModal();" class="w-full bg-stone-800 text-white font-bold py-4 rounded-xl hover:bg-stone-900 transition tracking-widest text-lg shadow-lg">
-                            送出需求單
-                        </button>
-                    </div>
+
+                    <button type="button"
+                            onclick="alert('前端介面展示：未來可串接後台系統送出資料。'); closeModal();"
+                            class="w-full mt-2 bg-[#17251f] text-white font-semibold py-4 rounded-xl hover:bg-[#0f1718] transition">
+                        送出需求單
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript 邏輯 -->
     <script>
-        // 1. 主視覺背景圖兩張循環淡出淡入 (改為每 6 秒切換一次，停留時間更久)
+        // 1. Hero 兩張主圖循環淡入淡出 (每 6.5 秒切換)
         let currentBgIndex = 1;
         const totalBgs = 2;
+
         setInterval(() => {
             const currentImg = document.getElementById('bg-slide' + currentBgIndex);
             currentImg.classList.remove('opacity-100');
             currentImg.classList.add('opacity-0');
 
-            currentBgIndex = currentBgIndex % totalBgs + 1; // 1 變 2，2 變 1
+            currentBgIndex = currentBgIndex % totalBgs + 1;
 
             const nextImg = document.getElementById('bg-slide' + currentBgIndex);
             nextImg.classList.remove('opacity-0');
             nextImg.classList.add('opacity-100');
-        }, 6000); // 6000 毫秒 = 6 秒
+        }, 6500);
 
-        // 2. 下方標準造景系列的滑動輪播圖
+        // 2. 精選造景區下方「躲避屋展示複數張圖片」的自動無縫滾動 (每 3 秒往左滑動一格)
         let currentSlideIndex = 0;
         const track = document.getElementById('carousel-track');
-        const totalRealSlides = 5; 
+        const totalRealSlides = 5;
 
         setInterval(() => {
             currentSlideIndex++;
             track.style.transition = 'transform 0.7s ease-in-out';
             track.style.transform = `translateX(-${currentSlideIndex * (100 / 6)}%)`;
-            
+
             if (currentSlideIndex === totalRealSlides) {
                 setTimeout(() => {
                     track.style.transition = 'none';
@@ -272,18 +521,38 @@
                     track.style.transform = 'translateX(0)';
                 }, 700);
             }
-        }, 3000); 
+        }, 3000);
 
-        // 3. 處理 Modal 彈窗
+        // 3. Modal 互動開關
         const modal = document.getElementById('customModal');
+
         function openModal() {
             modal.classList.remove('opacity-0', 'pointer-events-none');
             document.body.style.overflow = 'hidden';
         }
+
         function closeModal() {
             modal.classList.add('opacity-0', 'pointer-events-none');
-            document.body.style.overflow = 'auto';
+            document.body.style.overflow = '';
         }
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // 4. Scroll reveal 滾動淡入效果
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('show');
+            });
+        }, { threshold: 0.12 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     </script>
+
 </body>
 </html>
