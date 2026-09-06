@@ -76,15 +76,16 @@
             <img id="bg-slide1"
                  src="主頁背景1.png"
                  alt="Hephaestus Scapes 微縮棲地作品"
-                 class="absolute inset-0 w-full h-full object-cover opacity-100 transition-opacity duration-1000">
+                 class="absolute inset-0 w-full h-full object-cover object-center opacity-100 transition-opacity duration-1000">
             <img id="bg-slide2"
                  src="主頁背景2.png"
                  alt="Hephaestus Scapes 微景觀作品"
-                 class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
+                 class="absolute inset-0 w-full h-full object-cover object-center opacity-0 transition-opacity duration-1000">
 
-            <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/25 to-black/10"></div>
-            <!-- 已將底部遮罩改為輕量透明度 /30，讓下方缸體圖片不再暗沈 -->
-            <div class="absolute inset-0 bg-gradient-to-t from-[#0f1718]/30 via-transparent to-black/35"></div>
+            <!-- 1. 頂部導覽列防護遮罩 (限制只佔畫面上半部，往下漸進透明，底部絕對透明) -->
+            <div class="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-black/60 to-transparent"></div>
+            <!-- 2. 左側標題文字防護遮罩 (從左上到右下漸淡，完全避開正下方缸底區域) -->
+            <div class="absolute inset-0 bg-gradient-to-br from-black/50 via-transparent to-transparent"></div>
         </div>
 
         <!-- 導覽列 -->
@@ -109,7 +110,7 @@
         </nav>
 
         <!-- Hero 文案 -->
-        <div class="relative z-10 min-h-screen max-w-[1500px] mx-auto px-6 md:px-10 flex items-start pt-24 md:pt-32 pb-16">
+        <div class="relative z-10 min-h-screen max-w-[1500px] mx-auto px-6 md:px-10 flex items-start pt-36 md:pt-40 pb-16">
             <div class="hero-copy max-w-3xl">
                 <p class="section-kicker text-xs md:text-sm text-stone-300 mb-4">
                     Digital Craft · Living Nature
@@ -125,17 +126,12 @@
                     打造兼具功能與景觀美學的微型棲地。
                 </p>
 
-                <div class="mt-6 flex flex-wrap items-center gap-4">
+                <div class="mt-7 flex items-center">
                     <a href="#products"
                        class="inline-flex items-center gap-3 rounded-full bg-[#f1eee6] text-[#0f1718] px-7 py-3.5 font-semibold hover:scale-[1.02] transition">
                         探索作品
                         <span aria-hidden="true">↘</span>
                     </a>
-
-                    <button onclick="openModal()"
-                            class="inline-flex items-center gap-3 rounded-full border border-white/30 bg-black/10 px-7 py-3.5 text-white backdrop-blur-sm hover:bg-white/10 transition">
-                        客製你的微型世界
-                    </button>
                 </div>
             </div>
         </div>
@@ -405,7 +401,7 @@
 
             <div class="text-sm md:text-right leading-7">
                 <p>3D 列印爬蟲微縮棲息造景設計</p>
-                <p>hello@yourbrand.com</p>
+                <p>歡迎透過客製化表單與我們聯繫</p>
                 <p class="mt-2 text-stone-700">&copy; 2026 Hephaestus Scapes.</p>
             </div>
         </div>
