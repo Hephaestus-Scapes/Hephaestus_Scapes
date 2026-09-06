@@ -69,23 +69,27 @@
 <body class="text-stone-100">
 
     <!-- =========================================================
-         HERO (兩張主圖循環淡入淡出)
+         HERO (三張主圖循環淡入淡出)
     ========================================================== -->
     <header class="relative min-h-screen overflow-hidden bg-[#0f1718]">
         <div class="absolute inset-0">
             <img id="bg-slide1"
                  src="主頁背景1.png"
-                 alt="Hephaestus Scapes 微縮棲地作品"
+                 alt="Hephaestus Scapes 微縮棲地作品1"
                  class="absolute inset-0 w-full h-full object-cover object-center opacity-100 transition-opacity duration-1000">
             <img id="bg-slide2"
                  src="主頁背景2.png"
-                 alt="Hephaestus Scapes 微景觀作品"
+                 alt="Hephaestus Scapes 微縮棲地作品2"
+                 class="absolute inset-0 w-full h-full object-cover object-center opacity-0 transition-opacity duration-1000">
+            <!-- 新增第三張主圖，初始狀態為透明 (opacity-0) -->
+            <img id="bg-slide3"
+                 src="主頁背景3.png"
+                 alt="Hephaestus Scapes 微縮棲地作品3"
                  class="absolute inset-0 w-full h-full object-cover object-center opacity-0 transition-opacity duration-1000">
 
-            <!-- 1. 頂部導覽列防護遮罩 (限制只佔畫面上半部，往下漸進透明，底部絕對透明) -->
-            <div class="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-black/60 to-transparent"></div>
-            <!-- 2. 左側標題文字防護遮罩 (從左上到右下漸淡，完全避開正下方缸底區域) -->
-            <div class="absolute inset-0 bg-gradient-to-br from-black/50 via-transparent to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-black/48 via-black/12 to-transparent"></div>
+            <!-- 已將底部遮罩改為輕量透明度 /30，讓下方缸體圖片不再暗沈 -->
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0f1718]/18 via-transparent to-black/20"></div>
         </div>
 
         <!-- 導覽列 -->
@@ -484,9 +488,9 @@
     </div>
 
     <script>
-        // 1. Hero 兩張主圖循環淡入淡出 (每 6.5 秒切換)
+        // 1. Hero 三張主圖循環淡入淡出 (每 6.5 秒切換)
         let currentBgIndex = 1;
-        const totalBgs = 2;
+        const totalBgs = 3; // 這裡已將總數改為 3
 
         setInterval(() => {
             const currentImg = document.getElementById('bg-slide' + currentBgIndex);
