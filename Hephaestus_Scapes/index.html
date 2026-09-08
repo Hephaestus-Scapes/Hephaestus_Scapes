@@ -77,17 +77,6 @@
             transform: translateY(0);
         }
 
-        /*
-         * =========================================================
-         * 精選造景主圖輪播
-         *
-         * 重點：
-         * 1. 圖片永遠 100% 寬 + 100% 高
-         * 2. 使用 object-fit: cover 填滿整個框架
-         * 3. 桌機與手機都不會留下上下/左右空白
-         * 4. overflow:hidden 防止圖片超出圓角
-         * =========================================================
-         */
         .featured-carousel {
             position: relative;
             width: 100%;
@@ -129,10 +118,6 @@
             }
         }
 
-        /*
-         * 手機畫面比較窄，因此稍微降低圓角與陰影，
-         * 但圖片仍然維持 100% 填滿。
-         */
         @media (max-width: 767px) {
             .featured-carousel {
                 aspect-ratio: 4 / 3;
@@ -148,9 +133,7 @@
 
 <body class="text-stone-100">
 
-    <!-- =========================================================
-         HERO
-    ========================================================== -->
+    <!-- HERO -->
     <header class="relative min-h-screen overflow-hidden bg-[#0f1718]">
 
         <div class="absolute inset-0">
@@ -173,7 +156,6 @@
             <div class="absolute inset-0 bg-gradient-to-t from-[#0f1718]/18 via-transparent to-black/20"></div>
         </div>
 
-        <!-- 導覽列 -->
         <nav class="glass-nav fixed top-0 left-0 right-0 z-50">
             <div class="max-w-[1500px] mx-auto px-6 md:px-10 h-20 md:h-24 flex items-center justify-between">
 
@@ -207,7 +189,6 @@
             </div>
         </nav>
 
-        <!-- Hero 文案 -->
         <div class="relative z-10 min-h-screen max-w-[1500px] mx-auto px-6 md:px-10 flex items-start pt-36 md:pt-40 pb-16">
 
             <div class="hero-copy max-w-3xl">
@@ -244,9 +225,7 @@
     </header>
 
 
-    <!-- =========================================================
-         BRAND STATEMENT
-    ========================================================== -->
+    <!-- BRAND STATEMENT -->
     <section class="bg-[#0f1718] py-24 md:py-36 border-b border-white/5">
 
         <div class="max-w-[1200px] mx-auto px-6 md:px-10 text-center reveal">
@@ -269,9 +248,7 @@
     </section>
 
 
-    <!-- =========================================================
-         FEATURED / STANDARD SCAPES
-    ========================================================== -->
+    <!-- FEATURED / STANDARD SCAPES -->
     <section id="products" class="bg-[#f1eee6] text-[#18201d] py-24 md:py-32">
 
         <div class="max-w-[1500px] mx-auto px-6 md:px-10">
@@ -296,13 +273,7 @@
             </div>
 
 
-            <!-- =====================================================
-                 主打作品
-
-                 這裡是本次修改的核心：
-                 原本 object-contain → 改成 object-cover
-                 因此每張圖片會完整填滿整個圖片框架。
-                 ===================================================== -->
+            <!-- 主打作品 -->
             <article class="grid lg:grid-cols-[minmax(0,1.55fr)_minmax(280px,.8fr)] gap-8 lg:gap-12 items-center mb-16 reveal">
 
                 <div class="featured-carousel">
@@ -339,7 +310,6 @@
                                  loading="lazy">
                         </div>
 
-                        <!-- 無縫循環用的第一張複製圖 -->
                         <div class="carousel-slide">
                             <img src="主頁大圖1.png"
                                  alt="Hephaestus Scapes 造景作品 1"
@@ -385,24 +355,31 @@
             </article>
 
 
-            <!-- =====================================================
-                 次要作品
-            ====================================================== -->
+            <!-- 次要作品 -->
             <div class="grid md:grid-cols-2 gap-8 reveal">
 
+                <!-- 漂流木：敬請期待 -->
                 <article class="group">
 
-                    <div class="image-frame relative h-[320px] md:h-[430px] overflow-hidden rounded-[24px] bg-stone-300">
+                    <div class="relative h-[320px] md:h-[430px] overflow-hidden rounded-[24px] bg-[#18201d] flex items-center justify-center">
 
-                        <img src="主頁大圖2.png"
-                             alt="仿生漂流木"
-                             class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#24312b] via-[#17251f] to-[#0f1718]"></div>
 
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent"></div>
+                        <div class="relative z-10 text-center px-6">
+                            <p class="text-[#b99a63] text-xs md:text-sm tracking-[.3em] uppercase mb-5">
+                                Coming Soon
+                            </p>
 
-                        <span class="absolute left-6 bottom-6 text-white text-sm tracking-[.18em]">
-                            COMING SOON
-                        </span>
+                            <h3 class="text-4xl md:text-5xl font-semibold text-[#f1eee6] tracking-tight">
+                                敬請期待
+                            </h3>
+
+                            <div class="w-12 h-px bg-[#b99a63]/60 mx-auto mt-6"></div>
+
+                            <p class="mt-5 text-sm text-stone-400 tracking-[.12em]">
+                                BIOMIMETIC DRIFTWOOD
+                            </p>
+                        </div>
 
                     </div>
 
@@ -426,19 +403,28 @@
                 </article>
 
 
+                <!-- 水族用品：敬請期待 -->
                 <article class="group">
 
-                    <div class="image-frame relative h-[320px] md:h-[430px] overflow-hidden rounded-[24px] bg-stone-300">
+                    <div class="relative h-[320px] md:h-[430px] overflow-hidden rounded-[24px] bg-[#18201d] flex items-center justify-center">
 
-                        <img src="主頁大圖3.png"
-                             alt="水族專用造景"
-                             class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#24312b] via-[#17251f] to-[#0f1718]"></div>
 
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent"></div>
+                        <div class="relative z-10 text-center px-6">
+                            <p class="text-[#b99a63] text-xs md:text-sm tracking-[.3em] uppercase mb-5">
+                                Coming Soon
+                            </p>
 
-                        <span class="absolute left-6 bottom-6 text-white text-sm tracking-[.18em]">
-                            COMING SOON
-                        </span>
+                            <h3 class="text-4xl md:text-5xl font-semibold text-[#f1eee6] tracking-tight">
+                                敬請期待
+                            </h3>
+
+                            <div class="w-12 h-px bg-[#b99a63]/60 mx-auto mt-6"></div>
+
+                            <p class="mt-5 text-sm text-stone-400 tracking-[.12em]">
+                                AQUATIC COLLECTION
+                            </p>
+                        </div>
 
                     </div>
 
@@ -467,9 +453,7 @@
     </section>
 
 
-    <!-- =========================================================
-         PROCESS / VALUE
-    ========================================================== -->
+    <!-- PROCESS / VALUE -->
     <section class="bg-[#17251f] py-24 md:py-32">
 
         <div class="max-w-[1300px] mx-auto px-6 md:px-10 reveal">
@@ -538,9 +522,7 @@
     </section>
 
 
-    <!-- =========================================================
-         LIVE AUCTION
-    ========================================================== -->
+    <!-- LIVE AUCTION -->
     <section id="auctions" class="bg-[#101718] py-24 md:py-32">
 
         <div class="max-w-[1500px] mx-auto px-6 md:px-10">
@@ -659,9 +641,7 @@
     </section>
 
 
-    <!-- =========================================================
-         CUSTOM CTA
-    ========================================================== -->
+    <!-- CUSTOM CTA -->
     <section class="relative overflow-hidden bg-[#17251f] py-28 md:py-40">
 
         <div class="absolute inset-0 opacity-25">
@@ -697,9 +677,7 @@
     </section>
 
 
-    <!-- =========================================================
-         FOOTER
-    ========================================================== -->
+    <!-- FOOTER -->
     <footer class="bg-[#0a1011] text-stone-500 py-14">
 
         <div class="max-w-[1500px] mx-auto px-6 md:px-10 flex flex-col md:flex-row gap-8 md:items-end md:justify-between">
@@ -735,9 +713,7 @@
     </footer>
 
 
-    <!-- =========================================================
-         CUSTOM MODAL
-    ========================================================== -->
+    <!-- CUSTOM MODAL -->
     <div id="customModal"
          class="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 opacity-0 pointer-events-none transition-opacity duration-300">
 
@@ -888,16 +864,10 @@
     </div>
 
 
-    <!-- =========================================================
-         JAVASCRIPT
-    ========================================================== -->
+    <!-- JAVASCRIPT -->
     <script>
 
-        /*
-         * =========================================================
-         * 1. Hero 三張主圖循環淡入淡出
-         * =========================================================
-         */
+        /* 1. Hero 三張主圖循環淡入淡出 */
         let currentBgIndex = 1;
         const totalBgs = 3;
 
@@ -921,16 +891,7 @@
         }, 6500);
 
 
-        /*
-         * =========================================================
-         * 2. 精選造景主圖輪播
-         *
-         * 5 張實際圖片 + 第 1 張複製圖片
-         *
-         * 0 → 1 → 2 → 3 → 4 → 5(複製1)
-         * 然後瞬間回到 0
-         * =========================================================
-         */
+        /* 2. 精選造景主圖輪播 */
         let currentSlideIndex = 0;
 
         const track =
@@ -949,17 +910,9 @@
             track.style.transition =
                 `transform ${slideDuration}ms ease-in-out`;
 
-            /*
-             * 每一張圖片佔 track 的 1/6，
-             * 因此往左移動 currentSlideIndex × 16.6667%
-             */
             track.style.transform =
                 `translateX(-${currentSlideIndex * (100 / totalSlides)}%)`;
 
-            /*
-             * 到達複製的第一張後，
-             * 等動畫完成，再無動畫跳回真正第一張。
-             */
             if (currentSlideIndex === totalRealSlides) {
 
                 setTimeout(() => {
@@ -971,10 +924,6 @@
                     track.style.transform =
                         'translateX(0)';
 
-                    /*
-                     * 強制瀏覽器完成上面的 none transition，
-                     * 再恢復正常動畫。
-                     */
                     requestAnimationFrame(() => {
                         requestAnimationFrame(() => {
                             track.style.transition =
@@ -989,11 +938,7 @@
         setInterval(moveCarousel, slideInterval);
 
 
-        /*
-         * =========================================================
-         * 3. Modal
-         * =========================================================
-         */
+        /* 3. Modal */
         const modal =
             document.getElementById('customModal');
 
@@ -1018,9 +963,7 @@
         }
 
 
-        /*
-         * 點擊 Modal 外部關閉
-         */
+        /* 點擊 Modal 外部關閉 */
         modal.addEventListener('click', (e) => {
 
             if (e.target === modal) {
@@ -1030,9 +973,7 @@
         });
 
 
-        /*
-         * ESC 關閉 Modal
-         */
+        /* ESC 關閉 Modal */
         document.addEventListener('keydown', (e) => {
 
             if (e.key === 'Escape') {
@@ -1042,11 +983,7 @@
         });
 
 
-        /*
-         * =========================================================
-         * 4. Scroll reveal
-         * =========================================================
-         */
+        /* 4. Scroll reveal */
         const observer =
             new IntersectionObserver((entries) => {
 
