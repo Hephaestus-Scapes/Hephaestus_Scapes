@@ -180,27 +180,28 @@
                 </p>
             </div>
 
-            <!-- 主打作品區塊：桌機版維持圖片完整比例，手機版也不裁切；右側保留商品資訊與詳細頁連結 -->
+            <!-- 主打作品區塊：已修改為圖片 100% 填滿框架 -->
             <article class="grid lg:grid-cols-[minmax(0,1.55fr)_minmax(280px,.8fr)] gap-8 lg:gap-12 items-center mb-16 reveal">
                 <div class="relative w-full aspect-[4/3] lg:aspect-[3/2] rounded-[28px] overflow-hidden drop-shadow-xl bg-stone-900 border border-stone-800">
                     <div id="carousel-track" class="flex w-[600%] h-full transition-transform duration-700 ease-in-out">
+                        <!-- 每一張圖片都應用 w-full h-full，並移除 object-contain -->
                         <div class="w-1/6 h-full flex-shrink-0 flex items-center justify-center p-0">
-                            <img src="主頁大圖1.png" class="block max-w-full max-h-full w-auto h-auto object-contain" alt="造景圖1">
+                            <img src="主頁大圖1.png" class="block w-full h-full" alt="造景圖1">
                         </div>
                         <div class="w-1/6 h-full flex-shrink-0 flex items-center justify-center p-0">
-                            <img src="主頁大圖2.png" class="block max-w-full max-h-full w-auto h-auto object-contain" alt="造景圖2">
+                            <img src="主頁大圖2.png" class="block w-full h-full" alt="造景圖2">
                         </div>
                         <div class="w-1/6 h-full flex-shrink-0 flex items-center justify-center p-0">
-                            <img src="主頁大圖3.png" class="block max-w-full max-h-full w-auto h-auto object-contain" alt="造景圖3">
+                            <img src="主頁大圖3.png" class="block w-full h-full" alt="造景圖3">
                         </div>
                         <div class="w-1/6 h-full flex-shrink-0 flex items-center justify-center p-0">
-                            <img src="主頁大圖4.png" class="block max-w-full max-h-full w-auto h-auto object-contain" alt="造景圖4">
+                            <img src="主頁大圖4.png" class="block w-full h-full" alt="造景圖4">
                         </div>
                         <div class="w-1/6 h-full flex-shrink-0 flex items-center justify-center p-0">
-                            <img src="主頁大圖5.png" class="block max-w-full max-h-full w-auto h-auto object-contain" alt="造景圖5">
+                            <img src="主頁大圖5.png" class="block w-full h-full" alt="造景圖5">
                         </div>
                         <div class="w-1/6 h-full flex-shrink-0 flex items-center justify-center p-0">
-                            <img src="主頁大圖1.png" class="block max-w-full max-h-full w-auto h-auto object-contain" alt="造景圖1">
+                            <img src="主頁大圖1.png" class="block w-full h-full" alt="造景圖1">
                         </div>
                     </div>
                 </div>
@@ -217,7 +218,7 @@
 
                     <div class="pt-10 border-t border-stone-300 mt-10">
                         <a href="product.html"
-                           class="inline-flex items-center justify-between w-full text-lg font-semibold group text-[#18201d] hover:text-[#6f8062] transition">
+                            class="inline-flex items-center justify-between w-full text-lg font-semibold group text-[#18201d] hover:text-[#6f8062] transition">
                             <span>查看更多細節</span>
                             <span class="group-hover:translate-x-1 transition">→</span>
                         </a>
