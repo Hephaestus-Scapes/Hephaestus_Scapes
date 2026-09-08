@@ -157,7 +157,7 @@
                 可以是一座森林，也可以是一個完整世界。
             </h2>
             <p class="mt-8 max-w-2xl mx-auto text-stone-400 leading-8 text-base md:text-lg">
-                我們不只製作造景物件，而是從動物習性、空間比例與視覺構成出發，
+                我們不只製作造景物件，而是從動物習性、空間比例與視覺構成出發,
                 把躲藏、攀爬、休息與觀看體驗整合成一個棲地。
             </p>
         </div>
@@ -180,28 +180,28 @@
                 </p>
             </div>
 
-            <!-- 主打作品區塊：已修改為圖片 100% 填滿框架 -->
+            <!-- 主打作品區塊：已修改為圖片應用圓角，完美貼合框架 -->
             <article class="grid lg:grid-cols-[minmax(0,1.55fr)_minmax(280px,.8fr)] gap-8 lg:gap-12 items-center mb-16 reveal">
                 <div class="relative w-full aspect-[4/3] lg:aspect-[3/2] rounded-[28px] overflow-hidden drop-shadow-xl bg-stone-900 border border-stone-800">
                     <div id="carousel-track" class="flex w-[600%] h-full transition-transform duration-700 ease-in-out">
-                        <!-- 每一張圖片都應用 w-full h-full，並移除 object-contain -->
+                        <!-- 每一張圖片都同時應用 rounded-[28px] 以貼合框架 -->
                         <div class="w-1/6 h-full flex-shrink-0 flex items-center justify-center p-0">
-                            <img src="主頁大圖1.png" class="block w-full h-full" alt="造景圖1">
+                            <img src="主頁大圖1.png" class="block w-full h-full rounded-[28px]" alt="造景圖1">
                         </div>
                         <div class="w-1/6 h-full flex-shrink-0 flex items-center justify-center p-0">
-                            <img src="主頁大圖2.png" class="block w-full h-full" alt="造景圖2">
+                            <img src="主頁大圖2.png" class="block w-full h-full rounded-[28px]" alt="造景圖2">
                         </div>
                         <div class="w-1/6 h-full flex-shrink-0 flex items-center justify-center p-0">
-                            <img src="主頁大圖3.png" class="block w-full h-full" alt="造景圖3">
+                            <img src="主頁大圖3.png" class="block w-full h-full rounded-[28px]" alt="造景圖3">
                         </div>
                         <div class="w-1/6 h-full flex-shrink-0 flex items-center justify-center p-0">
-                            <img src="主頁大圖4.png" class="block w-full h-full" alt="造景圖4">
+                            <img src="主頁大圖4.png" class="block w-full h-full rounded-[28px]" alt="造景圖4">
                         </div>
                         <div class="w-1/6 h-full flex-shrink-0 flex items-center justify-center p-0">
-                            <img src="主頁大圖5.png" class="block w-full h-full" alt="造景圖5">
+                            <img src="主頁大圖5.png" class="block w-full h-full rounded-[28px]" alt="造景圖5">
                         </div>
                         <div class="w-1/6 h-full flex-shrink-0 flex items-center justify-center p-0">
-                            <img src="主頁大圖1.png" class="block w-full h-full" alt="造景圖1">
+                            <img src="主頁大圖1.png" class="block w-full h-full rounded-[28px]" alt="造景圖1">
                         </div>
                     </div>
                 </div>
@@ -230,10 +230,11 @@
             <div class="grid md:grid-cols-2 gap-8 reveal">
                 <article class="group">
                     <div class="image-frame relative h-[320px] md:h-[430px] overflow-hidden rounded-[24px] bg-stone-300">
+                        <!-- 圖片應用 w-full h-full、object-fill (拉伸不裁切)，並應用 rounded-[24px] 貼合 -->
                         <img src="主頁大圖2.png"
                              alt="仿生漂流木"
-                             class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent"></div>
+                             class="w-full h-full object-fill rounded-[24px]">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent rounded-[24px]"></div>
                         <span class="absolute left-6 bottom-6 text-white text-sm tracking-[.18em]">COMING SOON</span>
                     </div>
                     <div class="pt-5 flex items-start justify-between gap-6">
@@ -247,10 +248,11 @@
 
                 <article class="group">
                     <div class="image-frame relative h-[320px] md:h-[430px] overflow-hidden rounded-[24px] bg-stone-300">
+                        <!-- 圖片應用 w-full h-full、object-fill (拉伸不裁切)，並應用 rounded-[24px] 貼合 -->
                         <img src="主頁大圖3.png"
                              alt="水族專用造景"
-                             class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent"></div>
+                             class="w-full h-full object-fill rounded-[24px]">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent rounded-[24px]"></div>
                         <span class="absolute left-6 bottom-6 text-white text-sm tracking-[.18em]">COMING SOON</span>
                     </div>
                     <div class="pt-5 flex items-start justify-between gap-6">
