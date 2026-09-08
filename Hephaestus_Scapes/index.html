@@ -81,14 +81,12 @@
                  src="主頁背景2.png"
                  alt="Hephaestus Scapes 微縮棲地作品2"
                  class="absolute inset-0 w-full h-full object-cover object-center opacity-0 transition-opacity duration-1000">
-            <!-- 新增第三張主圖，初始狀態為透明 (opacity-0) -->
             <img id="bg-slide3"
                  src="主頁背景3.png"
                  alt="Hephaestus Scapes 微縮棲地作品3"
                  class="absolute inset-0 w-full h-full object-cover object-center opacity-0 transition-opacity duration-1000">
 
             <div class="absolute inset-0 bg-gradient-to-r from-black/48 via-black/12 to-transparent"></div>
-            <!-- 已將底部遮罩改為輕量透明度 /30，讓下方缸體圖片不再暗沈 -->
             <div class="absolute inset-0 bg-gradient-to-t from-[#0f1718]/18 via-transparent to-black/20"></div>
         </div>
 
@@ -166,7 +164,7 @@
     </section>
 
     <!-- =========================================================
-         FEATURED / STANDARD SCAPES (含複數張躲避屋展示滾動圖片)
+         FEATURED / STANDARD SCAPES
     ========================================================== -->
     <section id="products" class="bg-[#f1eee6] text-[#18201d] py-24 md:py-32">
         <div class="max-w-[1500px] mx-auto px-6 md:px-10">
@@ -182,7 +180,7 @@
                 </p>
             </div>
 
-            <!-- 躲避屋展示複數張圖片自動滾動輪播區塊 -->
+            <!-- 躲避屋展示複數張圖片自動滾動輪播區塊 (保留並作為唯一主視覺) -->
             <div class="relative w-full h-[300px] md:h-[480px] rounded-[24px] overflow-hidden drop-shadow-xl mb-16 bg-stone-200 border border-stone-300 reveal">
                 <div id="carousel-track" class="flex w-[600%] h-full transition-transform duration-700 ease-in-out">
                     <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖1.png" class="w-full h-full object-cover" alt="造景圖1"></div>
@@ -193,46 +191,6 @@
                     <div class="w-1/6 h-full flex-shrink-0"><img src="主頁大圖1.png" class="w-full h-full object-cover" alt="造景圖1"></div>
                 </div>
             </div>
-
-            <!-- 主打作品：大圖 -->
-            <article class="grid lg:grid-cols-[1.5fr_.7fr] gap-8 lg:gap-12 items-stretch mb-16 reveal">
-                <a href="product.html"
-                   class="image-frame group relative min-h-[420px] md:min-h-[620px] overflow-hidden rounded-[28px] bg-stone-300">
-                    <img src="主頁大圖1.png"
-                         alt="擬真岩洞微縮棲地"
-                         class="absolute inset-0 w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent"></div>
-
-                    <div class="absolute left-6 right-6 bottom-6 md:left-9 md:right-9 md:bottom-8 flex justify-between items-end gap-6 text-white">
-                        <div>
-                            <p class="text-xs uppercase tracking-[.2em] text-stone-300 mb-3">Featured Habitat</p>
-                            <h3 class="text-3xl md:text-5xl font-semibold">擬真岩洞微縮棲地</h3>
-                        </div>
-                        <div class="hidden md:grid place-items-center w-14 h-14 rounded-full border border-white/40 bg-black/15 backdrop-blur">
-                            ↗
-                        </div>
-                    </div>
-                </a>
-
-                <div class="flex flex-col justify-between py-2">
-                    <div>
-                        <p class="text-sm text-stone-500 mb-5 tracking-wider">01 / WEATHERED CAVERN</p>
-                        <p class="text-xl md:text-2xl leading-9 text-stone-700">
-                            帶有豐富風化紋理與活苔蘚細節，
-                            頂部平坦設計方便守宮攀爬與休息，
-                            並整合躲藏與水盆空間。
-                        </p>
-                    </div>
-
-                    <div class="pt-10 border-t border-stone-300 mt-10">
-                        <a href="product.html"
-                           class="inline-flex items-center justify-between w-full text-lg font-semibold group">
-                            查看作品細節
-                            <span class="group-hover:translate-x-1 transition">→</span>
-                        </a>
-                    </div>
-                </div>
-            </article>
 
             <!-- 次要作品 -->
             <div class="grid md:grid-cols-2 gap-8 reveal">
@@ -249,7 +207,7 @@
                             <h3 class="text-2xl font-semibold">仿生漂流木</h3>
                             <p class="mt-2 text-stone-600">攀爬結構、附生植物與視覺層次一次整合。</p>
                         </div>
-                        <span class="text-stone-400">02</span>
+                        <span class="text-stone-400">01</span>
                     </div>
                 </article>
 
@@ -266,7 +224,7 @@
                             <h3 class="text-2xl font-semibold">水族專用造景</h3>
                             <p class="mt-2 text-stone-600">模組化躲藏空間，為水下景觀保留自然感。</p>
                         </div>
-                        <span class="text-stone-400">03</span>
+                        <span class="text-stone-400">02</span>
                     </div>
                 </article>
             </div>
@@ -490,7 +448,7 @@
     <script>
         // 1. Hero 三張主圖循環淡入淡出 (每 6.5 秒切換)
         let currentBgIndex = 1;
-        const totalBgs = 3; // 這裡已將總數改為 3
+        const totalBgs = 3;
 
         setInterval(() => {
             const currentImg = document.getElementById('bg-slide' + currentBgIndex);
