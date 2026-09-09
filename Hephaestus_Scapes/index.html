@@ -43,27 +43,19 @@
             text-shadow: 0 5px 30px rgba(0,0,0,.45);
         }
 
-        /* Hero 副標：獨立於主標右側，延遲浮現 */
+        /* Hero 副標：上移，改為單純淡入 */
         .hero-support {
             position: absolute;
             right: 8%;
-            top: 31%;
+            top: 24%;
             width: min(440px, 34vw);
             z-index: 20;
             opacity: 0;
-            transform: translate3d(22px, 6px, 0);
-            filter: blur(1.5px);
-            transition:
-                opacity .65s cubic-bezier(.22,.61,.36,1),
-                transform .65s cubic-bezier(.22,.61,.36,1),
-                filter .65s ease;
-            transition-delay: 0s;
+            transition: opacity .8s ease;
         }
 
         .hero-support.show {
             opacity: 1;
-            transform: translate3d(0, 0, 0);
-            filter: blur(0);
         }
 
         .hero-support-copy {
@@ -80,12 +72,12 @@
             display: inline-flex;
             align-items: center;
             gap: 11px;
-            padding: 11px 20px;
+            padding: 12px 22px;
             border-radius: 999px;
             background: rgba(241,238,230,.96);
             color: #0f1718;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 700;
             letter-spacing: .06em;
             text-decoration: none;
             box-shadow: 0 8px 25px rgba(0,0,0,.18);
@@ -101,7 +93,7 @@
             .hero-support {
                 right: 5%;
                 width: min(390px, 36vw);
-                top: 30%;
+                top: 23%;
             }
         }
 
@@ -112,11 +104,10 @@
                 top: auto;
                 width: min(100%, 380px);
                 margin-top: 34px;
-                transform: translate3d(0, 12px, 0);
             }
 
             .hero-support.show {
-                transform: translate3d(0, 0, 0);
+                opacity: 1;
             }
 
             .hero-support-copy {
@@ -126,8 +117,9 @@
 
             .hero-support-action {
                 margin-top: 18px;
-                font-size: 11px;
-                padding: 10px 18px;
+                font-size: 12px;
+                font-weight: 700;
+                padding: 10px 19px;
             }
         }
 
@@ -1129,7 +1121,7 @@
                 A World Within A World
             </p>
 
-            <h2 class="text-3xl md:text-4xl lg:text-[48px] font-medium leading-[1.25] tracking-tight">
+            <h2 class="text-3xl md:text-4xl lg:text-[48px] font-medium leading-[1.5] tracking-tight">
                 一方玻璃之內，<br class="hidden md:block">
                 可以是一隅微縮秘境，也可以是一個完整世界。
             </h2>
