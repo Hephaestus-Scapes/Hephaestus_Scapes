@@ -56,7 +56,7 @@
             margin-top: .32em;
         }
 
-        /* Hero 副標：上移，延遲後單純淡入 */
+        /* Hero 副標：上移，改為單純淡入 */
         .hero-support {
             position: absolute;
             right: 8%;
@@ -1313,18 +1313,18 @@
                     </div>
 
                     <h3 class="scapes-product-title">
-                        WEATHERED<br>
-                        CAVERN
+                        HABITAT<br>
+                        COLLECTION
                     </h3>
 
                     <div class="description-chinese">
-                        風化岩洞・棲息系列
+                        多元造景・棲息系列
                     </div>
 
                     <p class="scapes-product-text">
-                        帶有豐富風化紋理與活苔蘚細節，
-                        頂部平坦設計方便守宮攀爬與休息，
-                        並整合躲藏與水盆空間。
+                        從靜謐的自然地貌、深邃的遠古遺跡，
+                        到充滿張力的奇幻與頭骨造型。我們打破單一造景的框架，
+                        以細膩的紋理刻劃不同主題的微型世界，滿足您對專屬生態造景的所有想像。
                     </p>
 
                     <a href="product.html" class="scapes-detail-link">
@@ -1865,7 +1865,7 @@
     <!-- JAVASCRIPT -->
     <script>
 
-        /* 0. Hero 副標延遲浮現：讓主標先建立視覺焦點 */
+        /* 0. Hero 副標延遲淡入 */
         document.addEventListener('DOMContentLoaded', () => {
             const heroSupport = document.getElementById('heroSupport');
 
@@ -1873,7 +1873,7 @@
                 requestAnimationFrame(() => {
                     setTimeout(() => {
                         heroSupport.classList.add('show');
-                    }, 1200);
+                    }, 600);
                 });
             }
         });
