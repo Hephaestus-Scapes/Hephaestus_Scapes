@@ -731,6 +731,534 @@
         }
 
     </style>
+
+<style id="light-featured-scapes">
+/* =========================================================
+   FEATURED SCAPES — LIGHT NATURAL MUSEUM EDITION
+   淺色自然博物館 × 精品設計工作室
+   ========================================================= */
+.featured-scapes {
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(135deg, #eee9df 0%, #e6e0d5 48%, #f1ede5 100%) !important;
+    color: #2c302b !important;
+    isolation: isolate;
+}
+
+.featured-scapes .scapes-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.featured-scapes .scapes-glow {
+    position: absolute;
+    width: 75vw;
+    height: 75vw;
+    max-width: 1100px;
+    max-height: 1100px;
+    left: 50%;
+    top: 48%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(
+        ellipse,
+        rgba(255,255,255,.68) 0%,
+        rgba(255,255,255,.28) 35%,
+        rgba(255,255,255,0) 70%
+    );
+    filter: blur(20px);
+}
+
+.featured-scapes .scapes-noise {
+    position: absolute;
+    inset: 0;
+    opacity: .025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+}
+
+.featured-scapes .terrain-lines {
+    position: absolute;
+    width: 600px;
+    height: 900px;
+    opacity: .42;
+}
+
+.featured-scapes .terrain-lines-left {
+    left: -280px;
+    top: -100px;
+    background: repeating-radial-gradient(
+        ellipse at 40% 50%,
+        transparent 0,
+        transparent 32px,
+        rgba(126,116,98,.12) 33px,
+        transparent 34px
+    );
+    transform: rotate(-12deg);
+}
+
+.featured-scapes .terrain-lines-right {
+    right: -300px;
+    bottom: -180px;
+    background: repeating-radial-gradient(
+        ellipse at 60% 50%,
+        transparent 0,
+        transparent 38px,
+        rgba(126,116,98,.10) 39px,
+        transparent 40px
+    );
+    transform: rotate(18deg);
+}
+
+.featured-scapes .featured-inner {
+    width: min(1320px, calc(100% - 80px));
+    margin: 0 auto;
+    padding: 145px 0 105px;
+}
+
+.featured-scapes .featured-heading {
+    margin-bottom: 78px;
+}
+
+.featured-scapes .featured-kicker {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 24px;
+    font-size: 11px;
+    letter-spacing: .25em;
+    font-weight: 600;
+    color: #7b6f5c;
+}
+
+.featured-scapes .kicker-line {
+    width: 42px;
+    height: 1px;
+    background: #9c8d74;
+}
+
+.featured-scapes .kicker-number {
+    margin-left: 5px;
+    opacity: .55;
+}
+
+.featured-scapes .featured-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 60px;
+}
+
+.featured-scapes .featured-title-row h2 {
+    margin: 0 0 20px;
+    font-size: clamp(42px, 5vw, 74px);
+    line-height: .95;
+    letter-spacing: -.045em;
+    font-weight: 400;
+    color: #252a26 !important;
+}
+
+.featured-scapes .featured-intro {
+    max-width: 540px;
+    margin: 0;
+    font-size: 15px;
+    line-height: 2;
+    color: #68665e !important;
+}
+
+.featured-scapes .featured-caption {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 5px;
+    text-align: right;
+    font-size: 9px;
+    letter-spacing: .25em;
+    color: #969083 !important;
+}
+
+.featured-scapes .scapes-showcase {
+    display: grid;
+    grid-template-columns: 90px minmax(400px, 1fr) minmax(260px, 330px);
+    gap: 55px;
+    align-items: center;
+}
+
+.featured-scapes .scapes-meta {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 15px;
+}
+
+.featured-scapes .current-index {
+    font-size: 25px;
+    color: #3f433e !important;
+}
+
+.featured-scapes .index-divider,
+.featured-scapes .total-index {
+    font-size: 11px;
+    color: #9c988e !important;
+}
+
+.featured-scapes .meta-line {
+    width: 1px;
+    height: 105px;
+    margin: 25px 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(126,113,92,.58),
+        rgba(126,113,92,0)
+    );
+}
+
+.featured-scapes .meta-category {
+    writing-mode: vertical-rl;
+    font-size: 9px;
+    letter-spacing: .3em;
+    color: #8f8a7d !important;
+}
+
+.featured-scapes .meta-scroll {
+    margin-top: auto;
+    writing-mode: vertical-rl;
+    font-size: 8px;
+    letter-spacing: .22em;
+    color: #aaa59a !important;
+}
+
+.featured-scapes .gallery-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    padding: 12px;
+    background: rgba(255,255,255,.62);
+    border: 1px solid rgba(105,96,80,.16);
+    box-shadow:
+        0 25px 60px rgba(65,58,47,.14),
+        0 4px 14px rgba(65,58,47,.08);
+}
+
+.featured-scapes .gallery-image-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #d8d2c6;
+}
+
+.featured-scapes .scapes-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.025);
+    transition: opacity .7s ease, transform 1.2s cubic-bezier(.2,.65,.2,1);
+    display: block;
+}
+
+.featured-scapes .scapes-image.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.featured-scapes .gallery-corner {
+    position: absolute;
+    z-index: 5;
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+}
+
+.featured-scapes .corner-tl {
+    top: 4px;
+    left: 4px;
+    border-top: 1px solid rgba(91,81,66,.55);
+    border-left: 1px solid rgba(91,81,66,.55);
+}
+.featured-scapes .corner-tr {
+    top: 4px;
+    right: 4px;
+    border-top: 1px solid rgba(91,81,66,.55);
+    border-right: 1px solid rgba(91,81,66,.55);
+}
+.featured-scapes .corner-bl {
+    bottom: 4px;
+    left: 4px;
+    border-bottom: 1px solid rgba(91,81,66,.55);
+    border-left: 1px solid rgba(91,81,66,.55);
+}
+.featured-scapes .corner-br {
+    bottom: 4px;
+    right: 4px;
+    border-bottom: 1px solid rgba(91,81,66,.55);
+    border-right: 1px solid rgba(91,81,66,.55);
+}
+
+.featured-scapes .gallery-controls {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-top: 24px;
+}
+
+.featured-scapes .gallery-arrow {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(88,81,69,.24) !important;
+    background: rgba(255,255,255,.42) !important;
+    color: #4d504a !important;
+    font-size: 17px;
+    cursor: pointer;
+    transition: background .25s ease, border-color .25s ease, transform .25s ease;
+}
+
+.featured-scapes .gallery-arrow:hover {
+    background: rgba(255,255,255,.82) !important;
+    border-color: rgba(88,81,69,.48) !important;
+    transform: translateY(-2px);
+}
+
+.featured-scapes .gallery-progress {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    font-size: 9px;
+    letter-spacing: .15em;
+    color: #99948a !important;
+}
+
+.featured-scapes .progress-track {
+    flex: 1;
+    height: 1px;
+    background: rgba(82,77,68,.18) !important;
+    overflow: hidden;
+}
+
+.featured-scapes .progress-bar {
+    width: 20%;
+    height: 100%;
+    background: #8d8068 !important;
+    transition: width .5s ease;
+}
+
+.featured-scapes .progress-current {
+    color: #55584f !important;
+}
+
+.featured-scapes .scapes-description {
+    padding-bottom: 50px;
+}
+
+.featured-scapes .description-eyebrow {
+    margin-bottom: 22px;
+    font-size: 9px;
+    letter-spacing: .28em;
+    color: #88785f !important;
+}
+
+.featured-scapes .scapes-product-title {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(31px, 3vw, 47px);
+    line-height: .95;
+    letter-spacing: .015em;
+    font-weight: 400;
+    color: #353932 !important;
+}
+
+.featured-scapes .description-chinese {
+    margin-top: 16px;
+    font-size: 13px;
+    letter-spacing: .12em;
+    color: #77746c !important;
+}
+
+.featured-scapes .scapes-product-text {
+    max-width: 300px;
+    margin: 27px 0 35px;
+    font-size: 13px;
+    line-height: 2;
+    color: #6f6d66 !important;
+}
+
+.featured-scapes .scapes-detail-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    padding-bottom: 9px;
+    border-bottom: 1px solid rgba(104,94,78,.38);
+    color: #393d36 !important;
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-decoration: none;
+    transition: gap .3s ease, border-color .3s ease;
+}
+
+.featured-scapes .scapes-detail-link:hover {
+    gap: 22px;
+    border-color: #88785f;
+}
+
+/* Coming Soon cards */
+.featured-scapes .group > div.relative.h-\[320px\] {
+    background: #d9d2c5 !important;
+    border: 1px solid rgba(91,82,68,.13);
+    box-shadow: 0 18px 40px rgba(65,58,47,.08);
+}
+
+.featured-scapes .group > div.relative.h-\[320px\] > div.absolute.inset-0 {
+    background: linear-gradient(135deg, #ded8cc 0%, #cfc7b8 50%, #e8e2d8 100%) !important;
+}
+
+.featured-scapes .group > div.relative.h-\[320px\] p.text-\[\#b99a63\] {
+    color: #8a7657 !important;
+}
+
+.featured-scapes .group > div.relative.h-\[320px\] h3 {
+    color: #45473f !important;
+}
+
+.featured-scapes .group > div.relative.h-\[320px\] .w-12 {
+    background: rgba(138,118,87,.55) !important;
+}
+
+.featured-scapes .group > div.relative.h-\[320px\] p.text-stone-400 {
+    color: #817d73 !important;
+}
+
+.featured-scapes .featured-footer {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    margin-top: 90px;
+}
+
+.featured-scapes .footer-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(91,82,68,.18));
+}
+
+.featured-scapes .footer-line:last-child {
+    background: linear-gradient(to left, transparent, rgba(91,82,68,.18));
+}
+
+.featured-scapes .footer-text {
+    display: flex;
+    gap: 25px;
+    font-size: 8px;
+    letter-spacing: .25em;
+    color: #9a958a !important;
+}
+
+@media (max-width: 1000px) {
+    .featured-scapes .featured-inner {
+        width: min(100% - 50px, 850px);
+        padding: 110px 0 90px;
+    }
+    .featured-scapes .featured-title-row { gap: 30px; }
+    .featured-scapes .featured-caption { display: none; }
+    .featured-scapes .scapes-showcase {
+        grid-template-columns: 60px minmax(0, 1fr) 230px;
+        gap: 30px;
+    }
+    .featured-scapes .meta-scroll { display: none; }
+    .featured-scapes .scapes-product-title { font-size: 32px; }
+}
+
+@media (max-width: 700px) {
+    .featured-scapes .featured-inner {
+        width: calc(100% - 36px);
+        padding: 88px 0 68px;
+    }
+    .featured-scapes .featured-heading { margin-bottom: 52px; }
+    .featured-scapes .featured-kicker {
+        font-size: 9px;
+        letter-spacing: .2em;
+    }
+    .featured-scapes .featured-title-row { display: block; }
+    .featured-scapes .featured-title-row h2 {
+        margin-bottom: 18px;
+        font-size: clamp(40px, 12vw, 58px);
+    }
+    .featured-scapes .featured-intro {
+        max-width: 100%;
+        font-size: 13px;
+        line-height: 1.9;
+    }
+    .featured-scapes .scapes-showcase {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+    .featured-scapes .scapes-meta {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 0;
+        margin-bottom: 18px;
+    }
+    .featured-scapes .meta-line {
+        width: 35px;
+        height: 1px;
+        margin: 0 14px;
+        background: linear-gradient(to right, rgba(126,113,92,.62), rgba(126,113,92,0));
+    }
+    .featured-scapes .meta-category {
+        writing-mode: initial;
+        font-size: 8px;
+        letter-spacing: .2em;
+    }
+    .featured-scapes .gallery-frame {
+        aspect-ratio: 1 / 1;
+        padding: 8px;
+    }
+    .featured-scapes .gallery-controls {
+        margin-top: 18px;
+        gap: 12px;
+    }
+    .featured-scapes .gallery-arrow {
+        width: 38px;
+        height: 38px;
+    }
+    .featured-scapes .scapes-description {
+        width: 100%;
+        padding: 45px 5px 0;
+    }
+    .featured-scapes .description-eyebrow { margin-bottom: 17px; }
+    .featured-scapes .scapes-product-title { font-size: 38px; }
+    .featured-scapes .scapes-product-text {
+        max-width: 100%;
+        margin: 22px 0 28px;
+        font-size: 13px;
+        line-height: 1.9;
+    }
+    .featured-scapes .featured-footer {
+        margin-top: 65px;
+        gap: 12px;
+    }
+    .featured-scapes .footer-text {
+        gap: 10px;
+        font-size: 6px;
+        letter-spacing: .16em;
+    }
+    .featured-scapes .terrain-lines-left { left: -430px; top: 120px; }
+    .featured-scapes .terrain-lines-right { right: -450px; bottom: 0; }
+}
+</style>
+
 </head>
 
 <body class="text-stone-100">
