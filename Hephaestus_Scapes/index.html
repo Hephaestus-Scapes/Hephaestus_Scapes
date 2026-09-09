@@ -43,6 +43,19 @@
             text-shadow: 0 5px 30px rgba(0,0,0,.45);
         }
 
+        /* 第二區主標：明確控制兩行間距，避免文字黏在一起 */
+        .brand-statement-title {
+            line-height: 1.2 !important;
+        }
+
+        .brand-statement-title .brand-line {
+            display: block;
+        }
+
+        .brand-statement-title .brand-line + .brand-line {
+            margin-top: .32em;
+        }
+
         /* Hero 副標：上移，改為單純淡入 */
         .hero-support {
             position: absolute;
@@ -1121,9 +1134,9 @@
                 A World Within A World
             </p>
 
-            <h2 class="text-3xl md:text-4xl lg:text-[48px] font-medium leading-[1.5] tracking-tight">
-                一方玻璃之內，<br class="hidden md:block">
-                可以是一隅微縮秘境，也可以是一個完整世界。
+            <h2 class="brand-statement-title text-3xl md:text-4xl lg:text-[48px] font-medium tracking-tight">
+                <span class="brand-line">一方玻璃之內，</span>
+                <span class="brand-line">可以是一隅微縮秘境，也可以是一個完整世界。</span>
             </h2>
 
             <p class="mt-8 max-w-2xl mx-auto text-stone-400 leading-8 text-base md:text-lg">
