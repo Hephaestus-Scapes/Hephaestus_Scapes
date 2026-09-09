@@ -56,7 +56,7 @@
             margin-top: .32em;
         }
 
-        /* Hero 副標：上移，改為單純淡入 */
+        /* Hero 副標：上移，延遲後單純淡入 */
         .hero-support {
             position: absolute;
             right: 8%;
@@ -1865,7 +1865,7 @@
     <!-- JAVASCRIPT -->
     <script>
 
-        /* 0. Hero 副標快速浮現：不等待背景圖片完全載入 */
+        /* 0. Hero 副標延遲浮現：讓主標先建立視覺焦點 */
         document.addEventListener('DOMContentLoaded', () => {
             const heroSupport = document.getElementById('heroSupport');
 
@@ -1873,7 +1873,7 @@
                 requestAnimationFrame(() => {
                     setTimeout(() => {
                         heroSupport.classList.add('show');
-                    }, 80);
+                    }, 1200);
                 });
             }
         });
