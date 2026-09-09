@@ -128,6 +128,608 @@
                 object-position: center center;
             }
         }
+
+        /* =========================================================
+           HEPAESTUS SCAPES
+           FEATURED SCAPES — MUSEUM / TERRAIN DESIGN
+           ========================================================= */
+
+        .featured-scapes {
+            position: relative;
+            overflow: hidden;
+            background:
+                linear-gradient(
+                    135deg,
+                    #272521 0%,
+                    #302d27 45%,
+                    #24231f 100%
+                );
+            color: #eeeae1;
+            isolation: isolate;
+        }
+
+        .scapes-bg {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .scapes-glow {
+            position: absolute;
+            width: 75vw;
+            height: 75vw;
+            max-width: 1100px;
+            max-height: 1100px;
+            left: 50%;
+            top: 48%;
+            transform: translate(-50%, -50%);
+            background:
+                radial-gradient(
+                    ellipse,
+                    rgba(185, 166, 130, 0.13) 0%,
+                    rgba(185, 166, 130, 0.06) 35%,
+                    rgba(185, 166, 130, 0) 70%
+                );
+            filter: blur(20px);
+        }
+
+        .scapes-noise {
+            position: absolute;
+            inset: 0;
+            opacity: 0.075;
+            background-image:
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+            mix-blend-mode: overlay;
+        }
+
+        .terrain-lines {
+            position: absolute;
+            width: 600px;
+            height: 900px;
+            opacity: 0.10;
+        }
+
+        .terrain-lines-left {
+            left: -280px;
+            top: -100px;
+            background:
+                repeating-radial-gradient(
+                    ellipse at 40% 50%,
+                    transparent 0,
+                    transparent 32px,
+                    rgba(215, 203, 178, 0.28) 33px,
+                    transparent 34px
+                );
+            transform: rotate(-12deg);
+        }
+
+        .terrain-lines-right {
+            right: -300px;
+            bottom: -180px;
+            background:
+                repeating-radial-gradient(
+                    ellipse at 60% 50%,
+                    transparent 0,
+                    transparent 38px,
+                    rgba(215, 203, 178, 0.24) 39px,
+                    transparent 40px
+                );
+            transform: rotate(18deg);
+        }
+
+        .featured-inner {
+            width: min(1320px, calc(100% - 80px));
+            margin: 0 auto;
+            padding: 150px 0 110px;
+        }
+
+        .featured-heading {
+            margin-bottom: 85px;
+        }
+
+        .featured-kicker {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 25px;
+            font-size: 11px;
+            letter-spacing: 0.25em;
+            font-weight: 500;
+            color: #b9aa8f;
+        }
+
+        .kicker-line {
+            display: block;
+            width: 42px;
+            height: 1px;
+            background: #b9aa8f;
+        }
+
+        .kicker-number {
+            margin-left: 5px;
+            opacity: 0.55;
+        }
+
+        .featured-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 60px;
+        }
+
+        .featured-title-row h2 {
+            margin: 0 0 22px;
+            font-size: clamp(42px, 5vw, 76px);
+            line-height: 0.95;
+            letter-spacing: -0.045em;
+            font-weight: 400;
+            color: #f1ede5;
+        }
+
+        .featured-intro {
+            max-width: 530px;
+            margin: 0;
+            font-size: 15px;
+            line-height: 2;
+            color: rgba(235, 229, 216, 0.62);
+        }
+
+        .featured-caption {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-bottom: 5px;
+            text-align: right;
+            font-size: 9px;
+            letter-spacing: 0.25em;
+            color: rgba(232, 224, 208, 0.35);
+        }
+
+        .scapes-showcase {
+            display: grid;
+            grid-template-columns: 90px minmax(400px, 1fr) minmax(260px, 330px);
+            gap: 55px;
+            align-items: center;
+        }
+
+        .scapes-meta {
+            align-self: stretch;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding-top: 15px;
+        }
+
+        .meta-index {
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+            font-family: Arial, sans-serif;
+        }
+
+        .current-index {
+            font-size: 25px;
+            color: #eee8dc;
+        }
+
+        .index-divider,
+        .total-index {
+            font-size: 11px;
+            color: rgba(238, 232, 220, 0.35);
+        }
+
+        .meta-line {
+            width: 1px;
+            height: 105px;
+            margin: 25px 0;
+            background:
+                linear-gradient(
+                    to bottom,
+                    rgba(208, 191, 158, 0.65),
+                    rgba(208, 191, 158, 0)
+                );
+        }
+
+        .meta-category {
+            writing-mode: vertical-rl;
+            font-size: 9px;
+            letter-spacing: 0.3em;
+            color: rgba(238, 232, 220, 0.4);
+        }
+
+        .meta-scroll {
+            margin-top: auto;
+            writing-mode: vertical-rl;
+            font-size: 8px;
+            letter-spacing: 0.22em;
+            color: rgba(238, 232, 220, 0.25);
+        }
+
+        .scapes-gallery {
+            min-width: 0;
+        }
+
+        .gallery-frame {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            padding: 13px;
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(239, 231, 215, 0.16),
+                    rgba(239, 231, 215, 0.025)
+                );
+            box-shadow:
+                0 35px 80px rgba(0, 0, 0, 0.35),
+                0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .gallery-image-wrap {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #1d1c19;
+        }
+
+        .scapes-image {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transform: scale(1.025);
+            transition:
+                opacity 0.7s ease,
+                transform 1.2s cubic-bezier(.2,.65,.2,1);
+            display: block;
+        }
+
+        .scapes-image.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .gallery-corner {
+            position: absolute;
+            z-index: 5;
+            width: 18px;
+            height: 18px;
+            pointer-events: none;
+        }
+
+        .corner-tl {
+            top: 5px;
+            left: 5px;
+            border-top: 1px solid rgba(240, 229, 207, 0.6);
+            border-left: 1px solid rgba(240, 229, 207, 0.6);
+        }
+
+        .corner-tr {
+            top: 5px;
+            right: 5px;
+            border-top: 1px solid rgba(240, 229, 207, 0.6);
+            border-right: 1px solid rgba(240, 229, 207, 0.6);
+        }
+
+        .corner-bl {
+            bottom: 5px;
+            left: 5px;
+            border-bottom: 1px solid rgba(240, 229, 207, 0.6);
+            border-left: 1px solid rgba(240, 229, 207, 0.6);
+        }
+
+        .corner-br {
+            bottom: 5px;
+            right: 5px;
+            border-bottom: 1px solid rgba(240, 229, 207, 0.6);
+            border-right: 1px solid rgba(240, 229, 207, 0.6);
+        }
+
+        .gallery-controls {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            margin-top: 25px;
+        }
+
+        .gallery-arrow {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(231, 222, 205, 0.2);
+            background: rgba(255,255,255,0.025);
+            color: #e9e2d6;
+            font-size: 17px;
+            cursor: pointer;
+            transition:
+                background 0.25s ease,
+                border-color 0.25s ease,
+                transform 0.25s ease;
+        }
+
+        .gallery-arrow:hover {
+            background: rgba(230, 216, 190, 0.1);
+            border-color: rgba(230, 216, 190, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .gallery-progress {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            font-size: 9px;
+            letter-spacing: 0.15em;
+            color: rgba(238, 232, 220, 0.4);
+        }
+
+        .progress-track {
+            flex: 1;
+            height: 1px;
+            background: rgba(238, 232, 220, 0.15);
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 20%;
+            height: 100%;
+            background: #d5c3a1;
+            transition: width 0.5s ease;
+        }
+
+        .progress-current {
+            color: #e9dfce;
+        }
+
+        .scapes-description {
+            padding-bottom: 50px;
+        }
+
+        .description-eyebrow {
+            margin-bottom: 22px;
+            font-size: 9px;
+            letter-spacing: 0.28em;
+            color: #b9aa8f;
+        }
+
+        .scapes-product-title {
+            margin: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: clamp(31px, 3vw, 47px);
+            line-height: 0.95;
+            letter-spacing: 0.015em;
+            font-weight: 400;
+            color: #eee9df;
+        }
+
+        .description-chinese {
+            margin-top: 16px;
+            font-size: 13px;
+            letter-spacing: 0.12em;
+            color: rgba(237, 229, 214, 0.6);
+        }
+
+        .scapes-product-text {
+            max-width: 300px;
+            margin: 27px 0 35px;
+            font-size: 13px;
+            line-height: 2;
+            color: rgba(237, 230, 217, 0.52);
+        }
+
+        .scapes-detail-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 9px;
+            border-bottom: 1px solid rgba(221, 209, 188, 0.35);
+            color: #e8dfcf;
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-decoration: none;
+            transition:
+                gap 0.3s ease,
+                border-color 0.3s ease;
+        }
+
+        .scapes-detail-link:hover {
+            gap: 22px;
+            border-color: #d9c7a5;
+        }
+
+        .detail-arrow {
+            font-size: 15px;
+        }
+
+        .featured-footer {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-top: 100px;
+        }
+
+        .footer-line {
+            flex: 1;
+            height: 1px;
+            background:
+                linear-gradient(
+                    to right,
+                    transparent,
+                    rgba(222, 210, 188, 0.18)
+                );
+        }
+
+        .footer-line:last-child {
+            background:
+                linear-gradient(
+                    to left,
+                    transparent,
+                    rgba(222, 210, 188, 0.18)
+                );
+        }
+
+        .footer-text {
+            display: flex;
+            gap: 25px;
+            font-size: 8px;
+            letter-spacing: 0.25em;
+            color: rgba(229, 220, 202, 0.3);
+        }
+
+        @media (max-width: 1000px) {
+            .featured-inner {
+                width: min(100% - 50px, 850px);
+                padding: 110px 0 90px;
+            }
+
+            .featured-title-row {
+                gap: 30px;
+            }
+
+            .featured-caption {
+                display: none;
+            }
+
+            .scapes-showcase {
+                grid-template-columns: 60px minmax(0, 1fr) 230px;
+                gap: 30px;
+            }
+
+            .meta-scroll {
+                display: none;
+            }
+
+            .scapes-product-title {
+                font-size: 32px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .featured-inner {
+                width: calc(100% - 36px);
+                padding: 90px 0 70px;
+            }
+
+            .featured-heading {
+                margin-bottom: 55px;
+            }
+
+            .featured-kicker {
+                font-size: 9px;
+                letter-spacing: 0.2em;
+            }
+
+            .featured-title-row {
+                display: block;
+            }
+
+            .featured-title-row h2 {
+                margin-bottom: 18px;
+                font-size: clamp(40px, 12vw, 58px);
+            }
+
+            .featured-intro {
+                max-width: 100%;
+                font-size: 13px;
+                line-height: 1.9;
+            }
+
+            .scapes-showcase {
+                display: flex;
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .scapes-meta {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                padding: 0;
+                margin-bottom: 18px;
+            }
+
+            .meta-line {
+                width: 35px;
+                height: 1px;
+                margin: 0 14px;
+                background:
+                    linear-gradient(
+                        to right,
+                        rgba(208, 191, 158, 0.7),
+                        rgba(208, 191, 158, 0)
+                    );
+            }
+
+            .meta-category {
+                writing-mode: initial;
+                font-size: 8px;
+                letter-spacing: 0.2em;
+            }
+
+            .gallery-frame {
+                aspect-ratio: 1 / 1;
+                padding: 8px;
+            }
+
+            .gallery-controls {
+                margin-top: 18px;
+                gap: 12px;
+            }
+
+            .gallery-arrow {
+                width: 38px;
+                height: 38px;
+            }
+
+            .scapes-description {
+                width: 100%;
+                padding: 45px 5px 0;
+            }
+
+            .description-eyebrow {
+                margin-bottom: 17px;
+            }
+
+            .scapes-product-title {
+                font-size: 38px;
+            }
+
+            .scapes-product-text {
+                max-width: 100%;
+                margin: 22px 0 28px;
+                font-size: 13px;
+                line-height: 1.9;
+            }
+
+            .featured-footer {
+                margin-top: 65px;
+                gap: 12px;
+            }
+
+            .footer-text {
+                gap: 10px;
+                font-size: 6px;
+                letter-spacing: 0.16em;
+            }
+
+            .terrain-lines-left {
+                left: -430px;
+                top: 120px;
+            }
+
+            .terrain-lines-right {
+                right: -450px;
+                bottom: 0;
+            }
+        }
+
     </style>
 </head>
 
@@ -249,114 +851,194 @@
 
 
     <!-- FEATURED / STANDARD SCAPES -->
-    <section id="products" class="bg-[#f1eee6] text-[#18201d] py-24 md:py-32">
+    <section class="featured-scapes" id="products">
 
-        <div class="max-w-[1500px] mx-auto px-6 md:px-10">
+        <!-- 背景裝飾 -->
+        <div class="scapes-bg">
+            <div class="terrain-lines terrain-lines-left"></div>
+            <div class="terrain-lines terrain-lines-right"></div>
+            <div class="scapes-glow"></div>
+            <div class="scapes-noise"></div>
+        </div>
 
-            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-16 reveal">
+        <div class="featured-inner">
 
-                <div>
-                    <p class="section-kicker text-xs text-stone-500 mb-4">
-                        Standard Scapes
-                    </p>
+            <!-- 區塊標題 -->
+            <div class="featured-heading reveal">
 
-                    <h2 class="text-4xl md:text-6xl font-semibold tracking-tight">
-                        精選造景作品
-                    </h2>
+                <div class="featured-kicker">
+                    <span class="kicker-line"></span>
+                    STANDARD SCAPES
+                    <span class="kicker-number">01</span>
                 </div>
 
-                <p class="max-w-lg text-stone-600 leading-7">
-                    從岩洞、樹洞到模組化棲地，以耐用材料結合擬真紋理，
-                    讓功能性藏在自然的外觀裡。
-                </p>
+                <div class="featured-title-row">
+
+                    <div>
+                        <h2>精選造景作品</h2>
+
+                        <p class="featured-intro">
+                            從岩洞、樹洞到模組化棲地，
+                            以耐用材料結合擬真紋理，
+                            讓功能性藏在自然的外觀裡。
+                        </p>
+                    </div>
+
+                    <div class="featured-caption">
+                        <span>MICRO HABITAT</span>
+                        <span>DESIGNED FOR LIVING</span>
+                    </div>
+
+                </div>
 
             </div>
 
 
-            <!-- 主打作品 -->
-            <article class="grid lg:grid-cols-[minmax(0,1.55fr)_minmax(280px,.8fr)] gap-8 lg:gap-12 items-center mb-16 reveal">
+            <!-- 作品展示 -->
+            <div class="scapes-showcase reveal">
 
-                <div class="featured-carousel">
+                <!-- 左側作品資訊 -->
+                <div class="scapes-meta">
 
-                    <div id="carousel-track" class="carousel-track transition-transform duration-700 ease-in-out">
-
-                        <div class="carousel-slide">
-                            <img src="主頁大圖1.png"
-                                 alt="Hephaestus Scapes 造景作品 1"
-                                 loading="eager">
-                        </div>
-
-                        <div class="carousel-slide">
-                            <img src="主頁大圖2.png"
-                                 alt="Hephaestus Scapes 造景作品 2"
-                                 loading="lazy">
-                        </div>
-
-                        <div class="carousel-slide">
-                            <img src="主頁大圖3.png"
-                                 alt="Hephaestus Scapes 造景作品 3"
-                                 loading="lazy">
-                        </div>
-
-                        <div class="carousel-slide">
-                            <img src="主頁大圖4.png"
-                                 alt="Hephaestus Scapes 造景作品 4"
-                                 loading="lazy">
-                        </div>
-
-                        <div class="carousel-slide">
-                            <img src="主頁大圖5.png"
-                                 alt="Hephaestus Scapes 造景作品 5"
-                                 loading="lazy">
-                        </div>
-
-                        <div class="carousel-slide">
-                            <img src="主頁大圖1.png"
-                                 alt="Hephaestus Scapes 造景作品 1"
-                                 loading="lazy">
-                        </div>
-
+                    <div class="meta-index">
+                        <span class="current-index">01</span>
+                        <span class="index-divider">/</span>
+                        <span class="total-index">05</span>
                     </div>
+
+                    <div class="meta-line"></div>
+
+                    <div class="meta-category">
+                        NATURAL FORM
+                    </div>
+
+                    <div class="meta-scroll">
+                        SCROLL TO EXPLORE
+                    </div>
+
                 </div>
 
 
-                <div class="flex flex-col justify-between py-2">
+                <!-- 中央圖片 -->
+                <div class="scapes-gallery">
 
-                    <div>
-                        <p class="text-sm text-stone-500 mb-5 tracking-wider">
-                            01 / WEATHERED CAVERN
-                        </p>
+                    <div class="gallery-frame">
 
-                        <p class="text-xl md:text-2xl leading-9 text-stone-700">
-                            帶有豐富風化紋理與活苔蘚細節，
-                            頂部平坦設計方便守宮攀爬與休息，
-                            並整合躲藏與水盆空間。
-                        </p>
+                        <div class="gallery-corner corner-tl"></div>
+                        <div class="gallery-corner corner-tr"></div>
+                        <div class="gallery-corner corner-bl"></div>
+                        <div class="gallery-corner corner-br"></div>
+
+                        <div class="gallery-image-wrap">
+
+                            <img
+                                src="主頁大圖1.png"
+                                alt="Hephaestus Scapes 造景作品 1"
+                                class="scapes-image active"
+                                loading="eager"
+                            >
+
+                            <img
+                                src="主頁大圖2.png"
+                                alt="Hephaestus Scapes 造景作品 2"
+                                class="scapes-image"
+                                loading="lazy"
+                            >
+
+                            <img
+                                src="主頁大圖3.png"
+                                alt="Hephaestus Scapes 造景作品 3"
+                                class="scapes-image"
+                                loading="lazy"
+                            >
+
+                            <img
+                                src="主頁大圖4.png"
+                                alt="Hephaestus Scapes 造景作品 4"
+                                class="scapes-image"
+                                loading="lazy"
+                            >
+
+                            <img
+                                src="主頁大圖5.png"
+                                alt="Hephaestus Scapes 造景作品 5"
+                                class="scapes-image"
+                                loading="lazy"
+                            >
+
+                        </div>
+
                     </div>
 
-                    <div class="pt-10 border-t border-stone-300 mt-10">
 
-                        <a href="product.html"
-                           class="inline-flex items-center justify-between w-full text-lg font-semibold group text-[#18201d] hover:text-[#6f8062] transition">
+                    <!-- 輪播控制 -->
+                    <div class="gallery-controls">
 
-                            <span>
-                                查看更多細節
-                            </span>
+                        <button
+                            class="gallery-arrow gallery-prev"
+                            type="button"
+                            aria-label="上一個作品"
+                        >
+                            ←
+                        </button>
 
-                            <span class="group-hover:translate-x-1 transition">
-                                →
-                            </span>
+                        <div class="gallery-progress">
+                            <span class="progress-current">01</span>
 
-                        </a>
+                            <div class="progress-track">
+                                <div class="progress-bar"></div>
+                            </div>
+
+                            <span>05</span>
+                        </div>
+
+                        <button
+                            class="gallery-arrow gallery-next"
+                            type="button"
+                            aria-label="下一個作品"
+                        >
+                            →
+                        </button>
 
                     </div>
+
                 </div>
 
-            </article>
+
+                <!-- 右側作品資訊 -->
+                <div class="scapes-description">
+
+                    <div class="description-eyebrow">
+                        FEATURED HABITAT
+                    </div>
+
+                    <h3 class="scapes-product-title">
+                        WEATHERED<br>
+                        CAVERN
+                    </h3>
+
+                    <div class="description-chinese">
+                        風化岩洞・棲息系列
+                    </div>
+
+                    <p class="scapes-product-text">
+                        帶有豐富風化紋理與活苔蘚細節，
+                        頂部平坦設計方便守宮攀爬與休息，
+                        並整合躲藏與水盆空間。
+                    </p>
+
+                    <a href="product.html" class="scapes-detail-link">
+                        <span>查看更多細節</span>
+                        <span class="detail-arrow">↗</span>
+                    </a>
+
+                </div>
+
+            </div>
 
 
             <!-- 次要作品 -->
-            <div class="grid md:grid-cols-2 gap-8 reveal">
+            <div class="grid md:grid-cols-2 gap-8 reveal" style="margin-top: 95px;">
 
                 <!-- 漂流木：敬請期待 -->
                 <article class="group">
@@ -446,6 +1128,22 @@
 
                     </div>
                 </article>
+
+            </div>
+
+
+            <!-- 底部裝飾 -->
+            <div class="featured-footer">
+
+                <div class="footer-line"></div>
+
+                <div class="footer-text">
+                    <span>FORM</span>
+                    <span>FUNCTION</span>
+                    <span>NATURE</span>
+                </div>
+
+                <div class="footer-line"></div>
 
             </div>
 
@@ -892,50 +1590,71 @@
 
 
         /* 2. 精選造景主圖輪播 */
-        let currentSlideIndex = 0;
+        document.addEventListener('DOMContentLoaded', () => {
 
-        const track =
-            document.getElementById('carousel-track');
+            const images = document.querySelectorAll('.scapes-image');
+            const prevBtn = document.querySelector('.gallery-prev');
+            const nextBtn = document.querySelector('.gallery-next');
+            const currentIndex = document.querySelector('.current-index');
+            const progressCurrent = document.querySelector('.progress-current');
+            const progressBar = document.querySelector('.progress-bar');
 
-        const totalRealSlides = 5;
-        const totalSlides = 6;
+            if (!images.length) return;
 
-        const slideInterval = 3000;
-        const slideDuration = 700;
+            let current = 0;
+            let autoPlay;
 
-        function moveCarousel() {
+            function showSlide(index) {
 
-            currentSlideIndex++;
+                current = (index + images.length) % images.length;
 
-            track.style.transition =
-                `transform ${slideDuration}ms ease-in-out`;
+                images.forEach((image, i) => {
+                    image.classList.toggle('active', i === current);
+                });
 
-            track.style.transform =
-                `translateX(-${currentSlideIndex * (100 / totalSlides)}%)`;
+                const number = String(current + 1).padStart(2, '0');
 
-            if (currentSlideIndex === totalRealSlides) {
+                if (currentIndex) {
+                    currentIndex.textContent = number;
+                }
 
-                setTimeout(() => {
+                if (progressCurrent) {
+                    progressCurrent.textContent = number;
+                }
 
-                    track.style.transition = 'none';
-
-                    currentSlideIndex = 0;
-
-                    track.style.transform =
-                        'translateX(0)';
-
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            track.style.transition =
-                                `transform ${slideDuration}ms ease-in-out`;
-                        });
-                    });
-
-                }, slideDuration);
+                if (progressBar) {
+                    const progress = ((current + 1) / images.length) * 100;
+                    progressBar.style.width = `${progress}%`;
+                }
             }
-        }
 
-        setInterval(moveCarousel, slideInterval);
+            function nextSlide() {
+                showSlide(current + 1);
+            }
+
+            function prevSlide() {
+                showSlide(current - 1);
+            }
+
+            function startAutoPlay() {
+                clearInterval(autoPlay);
+                autoPlay = setInterval(nextSlide, 5000);
+            }
+
+            prevBtn?.addEventListener('click', () => {
+                prevSlide();
+                startAutoPlay();
+            });
+
+            nextBtn?.addEventListener('click', () => {
+                nextSlide();
+                startAutoPlay();
+            });
+
+            showSlide(0);
+            startAutoPlay();
+
+        });
 
 
         /* 3. Modal */
