@@ -47,17 +47,17 @@
         .hero-support {
             position: absolute;
             right: 8%;
-            top: 52%;
-            width: min(390px, 31vw);
-            z-index: 2;
+            top: 31%;
+            width: min(440px, 34vw);
+            z-index: 20;
             opacity: 0;
-            transform: translate3d(42px, 12px, 0);
-            filter: blur(2px);
+            transform: translate3d(22px, 6px, 0);
+            filter: blur(1.5px);
             transition:
-                opacity 1.15s cubic-bezier(.22,.61,.36,1),
-                transform 1.15s cubic-bezier(.22,.61,.36,1),
-                filter 1.15s ease;
-            transition-delay: .65s;
+                opacity .65s cubic-bezier(.22,.61,.36,1),
+                transform .65s cubic-bezier(.22,.61,.36,1),
+                filter .65s ease;
+            transition-delay: 0s;
         }
 
         .hero-support.show {
@@ -68,8 +68,8 @@
 
         .hero-support-copy {
             margin: 0;
-            font-size: clamp(13px, 1.05vw, 16px);
-            line-height: 2;
+            font-size: clamp(15px, 1.2vw, 18px);
+            line-height: 1.95;
             letter-spacing: .04em;
             color: rgba(245, 242, 234, .88);
             text-shadow: 0 4px 24px rgba(0,0,0,.5);
@@ -100,8 +100,8 @@
         @media (max-width: 1100px) and (min-width: 768px) {
             .hero-support {
                 right: 5%;
-                width: min(350px, 34vw);
-                top: 55%;
+                width: min(390px, 36vw);
+                top: 30%;
             }
         }
 
@@ -110,9 +110,9 @@
                 position: relative;
                 right: auto;
                 top: auto;
-                width: min(100%, 360px);
+                width: min(100%, 380px);
                 margin-top: 34px;
-                transform: translate3d(0, 18px, 0);
+                transform: translate3d(0, 12px, 0);
             }
 
             .hero-support.show {
@@ -818,6 +818,210 @@
             }
         }
 
+
+        /* =========================================================
+           FEATURED SCAPES — RESTORE ORIGINAL LIGHT STYLE
+           保留目前的展示櫃版型，但恢復原本的淺色視覺
+           ========================================================= */
+
+        .featured-scapes {
+            background: #f1eee6;
+            color: #18201d;
+        }
+
+        .scapes-glow {
+            background:
+                radial-gradient(
+                    ellipse,
+                    rgba(185, 154, 99, 0.09) 0%,
+                    rgba(185, 154, 99, 0.035) 38%,
+                    rgba(185, 154, 99, 0) 72%
+                );
+        }
+
+        .scapes-noise {
+            opacity: 0.035;
+            mix-blend-mode: multiply;
+        }
+
+        .terrain-lines {
+            opacity: 0.045;
+        }
+
+        .terrain-lines-left,
+        .terrain-lines-right {
+            background:
+                repeating-radial-gradient(
+                    ellipse at 40% 50%,
+                    transparent 0,
+                    transparent 32px,
+                    rgba(70, 78, 70, 0.22) 33px,
+                    transparent 34px
+                );
+        }
+
+        .featured-kicker {
+            color: #6f8062;
+        }
+
+        .kicker-line {
+            background: #6f8062;
+        }
+
+        .featured-title-row h2 {
+            color: #18201d;
+        }
+
+        .featured-intro {
+            color: #68706b;
+        }
+
+        .featured-caption {
+            color: rgba(24, 32, 29, 0.38);
+        }
+
+        .current-index {
+            color: #18201d;
+        }
+
+        .index-divider,
+        .total-index {
+            color: rgba(24, 32, 29, 0.4);
+        }
+
+        .meta-line {
+            background:
+                linear-gradient(
+                    to bottom,
+                    rgba(111, 128, 98, 0.7),
+                    rgba(111, 128, 98, 0)
+                );
+        }
+
+        .meta-category {
+            color: rgba(24, 32, 29, 0.48);
+        }
+
+        .meta-scroll {
+            color: rgba(24, 32, 29, 0.3);
+        }
+
+        .gallery-frame {
+            background: #d9d5ca;
+            box-shadow:
+                0 28px 55px rgba(40, 42, 36, 0.16),
+                0 8px 20px rgba(40, 42, 36, 0.08);
+        }
+
+        .gallery-image-wrap {
+            background: #d0ccc1;
+        }
+
+        .gallery-corner {
+            opacity: .9;
+        }
+
+        .corner-tl {
+            border-top-color: rgba(24, 32, 29, 0.38);
+            border-left-color: rgba(24, 32, 29, 0.38);
+        }
+
+        .corner-tr {
+            border-top-color: rgba(24, 32, 29, 0.38);
+            border-right-color: rgba(24, 32, 29, 0.38);
+        }
+
+        .corner-bl {
+            border-bottom-color: rgba(24, 32, 29, 0.38);
+            border-left-color: rgba(24, 32, 29, 0.38);
+        }
+
+        .corner-br {
+            border-bottom-color: rgba(24, 32, 29, 0.38);
+            border-right-color: rgba(24, 32, 29, 0.38);
+        }
+
+        .gallery-arrow {
+            border-color: rgba(24, 32, 29, 0.22);
+            background: rgba(24, 32, 29, 0.025);
+            color: #18201d;
+        }
+
+        .gallery-arrow:hover {
+            background: rgba(24, 32, 29, 0.07);
+            border-color: rgba(24, 32, 29, 0.42);
+        }
+
+        .gallery-progress {
+            color: rgba(24, 32, 29, 0.42);
+        }
+
+        .progress-track {
+            background: rgba(24, 32, 29, 0.14);
+        }
+
+        .progress-bar {
+            background: #6f8062;
+        }
+
+        .progress-current {
+            color: #18201d;
+        }
+
+        .description-eyebrow {
+            color: #6f8062;
+        }
+
+        .scapes-product-title {
+            color: #18201d;
+        }
+
+        .description-chinese {
+            color: #68706b;
+        }
+
+        .scapes-product-text {
+            color: #68706b;
+        }
+
+        .scapes-detail-link {
+            color: #18201d;
+            border-bottom-color: rgba(24, 32, 29, 0.28);
+        }
+
+        .scapes-detail-link:hover {
+            border-color: #6f8062;
+        }
+
+        .footer-line {
+            background:
+                linear-gradient(
+                    to right,
+                    transparent,
+                    rgba(24, 32, 29, 0.18)
+                );
+        }
+
+        .footer-line:last-child {
+            background:
+                linear-gradient(
+                    to left,
+                    transparent,
+                    rgba(24, 32, 29, 0.18)
+                );
+        }
+
+        .footer-text {
+            color: rgba(24, 32, 29, 0.32);
+        }
+
+        @media (max-width: 700px) {
+            .featured-title-row h2 {
+                font-size: clamp(34px, 10vw, 50px);
+                line-height: 1.08;
+            }
+        }
+
     </style>
 </head>
 
@@ -925,13 +1129,13 @@
                 A World Within A World
             </p>
 
-            <h2 class="text-3xl md:text-5xl lg:text-6xl font-medium leading-tight tracking-tight">
+            <h2 class="text-3xl md:text-4xl lg:text-[48px] font-medium leading-[1.25] tracking-tight">
                 一方玻璃之內，<br class="hidden md:block">
                 可以是一隅微縮秘境，也可以是一個完整世界。
             </h2>
 
             <p class="mt-8 max-w-2xl mx-auto text-stone-400 leading-8 text-base md:text-lg">
-                <strong class="block text-stone-200 font-medium mb-3">我們不只製作造景。</strong>
+                <strong class="block text-stone-200 font-medium mb-3">我們不只製作造景：</strong>
                 從物種習性、空間比例與視覺構成出發，<br class="hidden md:block">
                 將躲藏、攀爬、休息等需求融入設計，<br class="hidden md:block">
                 讓造景成為真正可以使用的棲地。
@@ -1656,14 +1860,16 @@
     <!-- JAVASCRIPT -->
     <script>
 
-        /* 0. Hero 副標延遲浮現 */
-        window.addEventListener('load', () => {
+        /* 0. Hero 副標快速浮現：不等待背景圖片完全載入 */
+        document.addEventListener('DOMContentLoaded', () => {
             const heroSupport = document.getElementById('heroSupport');
 
             if (heroSupport) {
-                setTimeout(() => {
-                    heroSupport.classList.add('show');
-                }, 450);
+                requestAnimationFrame(() => {
+                    setTimeout(() => {
+                        heroSupport.classList.add('show');
+                    }, 80);
+                });
             }
         });
 
