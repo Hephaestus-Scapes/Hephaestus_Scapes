@@ -1,307 +1,251 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>聖甲蟲神殿遺跡 | Hephaestus Scapes</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
-        .tracking-wide-custom { letter-spacing: .18em; }
-        .tracking-widest-custom { letter-spacing: .28em; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>聖甲蟲神殿遺跡 | Hephaestus Scapes</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family:'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing:antialiased; }
+  .thumb.active { border-color:#047857; box-shadow:0 0 0 2px rgba(4,120,87,.12); }
+  .gallery-main img { transition:opacity .2s ease; }
+  select:focus, input:focus { outline:none; box-shadow:0 0 0 3px rgba(16,185,129,.15); border-color:#059669; }
+  .purchase-sticky { position:sticky; top:24px; }
+  @media (max-width:767px) { .purchase-sticky { position:static; } }
+</style>
 </head>
+
 <body class="bg-stone-50 text-stone-800">
 
-    <!-- 導覽列 -->
-    <nav class="container mx-auto px-6 py-5 flex justify-between items-center border-b border-stone-200">
-        <div class="flex items-center gap-3">
-            <a href="javascript:history.back()" class="text-sm text-stone-500 hover:text-stone-900 transition">↶ 回上一頁</a>
-            <span class="text-stone-300">/</span>
-            <a href="index.html" class="text-sm text-stone-500 hover:text-stone-900 transition">⌂ 返回首頁</a>
-        </div>
-        <div class="hidden md:block text-xs text-stone-400 tracking-widest-custom">HEPHAESTUS SCAPES</div>
-    </nav>
+<nav class="container mx-auto px-5 md:px-8 py-5 flex justify-between items-center border-b border-stone-200">
+  <div class="flex items-center gap-3">
+    <a href="javascript:history.back()" class="text-sm text-stone-500 hover:text-stone-900">↶ 回上一頁</a>
+    <span class="text-stone-300">/</span>
+    <a href="index.html" class="text-sm text-stone-500 hover:text-stone-900">⌂ 返回首頁</a>
+  </div>
+  <div class="hidden md:block text-xs text-stone-400 tracking-widest">HEPHAESTUS SCAPES</div>
+</nav>
 
-    <!-- Hero -->
-    <section class="container mx-auto px-6 py-10 md:py-16">
-        <div class="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
-            <div>
-                <div class="text-xs text-emerald-700 font-bold tracking-widest-custom mb-4">RUINS / EGYPT_001</div>
-                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-stone-900 leading-tight">
-                    聖甲蟲神殿遺跡
-                </h1>
-                <p class="text-lg md:text-xl text-stone-500 mt-3 tracking-wide-custom">Scarab Shrine Ruins</p>
-                <div class="h-px w-16 bg-emerald-700 my-7"></div>
-                <h2 class="text-xl md:text-2xl font-bold text-stone-800 mb-5">遺落荒漠的遠古信仰</h2>
-                <p class="text-stone-600 leading-8">
-                    在荒漠與時間交界的想像之中，一座以聖甲蟲為核心意象的古老神殿，
-                    被重新縮小成一處屬於爬蟲的棲息空間。從象形文字、太陽圓盤到神廟圖騰，
-                    將古埃及文明的視覺語彙融入厚實的岩石結構，使造景同時成為躲避屋與微型遺跡。
-                </p>
-            </div>
+<!-- 商品主區 -->
+<main class="container mx-auto px-5 md:px-8 py-8 md:py-12">
+  <div class="grid lg:grid-cols-[minmax(0,1.35fr)_minmax(360px,.65fr)] gap-8 lg:gap-12 items-start">
 
-            <div class="bg-stone-200 rounded-3xl overflow-hidden shadow-sm">
-                <img
-                    src="https://placehold.co/1000x760/D6D3D1/57534E?text=Scarab+Shrine+Ruins"
-                    alt="聖甲蟲神殿遺跡主視覺"
-                    class="w-full aspect-[4/3] object-cover"
-                >
-            </div>
-        </div>
+    <!-- Gallery -->
+    <section>
+      <div class="gallery-main bg-stone-200 rounded-3xl overflow-hidden border border-stone-200">
+        <img id="mainImage"
+             src="https://placehold.co/1200x900/D6D3D1/57534E?text=Scarab+Shrine+Ruins"
+             alt="聖甲蟲神殿遺跡商品主視覺"
+             class="w-full aspect-[4/3] object-cover">
+      </div>
+
+      <div class="grid grid-cols-4 sm:grid-cols-6 gap-3 mt-4">
+        <button class="thumb active rounded-xl overflow-hidden border-2 border-transparent bg-stone-200"
+          onclick="changeImage(this,'https://placehold.co/1200x900/D6D3D1/57534E?text=Product+Front','商品全貌')">
+          <img src="https://placehold.co/300x225/D6D3D1/57534E?text=Pic+1" alt="商品全貌" class="w-full aspect-[4/3] object-cover">
+        </button>
+        <button class="thumb rounded-xl overflow-hidden border-2 border-transparent bg-stone-200"
+          onclick="changeImage(this,'https://placehold.co/1200x900/E7E5E4/57534E?text=Entrance+Detail','入口細節')">
+          <img src="https://placehold.co/300x225/E7E5E4/57534E?text=Pic+2" alt="入口細節" class="w-full aspect-[4/3] object-cover">
+        </button>
+        <button class="thumb rounded-xl overflow-hidden border-2 border-transparent bg-stone-200"
+          onclick="changeImage(this,'https://placehold.co/1200x900/D6D3D1/57534E?text=Inside+Hide','內部躲避空間')">
+          <img src="https://placehold.co/300x225/D6D3D1/57534E?text=Pic+3" alt="內部躲避空間" class="w-full aspect-[4/3] object-cover">
+        </button>
+        <button class="thumb rounded-xl overflow-hidden border-2 border-transparent bg-stone-200"
+          onclick="changeImage(this,'https://placehold.co/1200x900/E7E5E4/57534E?text=Top+Detail','頂部細節')">
+          <img src="https://placehold.co/300x225/E7E5E4/57534E?text=Pic+4" alt="頂部細節" class="w-full aspect-[4/3] object-cover">
+        </button>
+        <button class="thumb rounded-xl overflow-hidden border-2 border-transparent bg-stone-200"
+          onclick="changeImage(this,'https://placehold.co/1200x900/D6D3D1/57534E?text=Texture+Detail','材質紋理')">
+          <img src="https://placehold.co/300x225/D6D3D1/57534E?text=Detail" alt="材質紋理" class="w-full aspect-[4/3] object-cover">
+        </button>
+        <button class="thumb rounded-xl overflow-hidden border-2 border-transparent bg-stone-200"
+          onclick="changeImage(this,'https://placehold.co/1200x900/E7E5E4/57534E?text=Habitat+Example','生態缸情境')">
+          <img src="https://placehold.co/300x225/E7E5E4/57534E?text=Habitat" alt="生態缸情境" class="w-full aspect-[4/3] object-cover">
+        </button>
+      </div>
+      <p class="text-xs text-stone-400 mt-3 text-center">點選縮圖查看商品細節</p>
     </section>
 
-    <!-- Story -->
-    <section class="bg-white border-y border-stone-200">
-        <div class="container mx-auto px-6 py-16 md:py-20">
-            <div class="max-w-3xl">
-                <div class="text-xs text-emerald-700 font-bold tracking-widest-custom mb-3">01 / STORY</div>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-stone-900 mb-7">遺落荒漠的遠古信仰</h2>
-                <p class="text-stone-600 leading-8 mb-5">
-                    聖甲蟲是這件作品最重要的視覺核心。設計並非單純放置一個甲蟲雕像，
-                    而是將甲蟲的軀體、雙翼與頭部輪廓轉化為建築量體，讓生物形態本身成為神殿的一部分。
-                </p>
-                <p class="text-stone-600 leading-8">
-                    象形文字、太陽圓盤、神廟圖騰、石材堆疊與風化表面彼此交織，
-                    以古老遺跡的視覺語彙建立層次，讓每一道紋理都成為這座微型神殿的時間痕跡。
-                </p>
-            </div>
+    <!-- Purchase -->
+    <aside class="purchase-sticky">
+      <div class="text-xs text-emerald-700 font-bold tracking-widest mb-3">RUINS / EGYPT_001</div>
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-stone-900">聖甲蟲神殿遺跡</h1>
+      <p class="text-sm text-stone-400 mt-2">Scarab Shrine Ruins</p>
 
-            <div class="grid md:grid-cols-3 gap-5 mt-12">
-                <div class="bg-stone-50 rounded-2xl p-7 border border-stone-200">
-                    <div class="text-2xl mb-5">𓂀</div>
-                    <h3 class="font-bold text-lg mb-2">聖甲蟲</h3>
-                    <p class="text-sm text-stone-500 leading-7">以甲蟲輪廓作為整體造型核心，融合建築與生物形態。</p>
-                </div>
-                <div class="bg-stone-50 rounded-2xl p-7 border border-stone-200">
-                    <div class="text-2xl mb-5">☼</div>
-                    <h3 class="font-bold text-lg mb-2">太陽意象</h3>
-                    <p class="text-sm text-stone-500 leading-7">透過太陽圓盤與神殿圖騰，建立古埃及文明的視覺語彙。</p>
-                </div>
-                <div class="bg-stone-50 rounded-2xl p-7 border border-stone-200">
-                    <div class="text-2xl mb-5">⌁</div>
-                    <h3 class="font-bold text-lg mb-2">風化遺跡</h3>
-                    <p class="text-sm text-stone-500 leading-7">不規則表面與石材堆疊，營造經過時間侵蝕的岩石質感。</p>
-                </div>
-            </div>
+      <div class="flex items-end gap-3 mt-5">
+        <div class="text-3xl font-bold text-stone-900">NT$ 850</div>
+        <span class="text-xs text-stone-400 mb-1">起</span>
+      </div>
+
+      <div class="h-px bg-stone-200 my-6"></div>
+
+      <div class="space-y-5">
+        <div>
+          <label for="size" class="block text-sm font-bold mb-2">商品尺寸</label>
+          <select id="size" class="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm">
+            <option value="850">標準版（15cm × 12cm × 8cm）</option>
+            <option value="1050">加大版（20cm × 16cm × 10cm）— NT$ 1,050</option>
+          </select>
         </div>
-    </section>
 
-    <!-- Design -->
-    <section class="container mx-auto px-6 py-16 md:py-20">
-        <div class="grid md:grid-cols-2 gap-12 md:gap-20 items-start">
-            <div>
-                <div class="text-xs text-emerald-700 font-bold tracking-widest-custom mb-3">02 / DESIGN</div>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-stone-900 mb-7">
-                    厚實幾何，讓遺跡成為棲所
-                </h2>
-                <p class="text-stone-600 leading-8 mb-5">
-                    神殿並沒有追求細碎而脆弱的裝飾，而是以厚實的幾何輪廓建立整體結構。
-                    聖甲蟲的軀殼與雙翼轉化為洞穴外壁，並與寬闊基座連結，使作品呈現沉穩而完整的量體。
-                </p>
-                <p class="text-stone-600 leading-8">
-                    進入內部後，空間則轉變為相對封閉的藏身區域。
-                    單一主要入口搭配較深的內部空間，使外部遺跡與內部棲所形成清楚的空間層次。
-                </p>
-            </div>
-
-            <div class="bg-stone-200 rounded-3xl overflow-hidden">
-                <img
-                    src="https://placehold.co/900x700/E7E5E4/57534E?text=Structure+%26+Hide+Space"
-                    alt="神殿結構與躲避空間示意"
-                    class="w-full aspect-[4/3] object-cover"
-                >
-            </div>
+        <div>
+          <label for="material" class="block text-sm font-bold mb-2">列印材質與製程</label>
+          <select id="material" class="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm">
+            <option>FDM 環保無毒 PLA（消光岩灰）</option>
+            <option>FDM 環保無毒 PLA（自然砂岩）</option>
+          </select>
         </div>
-    </section>
 
-    <!-- Design details -->
-    <section class="bg-stone-900 text-stone-100">
-        <div class="container mx-auto px-6 py-16 md:py-20">
-            <div class="text-xs text-emerald-300 font-bold tracking-widest-custom mb-3">03 / DESIGN DETAILS</div>
-            <h2 class="text-3xl md:text-4xl font-extrabold mb-12">設計細節</h2>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="border-t border-stone-700 pt-6">
-                    <div class="text-xs text-stone-400 mb-3">01</div>
-                    <h3 class="text-xl font-bold mb-3">Scarab Form</h3>
-                    <p class="text-stone-400 text-sm leading-7">
-                        以聖甲蟲作為整體視覺核心，將甲蟲輪廓與神殿建築融合，
-                        使生物形態本身成為造景的一部分。
-                    </p>
-                </div>
-                <div class="border-t border-stone-700 pt-6">
-                    <div class="text-xs text-stone-400 mb-3">02</div>
-                    <h3 class="text-xl font-bold mb-3">Ancient Symbols</h3>
-                    <p class="text-stone-400 text-sm leading-7">
-                        將象形文字、太陽圓盤與神廟圖騰配置於外部表面，
-                        搭配不規則風化紋理建立古老遺跡的視覺層次。
-                    </p>
-                </div>
-                <div class="border-t border-stone-700 pt-6">
-                    <div class="text-xs text-stone-400 mb-3">03</div>
-                    <h3 class="text-xl font-bold mb-3">Deep Hide</h3>
-                    <p class="text-stone-400 text-sm leading-7">
-                        單一主要入口通往內部較深的藏身空間，
-                        讓外部造景與內部躲避區形成不同的明暗與空間感。
-                    </p>
-                </div>
-                <div class="border-t border-stone-700 pt-6">
-                    <div class="text-xs text-stone-400 mb-3">04</div>
-                    <h3 class="text-xl font-bold mb-3">Flat Top</h3>
-                    <p class="text-stone-400 text-sm leading-7">
-                        平坦頂部形成額外的立體空間，可作為停留與攀爬區域，
-                        讓躲避屋同時具備造景與立體使用的可能。
-                    </p>
-                </div>
-            </div>
+        <div>
+          <label class="block text-sm font-bold mb-2">數量</label>
+          <div class="inline-flex items-center border border-stone-300 rounded-xl overflow-hidden bg-white">
+            <button type="button" onclick="adjustQty(-1)" class="w-11 h-11 text-lg hover:bg-stone-100">−</button>
+            <input id="qty" value="1" readonly class="w-12 h-11 text-center border-x border-stone-200 text-sm">
+            <button type="button" onclick="adjustQty(1)" class="w-11 h-11 text-lg hover:bg-stone-100">＋</button>
+          </div>
         </div>
-    </section>
 
-    <!-- Habitat features -->
-    <section class="bg-white border-b border-stone-200">
-        <div class="container mx-auto px-6 py-16 md:py-20">
-            <div class="text-center max-w-2xl mx-auto">
-                <div class="text-xs text-emerald-700 font-bold tracking-widest-custom mb-3">04 / HABITAT FEATURES</div>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-stone-900 mb-4">棲地空間特徵</h2>
-                <p class="text-stone-500 leading-7">
-                    從外部造景到內部空間，讓作品不只是被觀看，也能形成具有層次的活動與藏身空間。
-                </p>
-            </div>
+        <label class="flex items-start gap-3 p-4 rounded-xl bg-stone-100 border border-stone-200 cursor-pointer">
+          <input id="confirm" type="checkbox" class="mt-1 w-4 h-4 accent-emerald-700" onchange="toggleCart()">
+          <span class="text-sm leading-6">
+            <strong>我已確認商品規格</strong>
+            <span class="block text-stone-500 text-xs mt-1">請確認尺寸、材質與商品資訊後再加入購物車。</span>
+          </span>
+        </label>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-12">
-                <div class="text-center p-7 rounded-2xl bg-stone-50 border border-stone-200">
-                    <div class="text-3xl font-extrabold text-stone-900">01</div>
-                    <h3 class="font-bold mt-4">單一主入口</h3>
-                    <p class="text-xs text-stone-500 mt-2">Single Entrance</p>
-                </div>
-                <div class="text-center p-7 rounded-2xl bg-stone-50 border border-stone-200">
-                    <div class="text-3xl font-extrabold text-stone-900">02</div>
-                    <h3 class="font-bold mt-4">深層藏身空間</h3>
-                    <p class="text-xs text-stone-500 mt-2">Deep Hide</p>
-                </div>
-                <div class="text-center p-7 rounded-2xl bg-stone-50 border border-stone-200">
-                    <div class="text-3xl font-extrabold text-stone-900">03</div>
-                    <h3 class="font-bold mt-4">平坦頂部平台</h3>
-                    <p class="text-xs text-stone-500 mt-2">Flat Top</p>
-                </div>
-                <div class="text-center p-7 rounded-2xl bg-stone-50 border border-stone-200">
-                    <div class="text-3xl font-extrabold text-stone-900">04</div>
-                    <h3 class="font-bold mt-4">厚實整體結構</h3>
-                    <p class="text-xs text-stone-500 mt-2">Solid Form</p>
-                </div>
-            </div>
+        <button id="cartBtn" disabled onclick="addToCart()"
+          class="w-full rounded-xl py-4 font-bold text-white bg-stone-300 cursor-not-allowed transition">
+          🛒 加入購物車
+        </button>
+
+        <div class="flex justify-center gap-4 text-xs text-stone-400">
+          <span>✓ 7-11 賣貨便</span>
+          <span>✓ 信用卡</span>
+          <span>✓ 匯款</span>
         </div>
-    </section>
+      </div>
 
-    <!-- Habitat profile -->
-    <section class="container mx-auto px-6 py-16 md:py-20">
-        <div class="max-w-4xl mx-auto bg-stone-100 rounded-3xl p-8 md:p-12 border border-stone-200">
-            <div class="text-xs text-emerald-700 font-bold tracking-widest-custom mb-3">05 / HABITAT PROFILE</div>
-            <h2 class="text-3xl font-extrabold text-stone-900 mb-7">棲地定位</h2>
+      <div id="cartMessage" class="hidden mt-5 rounded-xl bg-emerald-50 border border-emerald-100 p-4 text-sm text-emerald-800">
+        已加入購物車！目前為展示用頁面，可接續串接實際購物車／結帳系統。
+      </div>
+    </aside>
+  </div>
+</main>
 
-            <div class="grid md:grid-cols-2 gap-8">
-                <div>
-                    <div class="text-sm text-stone-500 mb-2">適用情境</div>
-                    <div class="text-lg font-bold">地棲型爬蟲類的躲避與造景空間</div>
-                </div>
-                <div>
-                    <div class="text-sm text-stone-500 mb-2">可考慮物種</div>
-                    <div class="text-lg font-bold">豹紋守宮、肥尾守宮等</div>
-                </div>
-            </div>
+<!-- 商品特色 -->
+<section class="bg-white border-y border-stone-200">
+  <div class="container mx-auto px-5 md:px-8 py-12 md:py-16">
+    <div class="flex items-end justify-between gap-5 mb-8">
+      <div>
+        <div class="text-xs text-emerald-700 font-bold tracking-widest mb-2">PRODUCT FEATURES</div>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-stone-900">商品特色</h2>
+      </div>
+      <p class="hidden md:block text-sm text-stone-400">造景 × 躲避 × 立體空間</p>
+    </div>
 
-            <div class="mt-8 pt-6 border-t border-stone-300 text-sm text-stone-500 leading-7">
-                實際使用仍應依個體體型、飼養環境與動物習性評估，並確認入口尺寸、結構穩定性、
-                表面處理及材質符合實際飼養需求。
-            </div>
-        </div>
-    </section>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="rounded-2xl bg-stone-50 border border-stone-200 p-6">
+        <div class="text-emerald-700 text-xs font-bold mb-4">01</div>
+        <h3 class="font-bold text-lg mb-2">聖甲蟲造型</h3>
+        <p class="text-sm text-stone-500 leading-6">以聖甲蟲輪廓作為整體視覺核心，融合建築與生物形態。</p>
+      </div>
+      <div class="rounded-2xl bg-stone-50 border border-stone-200 p-6">
+        <div class="text-emerald-700 text-xs font-bold mb-4">02</div>
+        <h3 class="font-bold text-lg mb-2">深層躲避</h3>
+        <p class="text-sm text-stone-500 leading-6">單一主要入口通往較深的藏身空間，形成相對封閉的休息區。</p>
+      </div>
+      <div class="rounded-2xl bg-stone-50 border border-stone-200 p-6">
+        <div class="text-emerald-700 text-xs font-bold mb-4">03</div>
+        <h3 class="font-bold text-lg mb-2">平坦頂部</h3>
+        <p class="text-sm text-stone-500 leading-6">平坦頂部提供額外立體空間，可作為停留與攀爬區域。</p>
+      </div>
+      <div class="rounded-2xl bg-stone-50 border border-stone-200 p-6">
+        <div class="text-emerald-700 text-xs font-bold mb-4">04</div>
+        <h3 class="font-bold text-lg mb-2">厚實結構</h3>
+        <p class="text-sm text-stone-500 leading-6">以厚實幾何輪廓建立穩定量體，同時兼顧造景與實際使用。</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- Specifications -->
-    <section class="bg-white border-y border-stone-200">
-        <div class="container mx-auto px-6 py-16 md:py-20">
-            <div class="max-w-4xl mx-auto">
-                <div class="text-xs text-emerald-700 font-bold tracking-widest-custom mb-3">06 / SPECIFICATIONS</div>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-stone-900 mb-10">作品規格</h2>
+<!-- 商品資訊 -->
+<section class="container mx-auto px-5 md:px-8 py-12 md:py-16">
+  <div class="grid lg:grid-cols-2 gap-10 lg:gap-16">
+    <div>
+      <div class="text-xs text-emerald-700 font-bold tracking-widest mb-2">PRODUCT DETAILS</div>
+      <h2 class="text-2xl md:text-3xl font-extrabold text-stone-900 mb-6">商品資訊</h2>
+      <p class="text-stone-500 leading-7 mb-5">
+        將古埃及神殿的視覺語彙轉化為爬蟲棲息造景，讓作品同時具備躲避屋與微型遺跡的功能。
+      </p>
+      <p class="text-stone-500 leading-7">
+        象形文字、太陽圓盤、神殿圖騰與風化表面共同建立層次，厚實的結構則保留實際使用所需的空間感。
+      </p>
+    </div>
 
-                <div class="divide-y divide-stone-200 border-y border-stone-200">
-                    <div class="grid grid-cols-3 gap-4 py-5">
-                        <div class="text-stone-500">系列</div>
-                        <div class="col-span-2 font-medium">RUINS</div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-4 py-5">
-                        <div class="text-stone-500">編號</div>
-                        <div class="col-span-2 font-medium">Egypt_001</div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-4 py-5">
-                        <div class="text-stone-500">名稱</div>
-                        <div class="col-span-2 font-medium">聖甲蟲神殿遺跡</div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-4 py-5">
-                        <div class="text-stone-500">類型</div>
-                        <div class="col-span-2 font-medium">躲避屋／棲地造景</div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-4 py-5">
-                        <div class="text-stone-500">空間形式</div>
-                        <div class="col-span-2 font-medium">單一入口／深層藏身空間／平坦頂部</div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-4 py-5">
-                        <div class="text-stone-500">材質</div>
-                        <div class="col-span-2 font-medium text-stone-400">待確認</div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-4 py-5">
-                        <div class="text-stone-500">尺寸</div>
-                        <div class="col-span-2 font-medium text-stone-400">待確認</div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-4 py-5">
-                        <div class="text-stone-500">重量</div>
-                        <div class="col-span-2 font-medium text-stone-400">待確認</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <div class="rounded-2xl bg-stone-100 border border-stone-200 p-6 md:p-8">
+      <div class="grid grid-cols-2 gap-y-5 text-sm">
+        <div class="text-stone-500">系列</div><div class="font-medium">RUINS</div>
+        <div class="text-stone-500">編號</div><div class="font-medium">Egypt_001</div>
+        <div class="text-stone-500">類型</div><div class="font-medium">躲避屋／棲地造景</div>
+        <div class="text-stone-500">空間形式</div><div class="font-medium">單一入口／深層藏身／平坦頂部</div>
+        <div class="text-stone-500">材質</div><div class="font-medium">環保無毒 PLA</div>
+        <div class="text-stone-500">標準尺寸</div><div class="font-medium">15 × 12 × 8 cm</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- Philosophy -->
-    <section class="bg-stone-900 text-stone-100">
-        <div class="container mx-auto px-6 py-20 md:py-28 text-center">
-            <div class="text-xs text-emerald-300 font-bold tracking-widest-custom mb-5">07 / FORM · FUNCTION · NATURE</div>
-            <h2 class="text-3xl md:text-5xl font-extrabold mb-8">一座遺跡，不只是造景。</h2>
-            <p class="max-w-2xl mx-auto text-stone-400 leading-8">
-                我們希望造景不只是放進缸裡的一件物件，而是能夠與動物的活動、躲藏與休息產生關係。
-                因此，從外部輪廓、入口位置，到內部空間與頂部結構，每一個造型決定，
-                都同時考慮視覺表現與實際棲地使用。
-            </p>
-            <div class="h-px w-16 bg-stone-600 mx-auto my-9"></div>
-            <p class="text-lg md:text-xl font-medium text-stone-200">
-                讓一件作品看起來像遺跡，也真正成為一個可以被使用的空間。
-            </p>
-        </div>
-    </section>
+<!-- 注意事項 -->
+<section class="bg-stone-900 text-stone-100">
+  <div class="container mx-auto px-5 md:px-8 py-10 md:py-12">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-xs text-emerald-300 font-bold tracking-widest mb-3">IMPORTANT</div>
+      <h2 class="text-xl md:text-2xl font-extrabold mb-4">使用前請確認</h2>
+      <p class="text-stone-400 text-sm leading-7">
+        實際使用仍應依個體體型、飼養環境與動物習性評估，並確認入口尺寸、結構穩定性、表面處理及材質符合實際飼養需求。
+      </p>
+    </div>
+  </div>
+</section>
 
-    <!-- Bottom CTA -->
-    <section class="container mx-auto px-6 py-12 md:py-16">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div>
-                <div class="text-xs text-emerald-700 font-bold tracking-widest-custom mb-2">RUINS COLLECTION</div>
-                <h3 class="text-2xl font-extrabold">聖甲蟲神殿遺跡 · Egypt_001</h3>
-            </div>
-            <a href="javascript:history.back()"
-               class="inline-block bg-emerald-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:bg-emerald-800 transition">
-                返回作品系列
-            </a>
-        </div>
-    </section>
+<footer class="border-t border-stone-200">
+  <div class="container mx-auto px-5 md:px-8 py-6 text-center text-xs text-stone-400 tracking-widest">
+    HEPHAESTUS SCAPES · FORM · FUNCTION · NATURE
+  </div>
+</footer>
 
-    <footer class="border-t border-stone-200">
-        <div class="container mx-auto px-6 py-7 text-center text-xs text-stone-400 tracking-wide-custom">
-            HEPHAESTUS SCAPES · FORM · FUNCTION · NATURE
-        </div>
-    </footer>
+<script>
+function changeImage(button, src, alt) {
+  document.getElementById('mainImage').src = src;
+  document.getElementById('mainImage').alt = alt;
+  document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+  button.classList.add('active');
+}
 
+function adjustQty(delta) {
+  const input = document.getElementById('qty');
+  let value = Math.max(1, Math.min(99, parseInt(input.value || 1) + delta));
+  input.value = value;
+}
+
+function toggleCart() {
+  const checked = document.getElementById('confirm').checked;
+  const btn = document.getElementById('cartBtn');
+  btn.disabled = !checked;
+  btn.classList.toggle('bg-stone-300', !checked);
+  btn.classList.toggle('cursor-not-allowed', !checked);
+  btn.classList.toggle('bg-emerald-700', checked);
+  btn.classList.toggle('hover:bg-emerald-800', checked);
+  btn.classList.toggle('cursor-pointer', checked);
+}
+
+function addToCart() {
+  if (!document.getElementById('confirm').checked) return;
+  document.getElementById('cartMessage').classList.remove('hidden');
+  document.getElementById('cartBtn').textContent = '✓ 已加入購物車';
+}
+</script>
 </body>
 </html>
