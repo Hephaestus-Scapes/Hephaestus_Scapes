@@ -29,6 +29,10 @@
 
         .tracking-display { letter-spacing: .16em; }
 
+        .hero-bg {
+            background: linear-gradient(to bottom, rgba(247, 244, 239, 0.85), rgba(247, 244, 239, 0.95)), url('https://placehold.co/1920x1080/E7E5E4/78716C?text=Hephaestus+Scapes+Background') center/cover no-repeat;
+        }
+
         .hero-grid {
             background-image: 
                 linear-gradient(rgba(41,39,36,.05) 1px, transparent 1px),
@@ -96,7 +100,7 @@
     </nav>
 
     <!-- Hero -->
-    <header class="relative overflow-hidden border-b border-stone-200">
+    <header class="relative overflow-hidden border-b border-stone-200 hero-bg">
         <div class="absolute inset-0 hero-grid pointer-events-none"></div>
         <div class="relative max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 pt-16 sm:pt-20 md:pt-24 pb-14 md:pb-18">
             <div class="max-w-4xl">
@@ -258,7 +262,7 @@
                 <!-- 商品網格 -->
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-7" id="product-grid">
 
-                    <!-- 商品 01 (原 03 修改為聖甲蟲神殿遺跡，移至第一位) -->
+                    <!-- 商品 01 (聖甲蟲神殿遺跡，移至第一位) -->
                     <article class="product-card bg-white rounded-[22px] overflow-hidden border border-stone-200 flex flex-col" data-product-theme="ruins">
                         <div class="relative aspect-[4/3] overflow-hidden bg-stone-100">
                             <img src="主頁大圖4.png" alt="聖甲蟲神殿遺跡" class="w-full h-full object-cover" loading="lazy">
@@ -287,7 +291,7 @@
                         </div>
                     </article>
 
-                    <!-- 商品 02 (原 01 設定為自然 Nature) -->
+                    <!-- 商品 02 (擬真岩洞躲避屋) -->
                     <article class="product-card bg-white rounded-[22px] overflow-hidden border border-stone-200 flex flex-col" data-product-theme="nature">
                         <div class="relative aspect-[4/3] overflow-hidden bg-stone-100">
                             <img src="主頁大圖1.png" alt="擬真岩洞躲避屋" class="w-full h-full object-cover" loading="eager">
@@ -313,7 +317,7 @@
                         </div>
                     </article>
 
-                    <!-- 商品 03 (原 02 設定為自然 Nature) -->
+                    <!-- 商品 03 (雨林樹頭躲避屋) -->
                     <article class="product-card coming-soon bg-stone-100/85 rounded-[22px] overflow-hidden border border-stone-200 flex flex-col" data-product-theme="nature">
                         <div class="relative aspect-[4/3] overflow-hidden bg-stone-200">
                             <img src="主頁大圖3.png" alt="雨林樹頭躲避屋" class="w-full h-full object-cover" loading="lazy">
