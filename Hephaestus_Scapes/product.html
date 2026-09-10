@@ -3,115 +3,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>躲避屋系列 - Hephaestus Scapes</title>
-    <!-- 載入 Tailwind CSS -->
+    <title>HABITAT COLLECTION｜Hephaestus Scapes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+        :root {
+            --ink: #292724;
+            --muted: #78716c;
+            --line: #e7e2dc;
+            --paper: #f7f4ef;
+            --paper-2: #fbfaf8;
+            --accent: #f2c94c;
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Noto Sans TC', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background: var(--paper);
+            color: var(--ink);
+        }
+
+        .serif {
+            font-family: Georgia, 'Times New Roman', 'Noto Serif TC', serif;
+        }
+
+        .tracking-display { letter-spacing: .16em; }
+
+        .hero-grid {
+            background-image:
+                linear-gradient(rgba(41,39,36,.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(41,39,36,.05) 1px, transparent 1px);
+            background-size: 28px 28px;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,.85), transparent);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.85), transparent);
+        }
+
+        .sidebar-link { transition: all .25s ease; }
+        .sidebar-link:hover { transform: translateX(3px); }
+
+        .product-card {
+            transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(41,39,36,.10);
+            border-color: #d9d2ca;
+        }
+
+        .product-card img {
+            transition: transform .55s ease;
+        }
+        .product-card:hover img { transform: scale(1.035); }
+
+        .coming-soon img { filter: grayscale(100%); }
+        .coming-soon:hover img { transform: none; }
+
+        .mini-rule::before {
+            content: '';
+            display: inline-block;
+            width: 34px;
+            height: 1px;
+            background: currentColor;
+            vertical-align: middle;
+            margin-right: 10px;
+            opacity: .45;
+        }
+
+        @media (max-width: 767px) {
+            .hero-grid { background-size: 22px 22px; }
+        }
     </style>
 </head>
-<body class="bg-stone-50 text-stone-800">
+<body>
 
-    <!-- 導覽列 -->
-    <nav class="container mx-auto px-6 py-6 flex justify-between items-center border-b border-stone-200">
-        <div class="text-2xl md:text-3xl font-bold text-stone-800 tracking-wider flex items-center">
-            <a href="index.html">Hephaestus Scapes</a> <span class="ml-3 text-xl md:text-2xl font-medium text-stone-600">| 赫菲斯微景</span>
-        </div>
-        <div class="space-x-6 text-sm text-stone-500 font-medium hidden md:flex items-center">
-            <a href="javascript:history.back()" class="hover:text-stone-900 transition">↶ 回上一頁</a>
-            <a href="index.html" class="hover:text-stone-900 transition">⌂ 返回首頁</a>
+    <!-- 導覽列：延續首頁的品牌語氣 -->
+    <nav class="border-b border-stone-200 bg-[#f7f4ef]/95 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 min-w-0">
+                <div class="text-lg sm:text-xl md:text-2xl font-bold tracking-wider truncate">
+                    Hephaestus Scapes
+                </div>
+                <span class="hidden sm:inline text-sm md:text-base text-stone-500 font-medium tracking-wide">| 赫菲斯微景</span>
+            </a>
+
+            <div class="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm font-medium text-stone-500">
+                <a href="javascript:history.back()" class="hover:text-stone-900 transition whitespace-nowrap">↶ 回上一頁</a>
+                <a href="index.html" class="hover:text-stone-900 transition whitespace-nowrap">⌂ 返回首頁</a>
+            </div>
         </div>
     </nav>
 
-    <!-- 分類目錄與商品列表區塊 -->
-    <section class="container mx-auto px-6 py-12 flex flex-col md:flex-row gap-10">
-        
-        <!-- 左側：小目錄 (Sidebar) -->
-        <aside class="w-full md:w-1/4">
-            <!-- 使用 sticky 讓目錄在往下滑動時會固定在畫面上方 -->
-            <div class="sticky top-10 bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
-                <h3 class="text-lg font-extrabold text-stone-800 mb-6">商品分類</h3>
-                <ul class="space-y-2">
-                    <!-- 目前所在的分類 (深色底凸顯) -->
-                    <li>
-                        <a href="#" class="block px-4 py-3 bg-stone-800 text-white rounded-lg font-bold transition">
-                            躲避屋系列
-                        </a>
-                    </li>
-                    <!-- 其他分類 (淺灰字體，滑過變深) -->
-                    <li>
-                        <a href="#" class="block px-4 py-3 text-stone-500 hover:bg-stone-100 hover:text-stone-800 rounded-lg transition font-medium">
-                            仿生漂流木
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="block px-4 py-3 text-stone-500 hover:bg-stone-100 hover:text-stone-800 rounded-lg transition font-medium">
-                            水族專用造景
-                        </a>
-                    </li>
-                </ul>
+    <!-- Hero：直接承接首頁 HABITAT COLLECTION -->
+    <header class="relative overflow-hidden border-b border-stone-200">
+        <div class="absolute inset-0 hero-grid pointer-events-none"></div>
+        <div class="relative max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 pt-16 sm:pt-20 md:pt-24 pb-14 md:pb-18">
+            <div class="max-w-4xl">
+                <div class="text-[11px] sm:text-xs font-semibold tracking-display text-stone-500 mb-5">
+                    FEATURED HABITAT · HABITAT COLLECTION
+                </div>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.02]">
+                    多元造景・棲息系列
+                </h1>
+                <p class="mt-6 max-w-3xl text-base sm:text-lg md:text-xl leading-8 text-stone-600">
+                    從靜謐的自然地貌、深邃的遠古遺跡，到充滿張力的奇幻與頭骨造型，
+                    將仿生紋理、空間比例與實用機能整合進每一座微型世界。
+                </p>
+                <div class="mt-8 flex flex-wrap items-center gap-3 text-[11px] sm:text-xs tracking-[0.14em] text-stone-500 uppercase">
+                    <span class="px-3 py-2 rounded-full border border-stone-300 bg-white/70">Micro Habitat</span>
+                    <span class="px-3 py-2 rounded-full border border-stone-300 bg-white/70">Natural Form</span>
+                    <span class="px-3 py-2 rounded-full border border-stone-300 bg-white/70">Designed For Living</span>
+                </div>
             </div>
-        </aside>
+        </div>
+    </header>
 
-        <!-- 右側：商品展示列表 (Main Content) -->
-        <main class="w-full md:w-3/4">
-            <div class="mb-8">
-                <h1 class="text-3xl font-extrabold text-stone-800 mb-2">躲避屋系列</h1>
-                <p class="text-stone-500">專為爬行動物設計的 3D 列印庇護所，提供安全感與完美的攀爬表面。</p>
-            </div>
+    <!-- 內容區：分類 + 商品 -->
+    <section class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
+        <div class="grid grid-cols-1 lg:grid-cols-[230px_minmax(0,1fr)] gap-10 lg:gap-16">
 
-            <!-- 商品網格 (Grid) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                
-                <!-- 第一個商品：擬真岩洞躲避屋 (可點擊進入細節頁) -->
-                <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-stone-200 flex flex-col hover:shadow-lg transition">
-                    <img src="主頁大圖1.png" alt="擬真岩洞躲避屋" class="w-full h-48 object-cover">
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h3 class="text-lg font-bold mb-1">擬真岩洞躲避屋</h3>
-                        <p class="text-stone-500 text-xs mb-4 flex-grow">帶有水盆空間，豐富風化紋理。</p>
-                        <div class="text-lg font-bold text-stone-800 mb-4">NT$ 850</div>
-                        <!-- 連結到剛才改名的 detail.html -->
-                        <a href="detail.html" class="block text-center bg-yellow-400 text-stone-900 px-4 py-2 rounded-lg hover:bg-yellow-500 transition font-bold text-sm">
-                            查看細節 / 購買
+            <!-- 左側分類 -->
+            <aside>
+                <div class="lg:sticky lg:top-28">
+                    <div class="mini-rule text-[11px] tracking-[0.16em] font-semibold text-stone-500 mb-4">EXPLORE BY COLLECTION</div>
+                    <h2 class="text-xl font-extrabold mb-5">探索棲地</h2>
+
+                    <div class="space-y-2">
+                        <a href="#shelter" class="sidebar-link block rounded-xl px-4 py-3 bg-stone-900 text-white">
+                            <div class="text-sm font-bold">躲避屋系列</div>
+                            <div class="text-[10px] text-stone-400 mt-1 tracking-wide">SHELTER COLLECTION</div>
                         </a>
+
+                        <div class="block rounded-xl px-4 py-3 border border-stone-200 bg-stone-100/80 text-stone-400 cursor-not-allowed">
+                            <div class="flex items-center justify-between gap-3">
+                                <div class="text-sm font-bold">仿生漂流木</div>
+                                <span class="text-[9px] tracking-wider border border-stone-300 px-2 py-1 rounded-full">尚未開放</span>
+                            </div>
+                            <div class="text-[10px] text-stone-400 mt-1 tracking-wide">BIOMIMETIC DRIFTWOOD</div>
+                        </div>
+
+                        <div class="block rounded-xl px-4 py-3 border border-stone-200 bg-stone-100/80 text-stone-400 cursor-not-allowed">
+                            <div class="flex items-center justify-between gap-3">
+                                <div class="text-sm font-bold">水族專用造景</div>
+                                <span class="text-[9px] tracking-wider border border-stone-300 px-2 py-1 rounded-full">尚未開放</span>
+                            </div>
+                            <div class="text-[10px] text-stone-400 mt-1 tracking-wide">AQUATIC COLLECTION</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-stone-200">
+                        <div class="text-[10px] tracking-[0.18em] text-stone-400 mb-2">01 / 03</div>
+                        <p class="text-xs leading-6 text-stone-500">
+                            現階段先從「躲避屋系列」開始，之後逐步開放更多棲地主題。
+                        </p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 右側主要內容 -->
+            <main>
+                <!-- 系列介紹 -->
+                <div id="shelter" class="mb-9 sm:mb-11">
+                    <div class="text-[11px] sm:text-xs tracking-display text-stone-400 font-semibold mb-3">SHELTER COLLECTION / 01</div>
+                    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                        <div>
+                            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">躲避屋系列</h2>
+                            <p class="mt-3 max-w-2xl text-sm sm:text-base leading-7 text-stone-500">
+                                為爬行動物設計的微型庇護空間。從洞口、內部比例到外部紋理，
+                                把躲藏、攀爬與休息需求藏進自然地貌之中。
+                            </p>
+                        </div>
+                        <div class="text-[11px] tracking-[0.15em] uppercase text-stone-400 whitespace-nowrap">
+                            Micro Habitat Designed For Living
+                        </div>
                     </div>
                 </div>
 
-                <!-- 第二個商品：樹頭躲避屋 (敬請期待) -->
-                <div class="bg-stone-100 rounded-2xl overflow-hidden border border-stone-200 flex flex-col opacity-80">
-                    <img src="主頁大圖3.png" alt="樹狀躲避屋" class="w-full h-48 object-cover grayscale">
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h3 class="text-lg font-bold mb-1 text-stone-500">雨林樹頭躲避屋</h3>
-                        <p class="text-stone-500 text-xs mb-4 flex-grow">結合自然樹根造型，適合樹棲型守宮。</p>
-                        <div class="text-lg font-bold text-stone-400 mb-4">即將推出</div>
-                        <button disabled class="w-full text-center border-2 border-stone-300 text-stone-400 bg-stone-200 px-4 py-2 rounded-lg cursor-not-allowed font-medium text-sm">
-                            敬請期待
-                        </button>
-                    </div>
+                <!-- 商品網格 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-7">
+
+                    <!-- 商品 01 -->
+                    <article class="product-card bg-white rounded-[22px] overflow-hidden border border-stone-200 flex flex-col">
+                        <div class="relative aspect-[4/3] overflow-hidden bg-stone-100">
+                            <img src="主頁大圖1.png" alt="擬真岩洞躲避屋" class="w-full h-full object-cover" loading="eager">
+                            <div class="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur text-[10px] font-bold tracking-wider text-stone-700">
+                                AVAILABLE
+                            </div>
+                        </div>
+                        <div class="p-5 sm:p-6 flex flex-col flex-grow">
+                            <div class="text-[10px] tracking-[0.14em] text-stone-400 mb-2">NATURAL FORM / 01</div>
+                            <h3 class="text-lg font-bold">擬真岩洞躲避屋</h3>
+                            <p class="text-sm leading-6 text-stone-500 mt-2 flex-grow">
+                                帶有水盆空間，結合豐富風化紋理，讓躲藏與休息自然融入岩壁地貌。
+                            </p>
+                            <div class="mt-5 pt-4 border-t border-stone-100 flex items-end justify-between gap-4">
+                                <div>
+                                    <div class="text-[10px] tracking-[0.14em] text-stone-400 mb-1">PRICE</div>
+                                    <div class="text-xl font-extrabold">NT$ 850</div>
+                                </div>
+                                <a href="detail.html" class="inline-flex items-center justify-center px-4 py-3 rounded-xl bg-stone-900 text-white hover:bg-stone-700 transition font-bold text-xs sm:text-sm whitespace-nowrap">
+                                    探索作品 <span class="ml-2">↗</span>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- 商品 02 -->
+                    <article class="product-card coming-soon bg-stone-100/85 rounded-[22px] overflow-hidden border border-stone-200 flex flex-col">
+                        <div class="relative aspect-[4/3] overflow-hidden bg-stone-200">
+                            <img src="主頁大圖3.png" alt="雨林樹頭躲避屋" class="w-full h-full object-cover" loading="lazy">
+                            <div class="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-stone-800/85 text-white text-[10px] font-bold tracking-wider">
+                                COMING SOON
+                            </div>
+                        </div>
+                        <div class="p-5 sm:p-6 flex flex-col flex-grow">
+                            <div class="text-[10px] tracking-[0.14em] text-stone-400 mb-2">BIOMIMETIC FORM / 02</div>
+                            <h3 class="text-lg font-bold text-stone-600">雨林樹頭躲避屋</h3>
+                            <p class="text-sm leading-6 text-stone-500 mt-2 flex-grow">
+                                結合自然樹根造型與垂直空間，朝向攀爬與樹棲環境的使用情境發展。
+                            </p>
+                            <div class="mt-5 pt-4 border-t border-stone-200 flex items-end justify-between gap-4">
+                                <div>
+                                    <div class="text-[10px] tracking-[0.14em] text-stone-400 mb-1">STATUS</div>
+                                    <div class="text-lg font-extrabold text-stone-500">尚未開放</div>
+                                </div>
+                                <button disabled class="inline-flex items-center justify-center px-4 py-3 rounded-xl border border-stone-300 bg-stone-200 text-stone-400 font-bold text-xs sm:text-sm cursor-not-allowed whitespace-nowrap">
+                                    敬請期待
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- 商品 03 -->
+                    <article class="product-card coming-soon bg-stone-100/85 rounded-[22px] overflow-hidden border border-stone-200 flex flex-col">
+                        <div class="relative aspect-[4/3] overflow-hidden bg-stone-200">
+                            <img src="主頁大圖4.png" alt="多層岩板躲避屋" class="w-full h-full object-cover" loading="lazy">
+                            <div class="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-stone-800/85 text-white text-[10px] font-bold tracking-wider">
+                                COMING SOON
+                            </div>
+                        </div>
+                        <div class="p-5 sm:p-6 flex flex-col flex-grow">
+                            <div class="text-[10px] tracking-[0.14em] text-stone-400 mb-2">ROCK FORM / 03</div>
+                            <h3 class="text-lg font-bold text-stone-600">多層岩板躲避屋</h3>
+                            <p class="text-sm leading-6 text-stone-500 mt-2 flex-grow">
+                                以層疊幾何結構建立多角度攀爬路徑，讓垂直空間也能成為棲息的一部分。
+                            </p>
+                            <div class="mt-5 pt-4 border-t border-stone-200 flex items-end justify-between gap-4">
+                                <div>
+                                    <div class="text-[10px] tracking-[0.14em] text-stone-400 mb-1">STATUS</div>
+                                    <div class="text-lg font-extrabold text-stone-500">尚未開放</div>
+                                </div>
+                                <button disabled class="inline-flex items-center justify-center px-4 py-3 rounded-xl border border-stone-300 bg-stone-200 text-stone-400 font-bold text-xs sm:text-sm cursor-not-allowed whitespace-nowrap">
+                                    敬請期待
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
                 </div>
 
-                <!-- 第三個商品：岩板躲避屋 (敬請期待) -->
-                <div class="bg-stone-100 rounded-2xl overflow-hidden border border-stone-200 flex flex-col opacity-80">
-                    <img src="主頁大圖4.png" alt="多層岩板躲避屋" class="w-full h-48 object-cover grayscale">
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h3 class="text-lg font-bold mb-1 text-stone-500">多層岩板躲避屋</h3>
-                        <p class="text-stone-500 text-xs mb-4 flex-grow">層疊幾何結構，提供多角度攀爬體驗。</p>
-                        <div class="text-lg font-bold text-stone-400 mb-4">即將推出</div>
-                        <button disabled class="w-full text-center border-2 border-stone-300 text-stone-400 bg-stone-200 px-4 py-2 rounded-lg cursor-not-allowed font-medium text-sm">
-                            敬請期待
-                        </button>
+                <!-- 設計理念：呼應首頁 Designed For Living -->
+                <section class="mt-16 sm:mt-20 md:mt-24 border-t border-stone-300 pt-10 sm:pt-12">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
+                        <div class="md:col-span-5">
+                            <div class="text-[11px] tracking-display font-semibold text-stone-400 mb-3">FORM · FUNCTION · NATURE</div>
+                            <h2 class="text-3xl sm:text-4xl font-extrabold leading-tight">
+                                不只好看，<br>也為生命而設計。
+                            </h2>
+                        </div>
+                        <div class="md:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                            <div class="border-t border-stone-300 pt-4">
+                                <div class="text-[11px] tracking-[0.14em] text-stone-400 mb-2">01</div>
+                                <h3 class="font-bold mb-2">數位塑形</h3>
+                                <p class="text-sm leading-6 text-stone-500">以 3D 建模控制比例、洞口、坡度與結構。</p>
+                            </div>
+                            <div class="border-t border-stone-300 pt-4">
+                                <div class="text-[11px] tracking-[0.14em] text-stone-400 mb-2">02</div>
+                                <h3 class="font-bold mb-2">仿生紋理</h3>
+                                <p class="text-sm leading-6 text-stone-500">從岩石、朽木與自然地貌汲取表面語言。</p>
+                            </div>
+                            <div class="border-t border-stone-300 pt-4">
+                                <div class="text-[11px] tracking-[0.14em] text-stone-400 mb-2">03</div>
+                                <h3 class="font-bold mb-2">棲地功能</h3>
+                                <p class="text-sm leading-6 text-stone-500">將躲藏、攀爬、休息與清潔需求融入造景。</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </section>
 
-            </div>
-        </main>
+                <!-- 客製化 CTA：承接首頁最後一段 -->
+                <section class="mt-16 sm:mt-20 md:mt-24 rounded-[28px] bg-stone-900 text-stone-100 px-6 sm:px-8 md:px-12 py-10 sm:py-12 md:py-14 overflow-hidden relative">
+                    <div class="absolute -right-16 -top-16 w-56 h-56 rounded-full border border-stone-700/60"></div>
+                    <div class="absolute -right-5 top-8 w-28 h-28 rounded-full border border-stone-700/50"></div>
+                    <div class="relative max-w-3xl">
+                        <div class="text-[10px] tracking-[0.2em] text-stone-500 mb-4">CUSTOM HABITAT</div>
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
+                            找不到適合你的？<br>你的想像，我們替你造景。
+                        </h2>
+                        <p class="mt-5 text-sm sm:text-base leading-7 text-stone-400 max-w-2xl">
+                            從缸體尺寸、飼養物種、功能需求到視覺風格，一起把腦中的畫面變成可以真正生活的微型世界。
+                        </p>
+                        <a href="index.html#custom" class="inline-flex mt-7 items-center px-5 py-3.5 rounded-xl bg-[var(--accent)] text-stone-900 hover:brightness-95 transition font-bold text-sm">
+                            開始客製化 <span class="ml-2">↗</span>
+                        </a>
+                    </div>
+                </section>
+            </main>
+        </div>
     </section>
 
-    <!-- Footer 頁尾 -->
-    <footer class="bg-stone-900 text-stone-400 py-12 border-t border-stone-200 mt-12">
-        <div class="container mx-auto px-6 text-center">
-            <h4 class="text-white text-lg font-bold mb-4 tracking-widest">Hephaestus Scapes</h4>
-            <p class="text-sm text-stone-600">&copy; 2026 Hephaestus Scapes. All rights reserved.</p>
+    <!-- Footer -->
+    <footer class="bg-stone-900 text-stone-400 py-12 mt-4">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center md:items-end justify-between gap-6">
+                <div class="text-center md:text-left">
+                    <div class="text-white text-base sm:text-lg font-bold tracking-[0.16em]">Hephaestus Scapes</div>
+                    <div class="text-xs mt-2 text-stone-500">赫菲斯微景｜3D 列印爬蟲微縮棲息造景設計</div>
+                </div>
+                <div class="text-xs text-stone-600">© 2026 Hephaestus Scapes. All rights reserved.</div>
+            </div>
         </div>
     </footer>
 
