@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Hephaestus Scapes 赫菲斯微景｜多元造景・棲息系列">
     <title>HABITAT COLLECTION｜Hephaestus Scapes</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
         :root {
             --ink: #292724;
@@ -16,6 +19,7 @@
         }
 
         html { scroll-behavior: smooth; }
+
         body {
             font-family: 'Helvetica Neue', Arial, 'Noto Sans TC', sans-serif;
             -webkit-font-smoothing: antialiased;
@@ -23,19 +27,42 @@
             color: var(--ink);
         }
 
-        .serif {
-            font-family: Georgia, 'Times New Roman', 'Noto Serif TC', serif;
-        }
-
         .tracking-display { letter-spacing: .16em; }
 
-        .hero-grid {
-            background-image: 
-                linear-gradient(rgba(41,39,36,.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(41,39,36,.05) 1px, transparent 1px);
-            background-size: 28px 28px;
-            mask-image: linear-gradient(to bottom, rgba(0,0,0,.85), transparent);
-            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.85), transparent);
+        /* =========================================================
+           PRODUCT HERO BACKGROUND
+           背景只放在最上方 Hero，不延伸到商品區。
+           請將「產品頁背景.png」與本 HTML 放在同一資料夾。
+        ========================================================== */
+        .product-hero {
+            min-height: clamp(430px, 56vh, 650px);
+            background: #d9d1c5;
+        }
+
+        .product-hero-image {
+            transform: scale(1.015);
+            transition: transform 1.4s cubic-bezier(.2,.7,.2,1);
+        }
+
+        .product-hero:hover .product-hero-image {
+            transform: scale(1.03);
+        }
+
+        /* 讓背景保持存在感，但不搶走文字視線 */
+        .hero-overlay {
+            background:
+                linear-gradient(90deg,
+                    rgba(247,244,239,.94) 0%,
+                    rgba(247,244,239,.84) 25%,
+                    rgba(247,244,239,.48) 52%,
+                    rgba(247,244,239,.08) 100%),
+                linear-gradient(0deg,
+                    rgba(247,244,239,.26) 0%,
+                    rgba(247,244,239,0) 55%);
+        }
+
+        .hero-content {
+            text-shadow: 0 1px 10px rgba(247,244,239,.28);
         }
 
         .sidebar-link { transition: all .25s ease; }
@@ -44,6 +71,7 @@
         .product-card {
             transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
         }
+
         .product-card:hover {
             transform: translateY(-6px);
             box-shadow: 0 18px 40px rgba(41,39,36,.10);
@@ -53,6 +81,7 @@
         .product-card img {
             transition: transform .55s ease;
         }
+
         .product-card:hover img { transform: scale(1.035); }
 
         .coming-soon img { filter: grayscale(100%); }
@@ -69,104 +98,215 @@
             opacity: .45;
         }
 
-        /* 主題卡片專用動畫 */
-        .theme-card { transition: all 0.3s ease; }
-        
+        .theme-card {
+            transition: all .3s ease;
+        }
+
+        .theme-card:focus-visible,
+        .sidebar-link:focus-visible,
+        a:focus-visible,
+        button:focus-visible {
+            outline: 2px solid #292724;
+            outline-offset: 3px;
+        }
+
+        .filter-fade {
+            animation: filterFade .3s ease;
+        }
+
+        @keyframes filterFade {
+            from { opacity: .45; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         @media (max-width: 767px) {
-            .hero-grid { background-size: 22px 22px; }
+            .product-hero {
+                min-height: 500px;
+            }
+
+            .hero-overlay {
+                background:
+                    linear-gradient(180deg,
+                        rgba(247,244,239,.82) 0%,
+                        rgba(247,244,239,.70) 38%,
+                        rgba(247,244,239,.28) 100%);
+            }
+
+            .product-hero-image {
+                object-position: 62% center;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
         }
     </style>
 </head>
+
 <body>
 
-    <!-- 導覽列 -->
+    <!-- =========================================================
+         導覽列
+    ========================================================== -->
     <nav class="border-b border-stone-200 bg-[#f7f4ef]/95 backdrop-blur sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <a href="index.html" class="flex items-center gap-3 min-w-0">
                 <div class="text-lg sm:text-xl md:text-2xl font-bold tracking-wider truncate">
                     Hephaestus Scapes
                 </div>
-                <span class="hidden sm:inline text-sm md:text-base text-stone-500 font-medium tracking-wide">| 赫菲斯微景</span>
+                <span class="hidden sm:inline text-sm md:text-base text-stone-500 font-medium tracking-wide">
+                    | 赫菲斯微景
+                </span>
             </a>
 
             <div class="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm font-medium text-stone-500">
-                <a href="javascript:history.back()" class="hover:text-stone-900 transition whitespace-nowrap">↶ 回上一頁</a>
-                <a href="index.html" class="hover:text-stone-900 transition whitespace-nowrap">⌂ 返回首頁</a>
+                <a href="javascript:history.back()" class="hover:text-stone-900 transition whitespace-nowrap">
+                    ↶ 回上一頁
+                </a>
+                <a href="index.html" class="hover:text-stone-900 transition whitespace-nowrap">
+                    ⌂ 返回首頁
+                </a>
             </div>
         </div>
     </nav>
 
-    <!-- Hero -->
-    <header class="relative overflow-hidden border-b border-stone-200">
-        <div class="absolute inset-0 hero-grid pointer-events-none"></div>
-        <div class="relative max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 pt-16 sm:pt-20 md:pt-24 pb-14 md:pb-18">
-            <div class="max-w-4xl">
-                <div class="text-[11px] sm:text-xs font-semibold tracking-display text-stone-500 mb-5">
+
+    <!-- =========================================================
+         HERO
+         背景圖只出現在這裡，避免整頁變得太花。
+    ========================================================== -->
+    <header class="product-hero relative overflow-hidden border-b border-stone-300">
+        <img
+            src="產品頁背景.png"
+            alt="自然岩谷與微型棲地背景"
+            class="product-hero-image absolute inset-0 w-full h-full object-cover object-center"
+            loading="eager"
+        >
+
+        <div class="absolute inset-0 hero-overlay pointer-events-none"></div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 min-h-[inherit] flex items-center">
+            <div class="hero-content max-w-4xl py-16 sm:py-20 md:py-24">
+                <div class="text-[10px] sm:text-xs font-semibold tracking-[.22em] text-stone-500 mb-5">
                     FEATURED HABITAT · HABITAT COLLECTION
                 </div>
+
                 <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.02]">
                     多元造景・棲息系列
                 </h1>
+
                 <p class="mt-6 max-w-3xl text-base sm:text-lg md:text-xl leading-8 text-stone-600">
                     從靜謐的自然地貌、深邃的遠古遺跡，到充滿張力的奇幻與頭骨造型，
                     將仿生紋理、空間比例與實用機能整合進每一座微型世界。
                 </p>
-                <div class="mt-8 flex flex-wrap items-center gap-3 text-[11px] sm:text-xs tracking-[0.14em] text-stone-500 uppercase">
-                    <span class="px-3 py-2 rounded-full border border-stone-300 bg-white/70">Micro Habitat</span>
-                    <span class="px-3 py-2 rounded-full border border-stone-300 bg-white/70">Natural Form</span>
-                    <span class="px-3 py-2 rounded-full border border-stone-300 bg-white/70">Designed For Living</span>
+
+                <div class="mt-8 flex flex-wrap items-center gap-3 text-[10px] sm:text-xs tracking-[.14em] text-stone-600 uppercase">
+                    <span class="px-3 py-2 rounded-full border border-stone-300/90 bg-white/65 backdrop-blur-sm">
+                        Micro Habitat
+                    </span>
+                    <span class="px-3 py-2 rounded-full border border-stone-300/90 bg-white/65 backdrop-blur-sm">
+                        Natural Form
+                    </span>
+                    <span class="px-3 py-2 rounded-full border border-stone-300/90 bg-white/65 backdrop-blur-sm">
+                        Designed For Living
+                    </span>
                 </div>
+
+                <a
+                    href="#shelter"
+                    class="inline-flex items-center mt-9 px-5 py-3 rounded-xl bg-stone-900 text-white hover:bg-stone-700 transition font-bold text-xs sm:text-sm"
+                >
+                    探索棲地 <span class="ml-2">↓</span>
+                </a>
             </div>
+        </div>
+
+        <div class="absolute bottom-6 right-5 sm:right-8 hidden md:flex items-center gap-3 text-[10px] tracking-[.18em] text-stone-500">
+            <span class="block w-9 h-px bg-stone-500/60"></span>
+            SCROLL TO EXPLORE
         </div>
     </header>
 
-    <!-- 內容區：分類 + 商品 -->
+
+    <!-- =========================================================
+         內容區：分類 + 商品
+    ========================================================== -->
     <section class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
         <div class="grid grid-cols-1 lg:grid-cols-[230px_minmax(0,1fr)] gap-10 lg:gap-16">
 
-            <!-- 左側分類：全新樹狀結構 -->
+            <!-- 左側分類 -->
             <aside>
                 <div class="lg:sticky lg:top-28">
-                    <div class="mini-rule text-[11px] tracking-[0.16em] font-semibold text-stone-500 mb-4">EXPLORE BY COLLECTION</div>
+                    <div class="mini-rule text-[11px] tracking-[.16em] font-semibold text-stone-500 mb-4">
+                        EXPLORE BY COLLECTION
+                    </div>
                     <h2 class="text-xl font-extrabold mb-5">探索棲地</h2>
 
                     <div class="space-y-4">
-                        <!-- 躲避屋系列 & 內部主題 -->
+                        <!-- 棲地造景 → 躲避屋系列 → 四大主題 -->
                         <div>
-                            <a href="#shelter" class="sidebar-link block rounded-xl px-4 py-3 bg-stone-900 text-white shadow-md relative z-10">
+                            <a
+                                href="#shelter"
+                                id="sidebar-shelter"
+                                class="sidebar-link block rounded-xl px-4 py-3 bg-stone-900 text-white shadow-md relative z-10"
+                            >
                                 <div class="text-sm font-bold">躲避屋系列</div>
-                                <div class="text-[10px] text-stone-400 mt-1 tracking-wide">SHELTER COLLECTION</div>
+                                <div class="text-[10px] text-stone-400 mt-1 tracking-wide">
+                                    SHELTER COLLECTION
+                                </div>
                             </a>
-                            <!-- 樹狀子分類 -->
+
                             <div class="pl-4 mt-2 py-1 space-y-1.5 border-l-2 border-stone-200 ml-4">
-                                <button class="theme-filter-btn text-left block w-full px-3 py-1 text-xs text-stone-500 hover:text-stone-900 transition font-medium" data-target="ruins">├ 遺跡 Ruins</button>
-                                <button class="theme-filter-btn text-left block w-full px-3 py-1 text-xs text-stone-500 hover:text-stone-900 transition font-medium" data-target="nature">├ 自然 Nature</button>
-                                <button class="theme-filter-btn text-left block w-full px-3 py-1 text-xs text-stone-500 hover:text-stone-900 transition font-medium" data-target="fantasy">├ 奇幻 Fantasy</button>
-                                <button class="theme-filter-btn text-left block w-full px-3 py-1 text-xs text-stone-500 hover:text-stone-900 transition font-medium" data-target="skull">└ 頭骨 Skull</button>
+                                <button class="theme-filter-btn text-left block w-full px-3 py-1 text-xs text-stone-500 hover:text-stone-900 transition font-medium" data-target="ruins">
+                                    ├ 遺跡 Ruins
+                                </button>
+                                <button class="theme-filter-btn text-left block w-full px-3 py-1 text-xs text-stone-500 hover:text-stone-900 transition font-medium" data-target="nature">
+                                    ├ 自然 Nature
+                                </button>
+                                <button class="theme-filter-btn text-left block w-full px-3 py-1 text-xs text-stone-500 hover:text-stone-900 transition font-medium" data-target="fantasy">
+                                    ├ 奇幻 Fantasy
+                                </button>
+                                <button class="theme-filter-btn text-left block w-full px-3 py-1 text-xs text-stone-500 hover:text-stone-900 transition font-medium" data-target="skull">
+                                    └ 頭骨 Skull
+                                </button>
                             </div>
                         </div>
 
-                        <!-- 仿生漂流木 -->
+                        <!-- 未開放系列 -->
                         <div class="block rounded-xl px-4 py-3 border border-stone-200 bg-stone-100/80 text-stone-400 cursor-not-allowed">
                             <div class="flex items-center justify-between gap-3">
                                 <div class="text-sm font-bold">仿生漂流木</div>
-                                <span class="text-[9px] tracking-wider border border-stone-300 px-2 py-1 rounded-full bg-white/50">尚未開放</span>
+                                <span class="text-[9px] tracking-wider border border-stone-300 px-2 py-1 rounded-full bg-white/50">
+                                    尚未開放
+                                </span>
                             </div>
-                            <div class="text-[10px] text-stone-400 mt-1 tracking-wide">BIOMIMETIC DRIFTWOOD</div>
+                            <div class="text-[10px] text-stone-400 mt-1 tracking-wide">
+                                BIOMIMETIC DRIFTWOOD
+                            </div>
                         </div>
 
-                        <!-- 水族專用造景 -->
                         <div class="block rounded-xl px-4 py-3 border border-stone-200 bg-stone-100/80 text-stone-400 cursor-not-allowed">
                             <div class="flex items-center justify-between gap-3">
                                 <div class="text-sm font-bold">水族專用造景</div>
-                                <span class="text-[9px] tracking-wider border border-stone-300 px-2 py-1 rounded-full bg-white/50">尚未開放</span>
+                                <span class="text-[9px] tracking-wider border border-stone-300 px-2 py-1 rounded-full bg-white/50">
+                                    尚未開放
+                                </span>
                             </div>
-                            <div class="text-[10px] text-stone-400 mt-1 tracking-wide">AQUATIC COLLECTION</div>
+                            <div class="text-[10px] text-stone-400 mt-1 tracking-wide">
+                                AQUATIC COLLECTION
+                            </div>
                         </div>
                     </div>
 
                     <div class="mt-8 pt-6 border-t border-stone-200">
-                        <div class="text-[10px] tracking-[0.18em] text-stone-400 mb-2">NOTE</div>
+                        <div class="text-[10px] tracking-[.18em] text-stone-400 mb-2">
+                            NOTE
+                        </div>
                         <p class="text-xs leading-6 text-stone-500">
                             現階段先從「躲避屋系列」開始，未來將逐步開放更多棲地產品線。
                         </p>
@@ -174,31 +314,44 @@
                 </div>
             </aside>
 
+
             <!-- 右側主要內容 -->
             <main>
+
                 <!-- 系列介紹 -->
-                <div id="shelter" class="mb-8">
-                    <div class="text-[11px] sm:text-xs tracking-display text-stone-400 font-semibold mb-3">DODO HOUSE COLLECTION</div>
+                <div id="shelter" class="mb-8 scroll-mt-28">
+                    <div class="text-[11px] sm:text-xs tracking-display text-stone-400 font-semibold mb-3">
+                        SHELTER COLLECTION / 01
+                    </div>
+
                     <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
                         <div>
-                            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">躲避屋系列</h2>
+                            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                                躲避屋系列
+                            </h2>
                             <p class="mt-4 max-w-2xl text-sm sm:text-base leading-7 text-stone-500">
                                 將不同想像融入棲地設計，<br class="hidden sm:block">
                                 從古老遺跡、自然地貌，到奇幻世界與骨骸意象，<br class="hidden sm:block">
                                 找到屬於你的棲地風格。
                             </p>
                         </div>
+
+                        <div class="text-[11px] tracking-[.15em] uppercase text-stone-400 whitespace-nowrap">
+                            Micro Habitat Designed For Living
+                        </div>
                     </div>
                 </div>
 
-                <!-- 四大主題卡片 (點擊可篩選) -->
+
+                <!-- =====================================================
+                     四大主題卡片
+                ====================================================== -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10 sm:mb-12">
-                    
-                    <!-- 遺跡 -->
+
                     <button class="theme-card text-left group cursor-pointer bg-white border border-stone-200 rounded-[20px] p-4 sm:p-5 hover:border-stone-400 hover:shadow-xl hover:shadow-stone-200/50 hover:-translate-y-1 flex flex-col justify-between aspect-[4/3] sm:aspect-auto sm:min-h-[150px] relative overflow-hidden" data-theme="ruins">
                         <div class="absolute inset-0 bg-stone-50 opacity-0 group-hover:opacity-100 transition-opacity z-0"></div>
                         <div class="relative z-10">
-                            <div class="text-[10px] tracking-[0.2em] text-stone-400 mb-1 group-hover:text-stone-600 transition-colors">RUINS</div>
+                            <div class="text-[10px] tracking-[.2em] text-stone-400 mb-1 group-hover:text-stone-600 transition-colors">RUINS</div>
                             <h3 class="text-lg font-extrabold text-stone-800">遺跡</h3>
                         </div>
                         <div class="relative z-10 text-[9px] text-stone-400 tracking-wider uppercase mt-4 leading-[1.6] group-hover:text-stone-600 transition-colors font-medium">
@@ -206,11 +359,10 @@
                         </div>
                     </button>
 
-                    <!-- 自然 -->
                     <button class="theme-card text-left group cursor-pointer bg-white border border-stone-200 rounded-[20px] p-4 sm:p-5 hover:border-stone-400 hover:shadow-xl hover:shadow-stone-200/50 hover:-translate-y-1 flex flex-col justify-between aspect-[4/3] sm:aspect-auto sm:min-h-[150px] relative overflow-hidden" data-theme="nature">
                         <div class="absolute inset-0 bg-stone-50 opacity-0 group-hover:opacity-100 transition-opacity z-0"></div>
                         <div class="relative z-10">
-                            <div class="text-[10px] tracking-[0.2em] text-stone-400 mb-1 group-hover:text-stone-600 transition-colors">NATURE</div>
+                            <div class="text-[10px] tracking-[.2em] text-stone-400 mb-1 group-hover:text-stone-600 transition-colors">NATURE</div>
                             <h3 class="text-lg font-extrabold text-stone-800">自然</h3>
                         </div>
                         <div class="relative z-10 text-[9px] text-stone-400 tracking-wider uppercase mt-4 leading-[1.6] group-hover:text-stone-600 transition-colors font-medium">
@@ -218,11 +370,10 @@
                         </div>
                     </button>
 
-                    <!-- 奇幻 -->
                     <button class="theme-card text-left group cursor-pointer bg-white border border-stone-200 rounded-[20px] p-4 sm:p-5 hover:border-stone-400 hover:shadow-xl hover:shadow-stone-200/50 hover:-translate-y-1 flex flex-col justify-between aspect-[4/3] sm:aspect-auto sm:min-h-[150px] relative overflow-hidden" data-theme="fantasy">
                         <div class="absolute inset-0 bg-stone-50 opacity-0 group-hover:opacity-100 transition-opacity z-0"></div>
                         <div class="relative z-10">
-                            <div class="text-[10px] tracking-[0.2em] text-stone-400 mb-1 group-hover:text-stone-600 transition-colors">FANTASY</div>
+                            <div class="text-[10px] tracking-[.2em] text-stone-400 mb-1 group-hover:text-stone-600 transition-colors">FANTASY</div>
                             <h3 class="text-lg font-extrabold text-stone-800">奇幻</h3>
                         </div>
                         <div class="relative z-10 text-[9px] text-stone-400 tracking-wider uppercase mt-4 leading-[1.6] group-hover:text-stone-600 transition-colors font-medium">
@@ -230,37 +381,41 @@
                         </div>
                     </button>
 
-                    <!-- 頭骨 -->
                     <button class="theme-card text-left group cursor-pointer bg-white border border-stone-200 rounded-[20px] p-4 sm:p-5 hover:border-stone-400 hover:shadow-xl hover:shadow-stone-200/50 hover:-translate-y-1 flex flex-col justify-between aspect-[4/3] sm:aspect-auto sm:min-h-[150px] relative overflow-hidden" data-theme="skull">
                         <div class="absolute inset-0 bg-stone-50 opacity-0 group-hover:opacity-100 transition-opacity z-0"></div>
                         <div class="relative z-10">
-                            <div class="text-[10px] tracking-[0.2em] text-stone-400 mb-1 group-hover:text-stone-600 transition-colors">SKULL</div>
+                            <div class="text-[10px] tracking-[.2em] text-stone-400 mb-1 group-hover:text-stone-600 transition-colors">SKULL</div>
                             <h3 class="text-lg font-extrabold text-stone-800">頭骨</h3>
                         </div>
                         <div class="relative z-10 text-[9px] text-stone-400 tracking-wider uppercase mt-4 leading-[1.6] group-hover:text-stone-600 transition-colors font-medium">
                             Dark<br>Bold<br>Primitive
                         </div>
                     </button>
-
                 </div>
 
+
                 <!-- 商品區塊頂部資訊 -->
-                <div class="flex items-center justify-between border-b border-stone-200 pb-4 mb-6">
-                    <div class="text-sm font-bold text-stone-800 flex items-center gap-2">
-                        <span id="current-theme-label">全部主題</span>
+                <div class="flex items-center justify-between border-b border-stone-200 pb-4 mb-6 gap-4">
+                    <div class="text-sm font-bold text-stone-800 flex items-center gap-2 min-w-0">
+                        <span id="current-theme-label" class="truncate">全部主題</span>
                         <span class="text-stone-300 font-normal">|</span>
-                        <span class="text-stone-400 text-xs tracking-wider" id="current-theme-count">3 ITEMS</span>
+                        <span class="text-stone-400 text-xs tracking-wider whitespace-nowrap" id="current-theme-count">
+                            3 ITEMS
+                        </span>
                     </div>
-                    <button id="clear-filter" class="text-xs font-bold text-stone-400 hover:text-stone-800 transition hidden">
+
+                    <button id="clear-filter" class="text-xs font-bold text-stone-400 hover:text-stone-800 transition hidden whitespace-nowrap">
                         ✕ 清除篩選
                     </button>
                 </div>
 
-                <!-- 商品網格 -->
-                <!-- 注意：我在 article 標籤加入了 data-product-theme 屬性，用於 JavaScript 篩選 -->
+
+                <!-- =====================================================
+                     商品網格
+                ====================================================== -->
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-7" id="product-grid">
 
-                    <!-- 商品 01 (設定為自然 Nature) -->
+                    <!-- 商品 01：自然 -->
                     <article class="product-card bg-white rounded-[22px] overflow-hidden border border-stone-200 flex flex-col" data-product-theme="nature">
                         <div class="relative aspect-[4/3] overflow-hidden bg-stone-100">
                             <img src="主頁大圖1.png" alt="擬真岩洞躲避屋" class="w-full h-full object-cover" loading="eager">
@@ -268,17 +423,20 @@
                                 AVAILABLE
                             </div>
                         </div>
+
                         <div class="p-5 sm:p-6 flex flex-col flex-grow">
-                            <div class="text-[10px] tracking-[0.14em] text-stone-400 mb-2">NATURE / 01</div>
+                            <div class="text-[10px] tracking-[.14em] text-stone-400 mb-2">NATURE / 01</div>
                             <h3 class="text-lg font-bold">擬真岩洞躲避屋</h3>
                             <p class="text-sm leading-6 text-stone-500 mt-2 flex-grow">
                                 帶有水盆空間，結合豐富風化紋理，讓躲藏與休息自然融入岩壁地貌。
                             </p>
+
                             <div class="mt-5 pt-4 border-t border-stone-100 flex items-end justify-between gap-4">
                                 <div>
-                                    <div class="text-[10px] tracking-[0.14em] text-stone-400 mb-1">PRICE</div>
-                                    <div class="text-xl font-extrabold">NT$ 850</div>
+                                    <div class="text-[10px] tracking-[.14em] text-stone-400 mb-1">PRICE</div>
+                                    <div class="text-xl font-extrabold">NTD 850</div>
                                 </div>
+
                                 <a href="detail.html" class="inline-flex items-center justify-center px-4 py-3 rounded-xl bg-stone-900 text-white hover:bg-stone-700 transition font-bold text-xs sm:text-sm whitespace-nowrap">
                                     探索作品 <span class="ml-2">↗</span>
                                 </a>
@@ -286,7 +444,8 @@
                         </div>
                     </article>
 
-                    <!-- 商品 02 (設定為自然 Nature) -->
+
+                    <!-- 商品 02：自然／尚未開放 -->
                     <article class="product-card coming-soon bg-stone-100/85 rounded-[22px] overflow-hidden border border-stone-200 flex flex-col" data-product-theme="nature">
                         <div class="relative aspect-[4/3] overflow-hidden bg-stone-200">
                             <img src="主頁大圖3.png" alt="雨林樹頭躲避屋" class="w-full h-full object-cover" loading="lazy">
@@ -294,17 +453,20 @@
                                 COMING SOON
                             </div>
                         </div>
+
                         <div class="p-5 sm:p-6 flex flex-col flex-grow">
-                            <div class="text-[10px] tracking-[0.14em] text-stone-400 mb-2">NATURE / 02</div>
+                            <div class="text-[10px] tracking-[.14em] text-stone-400 mb-2">NATURE / 02</div>
                             <h3 class="text-lg font-bold text-stone-600">雨林樹頭躲避屋</h3>
                             <p class="text-sm leading-6 text-stone-500 mt-2 flex-grow">
                                 結合自然樹根造型與垂直空間，朝向攀爬與樹棲環境的使用情境發展。
                             </p>
+
                             <div class="mt-5 pt-4 border-t border-stone-200 flex items-end justify-between gap-4">
                                 <div>
-                                    <div class="text-[10px] tracking-[0.14em] text-stone-400 mb-1">STATUS</div>
+                                    <div class="text-[10px] tracking-[.14em] text-stone-400 mb-1">STATUS</div>
                                     <div class="text-lg font-extrabold text-stone-500">尚未開放</div>
                                 </div>
+
                                 <button disabled class="inline-flex items-center justify-center px-4 py-3 rounded-xl border border-stone-300 bg-stone-200 text-stone-400 font-bold text-xs sm:text-sm cursor-not-allowed whitespace-nowrap">
                                     敬請期待
                                 </button>
@@ -312,7 +474,8 @@
                         </div>
                     </article>
 
-                    <!-- 商品 03 (修改為聖甲蟲神殿遺跡) -->
+
+                    <!-- 商品 03：遺跡 -->
                     <article class="product-card bg-white rounded-[22px] overflow-hidden border border-stone-200 flex flex-col" data-product-theme="ruins">
                         <div class="relative aspect-[4/3] overflow-hidden bg-stone-100">
                             <img src="主頁大圖4.png" alt="聖甲蟲神殿遺跡" class="w-full h-full object-cover" loading="lazy">
@@ -320,80 +483,106 @@
                                 AVAILABLE
                             </div>
                         </div>
+
                         <div class="p-5 sm:p-6 flex flex-col flex-grow">
-                            <div class="text-[10px] tracking-[0.14em] text-stone-400 mb-2">RUINS / Egypt_001</div>
+                            <div class="text-[10px] tracking-[.14em] text-stone-400 mb-2">RUINS / Egypt_001</div>
                             <h3 class="text-lg font-bold">聖甲蟲神殿遺跡</h3>
                             <p class="text-sm leading-6 text-stone-500 mt-2 flex-grow">
-                                將厚實的巨型甲蟲石雕與洞穴完美結合，表面刻有古埃及象形文字與神廟圖騰，為守宮打造出神秘的沙漠信仰殿堂。
+                                巨型甲蟲石雕與洞穴一體成型，表面深深刻有古埃及圖騰，為守宮重現神秘且充滿安全感的沙漠信仰殿堂。
                             </p>
+
                             <div class="mt-5 pt-4 border-t border-stone-100 flex items-end justify-between gap-4">
                                 <div>
-                                    <div class="text-[10px] tracking-[0.14em] text-stone-400 mb-1">PRICE</div>
+                                    <div class="text-[10px] tracking-[.14em] text-stone-400 mb-1">PRICE</div>
                                     <div class="flex items-center gap-2">
-                                        <div class="text-xl font-extrabold text-[#e11d48]">NT$ 399</div>
-                                        <div class="text-sm font-medium text-stone-400 line-through">NT$ 499</div>
+                                        <div class="text-sm font-medium text-stone-400 line-through">NTD 499</div>
+                                        <div class="text-xl font-extrabold text-stone-900">NTD 399</div>
                                     </div>
                                 </div>
+
                                 <a href="detail.html" class="inline-flex items-center justify-center px-4 py-3 rounded-xl bg-stone-900 text-white hover:bg-stone-700 transition font-bold text-xs sm:text-sm whitespace-nowrap">
                                     探索作品 <span class="ml-2">↗</span>
                                 </a>
                             </div>
                         </div>
                     </article>
-                    
-                    <!-- 查無商品狀態 (預設隱藏) -->
+
+
+                    <!-- 查無商品狀態 -->
                     <div id="empty-state" class="hidden col-span-full py-16 text-center border-2 border-dashed border-stone-200 rounded-3xl">
-                        <div class="text-3xl mb-3 opacity-30">🪨</div>
+                        <div class="text-3xl mb-3 opacity-30">◌</div>
                         <h4 class="text-stone-800 font-bold mb-1">此主題目前正在籌備中</h4>
                         <p class="text-stone-500 text-sm">更多造景即將釋出，敬請期待。</p>
                         <button class="mt-4 text-xs font-bold text-[var(--accent)] hover:brightness-95 bg-stone-900 px-4 py-2 rounded-lg btn-clear-filter">
                             返回查看全部
                         </button>
                     </div>
-
                 </div>
 
-                <!-- 設計理念 -->
+
+                <!-- =====================================================
+                     設計理念
+                ====================================================== -->
                 <section class="mt-16 sm:mt-20 md:mt-24 border-t border-stone-300 pt-10 sm:pt-12">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
                         <div class="md:col-span-5">
-                            <div class="text-[11px] tracking-display font-semibold text-stone-400 mb-3">FORM · FUNCTION · NATURE</div>
+                            <div class="text-[11px] tracking-display font-semibold text-stone-400 mb-3">
+                                FORM · FUNCTION · NATURE
+                            </div>
                             <h2 class="text-3xl sm:text-4xl font-extrabold leading-tight">
                                 不只好看，<br>也為生命而設計。
                             </h2>
                         </div>
+
                         <div class="md:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-6">
                             <div class="border-t border-stone-300 pt-4">
-                                <div class="text-[11px] tracking-[0.14em] text-stone-400 mb-2">01</div>
+                                <div class="text-[11px] tracking-[.14em] text-stone-400 mb-2">01</div>
                                 <h3 class="font-bold mb-2">數位塑形</h3>
-                                <p class="text-sm leading-6 text-stone-500">以 3D 建模控制比例、洞口、坡度與結構。</p>
+                                <p class="text-sm leading-6 text-stone-500">
+                                    以 3D 建模控制比例、洞口、坡度與結構。
+                                </p>
                             </div>
+
                             <div class="border-t border-stone-300 pt-4">
-                                <div class="text-[11px] tracking-[0.14em] text-stone-400 mb-2">02</div>
+                                <div class="text-[11px] tracking-[.14em] text-stone-400 mb-2">02</div>
                                 <h3 class="font-bold mb-2">仿生紋理</h3>
-                                <p class="text-sm leading-6 text-stone-500">從岩石、朽木與自然地貌汲取表面語言。</p>
+                                <p class="text-sm leading-6 text-stone-500">
+                                    從岩石、朽木與自然地貌汲取表面語言。
+                                </p>
                             </div>
+
                             <div class="border-t border-stone-300 pt-4">
-                                <div class="text-[11px] tracking-[0.14em] text-stone-400 mb-2">03</div>
+                                <div class="text-[11px] tracking-[.14em] text-stone-400 mb-2">03</div>
                                 <h3 class="font-bold mb-2">棲地功能</h3>
-                                <p class="text-sm leading-6 text-stone-500">將躲藏、攀爬、休息與清潔需求融入造景。</p>
+                                <p class="text-sm leading-6 text-stone-500">
+                                    將躲藏、攀爬、休息與清潔需求融入造景。
+                                </p>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- 客製化 CTA -->
+
+                <!-- =====================================================
+                     客製化 CTA
+                ====================================================== -->
                 <section class="mt-16 sm:mt-20 md:mt-24 rounded-[28px] bg-stone-900 text-stone-100 px-6 sm:px-8 md:px-12 py-10 sm:py-12 md:py-14 overflow-hidden relative">
                     <div class="absolute -right-16 -top-16 w-56 h-56 rounded-full border border-stone-700/60"></div>
                     <div class="absolute -right-5 top-8 w-28 h-28 rounded-full border border-stone-700/50"></div>
+
                     <div class="relative max-w-3xl">
-                        <div class="text-[10px] tracking-[0.2em] text-stone-500 mb-4">CUSTOM HABITAT</div>
+                        <div class="text-[10px] tracking-[.2em] text-stone-500 mb-4">
+                            CUSTOM HABITAT
+                        </div>
+
                         <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
                             找不到適合你的？<br>你的想像，我們替你造景。
                         </h2>
+
                         <p class="mt-5 text-sm sm:text-base leading-7 text-stone-400 max-w-2xl">
                             從缸體尺寸、飼養物種、功能需求到視覺風格，一起把腦中的畫面變成可以真正生活的微型世界。
                         </p>
+
                         <a href="index.html#custom" class="inline-flex mt-7 items-center px-5 py-3.5 rounded-xl bg-[var(--accent)] text-stone-900 hover:brightness-95 transition font-bold text-sm">
                             開始客製化 <span class="ml-2">↗</span>
                         </a>
@@ -403,20 +592,33 @@
         </div>
     </section>
 
-    <!-- Footer -->
+
+    <!-- =========================================================
+         Footer
+    ========================================================== -->
     <footer class="bg-stone-900 text-stone-400 py-12 mt-4">
         <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row items-center md:items-end justify-between gap-6">
                 <div class="text-center md:text-left">
-                    <div class="text-white text-base sm:text-lg font-bold tracking-[0.16em]">Hephaestus Scapes</div>
-                    <div class="text-xs mt-2 text-stone-500">赫菲斯微景｜3D 列印爬蟲微縮棲息造景設計</div>
+                    <div class="text-white text-base sm:text-lg font-bold tracking-[.16em]">
+                        Hephaestus Scapes
+                    </div>
+                    <div class="text-xs mt-2 text-stone-500">
+                        赫菲斯微景｜3D 列印爬蟲微縮棲息造景設計
+                    </div>
                 </div>
-                <div class="text-xs text-stone-600">© 2026 Hephaestus Scapes. All rights reserved.</div>
+
+                <div class="text-xs text-stone-600">
+                    © 2026 Hephaestus Scapes. All rights reserved.
+                </div>
             </div>
         </div>
     </footer>
 
-    <!-- 簡單的分類篩選腳本 -->
+
+    <!-- =========================================================
+         篩選腳本
+    ========================================================== -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const themeCards = document.querySelectorAll('.theme-card');
@@ -425,105 +627,95 @@
             const emptyState = document.getElementById('empty-state');
             const labelTitle = document.getElementById('current-theme-label');
             const labelCount = document.getElementById('current-theme-count');
+            const clearButton = document.getElementById('clear-filter');
             const clearBtns = document.querySelectorAll('#clear-filter, .btn-clear-filter');
-            
+
             const themeNames = {
-                'ruins': '遺跡 RUINS',
-                'nature': '自然 NATURE',
-                'fantasy': '奇幻 FANTASY',
-                'skull': '頭骨 SKULL'
+                ruins: '遺跡 RUINS',
+                nature: '自然 NATURE',
+                fantasy: '奇幻 FANTASY',
+                skull: '頭骨 SKULL'
             };
 
-            function filterProducts(targetTheme) {
-                let visibleCount = 0;
-
-                // 更新商品顯示
-                products.forEach(p => {
-                    if (!targetTheme || targetTheme === 'all') {
-                        p.style.display = 'flex';
-                        visibleCount++;
-                    } else {
-                        // 檢查商品身上的 data-product-theme 是否符合
-                        if (p.getAttribute('data-product-theme') === targetTheme) {
-                            p.style.display = 'flex';
-                            visibleCount++;
-                        } else {
-                            p.style.display = 'none';
-                        }
-                    }
-                });
-
-                // 處理 UI 狀態
-                if (visibleCount === 0) {
-                    emptyState.classList.remove('hidden');
-                } else {
-                    emptyState.classList.add('hidden');
-                }
-
-                if (!targetTheme || targetTheme === 'all') {
-                    labelTitle.textContent = '全部主題';
-                    document.getElementById('clear-filter').classList.add('hidden');
-                } else {
-                    labelTitle.textContent = themeNames[targetTheme] || '篩選結果';
-                    document.getElementById('clear-filter').classList.remove('hidden');
-                }
-                
-                labelCount.textContent = visibleCount + ' ITEMS';
-
-                // 更新卡片外觀狀態
+            function updateActiveTheme(targetTheme) {
                 themeCards.forEach(card => {
-                    if (card.getAttribute('data-theme') === targetTheme) {
-                        card.classList.add('ring-2', 'ring-stone-800', 'border-transparent');
-                    } else {
-                        card.classList.remove('ring-2', 'ring-stone-800', 'border-transparent');
-                    }
+                    const active = card.getAttribute('data-theme') === targetTheme;
+                    card.classList.toggle('ring-2', active);
+                    card.classList.toggle('ring-stone-800', active);
+                    card.classList.toggle('border-transparent', active);
                 });
-                
-                // 更新側邊欄文字狀態
+
                 sidebarBtns.forEach(btn => {
-                    if (btn.getAttribute('data-target') === targetTheme) {
-                        btn.classList.add('text-stone-900', 'font-extrabold');
-                    } else {
-                        btn.classList.remove('text-stone-900', 'font-extrabold');
-                    }
+                    const active = btn.getAttribute('data-target') === targetTheme;
+                    btn.classList.toggle('text-stone-900', active);
+                    btn.classList.toggle('font-extrabold', active);
                 });
             }
 
-            // 綁定上方四張卡片點擊事件
+            function filterProducts(targetTheme = 'all', shouldScroll = false) {
+                let visibleCount = 0;
+
+                products.forEach(product => {
+                    const match = targetTheme === 'all' || product.getAttribute('data-product-theme') === targetTheme;
+
+                    product.style.display = match ? 'flex' : 'none';
+
+                    if (match) {
+                        visibleCount++;
+                        product.classList.remove('filter-fade');
+                        void product.offsetWidth;
+                        product.classList.add('filter-fade');
+                    }
+                });
+
+                emptyState.classList.toggle('hidden', visibleCount !== 0);
+
+                if (targetTheme === 'all') {
+                    labelTitle.textContent = '全部主題';
+                    clearButton.classList.add('hidden');
+                } else {
+                    labelTitle.textContent = themeNames[targetTheme] || '篩選結果';
+                    clearButton.classList.remove('hidden');
+                }
+
+                labelCount.textContent = visibleCount + ' ITEMS';
+                updateActiveTheme(targetTheme);
+
+                if (shouldScroll) {
+                    const target = document.getElementById('current-theme-label');
+                    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+
             themeCards.forEach(card => {
-                card.addEventListener('click', (e) => {
-                    e.preventDefault();
+                card.addEventListener('click', () => {
                     const target = card.getAttribute('data-theme');
-                    // 如果已經是啟用狀態，則取消篩選（顯示全部）
-                    if (card.classList.contains('ring-2')) {
-                        filterProducts('all');
-                    } else {
-                        filterProducts(target);
-                        // 平滑滾動至商品區
-                        document.getElementById('current-theme-label').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
+                    const alreadyActive = card.classList.contains('ring-2');
+                    filterProducts(alreadyActive ? 'all' : target, true);
                 });
             });
 
-            // 綁定側邊欄點擊事件
             sidebarBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
+                btn.addEventListener('click', () => {
                     const target = btn.getAttribute('data-target');
-                    if (btn.classList.contains('font-extrabold')) {
-                        filterProducts('all');
-                    } else {
-                        filterProducts(target);
-                        window.scrollTo({ top: 300, behavior: 'smooth' });
-                    }
+                    const alreadyActive = btn.classList.contains('font-extrabold');
+                    filterProducts(alreadyActive ? 'all' : target, true);
                 });
             });
 
-            // 清除篩選按鈕
             clearBtns.forEach(btn => {
-                btn.addEventListener('click', () => filterProducts('all'));
+                btn.addEventListener('click', () => {
+                    filterProducts('all', false);
+                });
             });
+
+            document.getElementById('sidebar-shelter').addEventListener('click', () => {
+                filterProducts('all', false);
+            });
+
+            filterProducts('all', false);
         });
     </script>
+
 </body>
 </html>
