@@ -34,35 +34,35 @@
     <section>
       <div class="gallery-main bg-stone-200 rounded-3xl overflow-hidden border border-stone-200">
         <img id="mainImage"
-             src="https://placehold.co/1200x900/D6D3D1/57534E?text=Scarab+Shrine+Ruins"
+             src="Pic_1.png"
              alt="聖甲蟲神殿遺跡商品主視覺"
              class="w-full aspect-[4/3] object-cover">
       </div>
 
       <div class="grid grid-cols-4 sm:grid-cols-6 gap-3 mt-4">
         <button class="thumb active rounded-xl overflow-hidden border-2 border-transparent bg-stone-200"
-          onclick="changeImage(this,'https://placehold.co/1200x900/D6D3D1/57534E?text=Product+Front','商品全貌')">
-          <img src="https://placehold.co/300x225/D6D3D1/57534E?text=Pic+1" alt="商品全貌" class="w-full aspect-[4/3] object-cover">
+          onclick="changeImage(this,'Pic_1.png','商品全貌')">
+          <img src="Pic_1.png" alt="商品全貌" class="w-full aspect-[4/3] object-cover">
         </button>
         <button class="thumb rounded-xl overflow-hidden border-2 border-transparent bg-stone-200"
-          onclick="changeImage(this,'https://placehold.co/1200x900/E7E5E4/57534E?text=Entrance+Detail','入口細節')">
-          <img src="https://placehold.co/300x225/E7E5E4/57534E?text=Pic+2" alt="入口細節" class="w-full aspect-[4/3] object-cover">
+          onclick="changeImage(this,'Pic_2.png','入口細節')">
+          <img src="Pic_2.png" alt="入口細節" class="w-full aspect-[4/3] object-cover">
         </button>
         <button class="thumb rounded-xl overflow-hidden border-2 border-transparent bg-stone-200"
-          onclick="changeImage(this,'https://placehold.co/1200x900/D6D3D1/57534E?text=Inside+Hide','內部躲避空間')">
-          <img src="https://placehold.co/300x225/D6D3D1/57534E?text=Pic+3" alt="內部躲避空間" class="w-full aspect-[4/3] object-cover">
+          onclick="changeImage(this,'Pic_3.png','內部躲避空間')">
+          <img src="Pic_3.png" alt="內部躲避空間" class="w-full aspect-[4/3] object-cover">
         </button>
         <button class="thumb rounded-xl overflow-hidden border-2 border-transparent bg-stone-200"
-          onclick="changeImage(this,'https://placehold.co/1200x900/E7E5E4/57534E?text=Top+Detail','頂部細節')">
-          <img src="https://placehold.co/300x225/E7E5E4/57534E?text=Pic+4" alt="頂部細節" class="w-full aspect-[4/3] object-cover">
+          onclick="changeImage(this,'Pic_4.png','頂部細節')">
+          <img src="Pic_4.png" alt="頂部細節" class="w-full aspect-[4/3] object-cover">
         </button>
         <button class="thumb rounded-xl overflow-hidden border-2 border-transparent bg-stone-200"
-          onclick="changeImage(this,'https://placehold.co/1200x900/D6D3D1/57534E?text=Texture+Detail','材質紋理')">
-          <img src="https://placehold.co/300x225/D6D3D1/57534E?text=Detail" alt="材質紋理" class="w-full aspect-[4/3] object-cover">
+          onclick="changeImage(this,'Pic_5.png','材質紋理')">
+          <img src="Pic_5.png" alt="材質紋理" class="w-full aspect-[4/3] object-cover">
         </button>
         <button class="thumb rounded-xl overflow-hidden border-2 border-transparent bg-stone-200"
-          onclick="changeImage(this,'https://placehold.co/1200x900/E7E5E4/57534E?text=Habitat+Example','生態缸情境')">
-          <img src="https://placehold.co/300x225/E7E5E4/57534E?text=Habitat" alt="生態缸情境" class="w-full aspect-[4/3] object-cover">
+          onclick="changeImage(this,'Pic_6.png','生態缸情境')">
+          <img src="Pic_6.png" alt="生態缸情境" class="w-full aspect-[4/3] object-cover">
         </button>
       </div>
       <p class="text-xs text-stone-400 mt-3 text-center">點選縮圖查看商品細節</p>
@@ -74,9 +74,14 @@
       <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-stone-900">聖甲蟲神殿遺跡</h1>
       <p class="text-sm text-stone-400 mt-2">Scarab Shrine Ruins</p>
 
-      <div class="flex items-end gap-3 mt-5">
-        <div class="text-3xl font-bold text-stone-900">NT$ 850</div>
-        <span class="text-xs text-stone-400 mb-1">起</span>
+      <div class="flex items-end gap-4 mt-5">
+        <div class="leading-none">
+          <div class="text-sm text-stone-400 line-through mb-2">NT$ 499</div>
+        </div>
+        <div class="leading-none">
+          <div class="text-xs font-bold text-stone-900 tracking-wider mb-1">NTD</div>
+          <div class="text-3xl font-extrabold text-stone-900">399</div>
+        </div>
       </div>
 
       <div class="h-px bg-stone-200 my-6"></div>
@@ -85,8 +90,8 @@
         <div>
           <label for="size" class="block text-sm font-bold mb-2">商品尺寸</label>
           <select id="size" class="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm">
-            <option value="850">標準版（15cm × 12cm × 8cm）</option>
-            <option value="1050">加大版（20cm × 16cm × 10cm）— NT$ 1,050</option>
+            <option value="399">標準版（15cm × 12cm × 8cm）</option>
+            <option value="599">加大版（20cm × 16cm × 10cm）— NTD 599</option>
           </select>
         </div>
 
