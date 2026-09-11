@@ -17,13 +17,20 @@
 
 <body class="bg-stone-50 text-stone-800">
 
+<!-- 導覽列修改：Logo與品牌名移至左側，回上一頁/首頁移至右側 -->
 <nav class="container mx-auto px-5 md:px-8 py-5 flex justify-between items-center border-b border-stone-200">
   <div class="flex items-center gap-3">
-    <a href="javascript:history.back()" class="text-sm text-stone-500 hover:text-stone-900">↶ 回上一頁</a>
-    <span class="text-stone-300">/</span>
-    <a href="index.html" class="text-sm text-stone-500 hover:text-stone-900">⌂ 返回首頁</a>
+    <!-- Logo 區域 (佔位符) -->
+    <div class="w-8 h-8 rounded-full bg-stone-200 border border-stone-300 flex items-center justify-center text-[10px] text-stone-500 font-bold overflow-hidden">
+      <img src="https://placehold.co/100x100/E7E5E4/78716C?text=Logo" alt="Logo" class="w-full h-full object-cover">
+    </div>
+    <div class="text-sm md:text-base font-extrabold text-stone-800 tracking-widest">HEPHAESTUS SCAPES</div>
   </div>
-  <div class="hidden md:block text-xs text-stone-400 tracking-widest">HEPHAESTUS SCAPES</div>
+  <div class="flex items-center gap-3">
+    <a href="javascript:history.back()" class="text-sm text-stone-500 hover:text-stone-900 transition">↶ 回上一頁</a>
+    <span class="text-stone-300">/</span>
+    <a href="index.html" class="text-sm text-stone-500 hover:text-stone-900 transition">⌂ 返回首頁</a>
+  </div>
 </nav>
 
 <!-- 商品主區 -->
@@ -33,36 +40,37 @@
     <!-- Gallery -->
     <section>
       <div class="gallery-main bg-stone-200 rounded-3xl overflow-hidden border border-stone-200">
+        <!-- 圖片名稱更新為 Ruin_Egypt_001_Pic1... -->
         <img id="mainImage"
-             src="Pic_1.png"
+             src="Ruin_Egypt_001_Pic1.png"
              alt="聖甲蟲神殿遺跡商品主視覺"
              class="w-full aspect-[4/3] object-cover">
       </div>
 
       <div class="grid grid-cols-4 sm:grid-cols-6 gap-3 mt-4">
         <button class="thumb active rounded-xl overflow-hidden border-2 border-transparent bg-stone-200"
-          onclick="changeImage(this,'Pic_1.png','商品全貌')">
-          <img src="Pic_1.png" alt="商品全貌" class="w-full aspect-[4/3] object-cover">
+          onclick="changeImage(this,'Ruin_Egypt_001_Pic1.png','商品全貌')">
+          <img src="Ruin_Egypt_001_Pic1.png" alt="商品全貌" class="w-full aspect-[4/3] object-cover">
         </button>
         <button class="thumb rounded-xl overflow-hidden border-2 border-transparent bg-stone-200"
-          onclick="changeImage(this,'Pic_2.png','入口細節')">
-          <img src="Pic_2.png" alt="入口細節" class="w-full aspect-[4/3] object-cover">
+          onclick="changeImage(this,'Ruin_Egypt_001_Pic2.png','入口細節')">
+          <img src="Ruin_Egypt_001_Pic2.png" alt="入口細節" class="w-full aspect-[4/3] object-cover">
         </button>
         <button class="thumb rounded-xl overflow-hidden border-2 border-transparent bg-stone-200"
-          onclick="changeImage(this,'Pic_3.png','內部躲避空間')">
-          <img src="Pic_3.png" alt="內部躲避空間" class="w-full aspect-[4/3] object-cover">
+          onclick="changeImage(this,'Ruin_Egypt_001_Pic3.png','內部躲避空間')">
+          <img src="Ruin_Egypt_001_Pic3.png" alt="內部躲避空間" class="w-full aspect-[4/3] object-cover">
         </button>
         <button class="thumb rounded-xl overflow-hidden border-2 border-transparent bg-stone-200"
-          onclick="changeImage(this,'Pic_4.png','頂部細節')">
-          <img src="Pic_4.png" alt="頂部細節" class="w-full aspect-[4/3] object-cover">
+          onclick="changeImage(this,'Ruin_Egypt_001_Pic4.png','頂部細節')">
+          <img src="Ruin_Egypt_001_Pic4.png" alt="頂部細節" class="w-full aspect-[4/3] object-cover">
         </button>
         <button class="thumb rounded-xl overflow-hidden border-2 border-transparent bg-stone-200"
-          onclick="changeImage(this,'Pic_5.png','材質紋理')">
-          <img src="Pic_5.png" alt="材質紋理" class="w-full aspect-[4/3] object-cover">
+          onclick="changeImage(this,'Ruin_Egypt_001_Pic5.png','材質紋理')">
+          <img src="Ruin_Egypt_001_Pic5.png" alt="材質紋理" class="w-full aspect-[4/3] object-cover">
         </button>
         <button class="thumb rounded-xl overflow-hidden border-2 border-transparent bg-stone-200"
-          onclick="changeImage(this,'Pic_6.png','生態缸情境')">
-          <img src="Pic_6.png" alt="生態缸情境" class="w-full aspect-[4/3] object-cover">
+          onclick="changeImage(this,'Ruin_Egypt_001_Pic6.png','生態缸情境')">
+          <img src="Ruin_Egypt_001_Pic6.png" alt="生態缸情境" class="w-full aspect-[4/3] object-cover">
         </button>
       </div>
       <p class="text-xs text-stone-400 mt-3 text-center">點選縮圖查看商品細節</p>
@@ -73,14 +81,16 @@
       <div class="text-xs text-emerald-700 font-bold tracking-widest mb-3">RUINS / EGYPT_001</div>
       <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-stone-900">聖甲蟲神殿遺跡</h1>
       <p class="text-sm text-stone-400 mt-2">Scarab Shrine Ruins</p>
+      
+      <!-- 新增標語 -->
+      <p class="text-base font-medium text-stone-900 mt-3">尺寸為成體肥尾、豹紋守宮適用</p>
 
-      <div class="flex items-end gap-4 mt-5">
-        <div class="leading-none">
-          <div class="text-sm text-stone-400 line-through mb-2">NT$ 499</div>
-        </div>
-        <div class="leading-none">
-          <div class="text-xs font-bold text-stone-900 tracking-wider mb-1">NTD</div>
-          <div class="text-3xl font-extrabold text-stone-900">399</div>
+      <!-- 價格區塊修改：NTD 移至右側並調整大小 -->
+      <div class="flex items-center gap-3 mt-6">
+        <div class="text-sm text-stone-400 line-through">NT$ 499</div>
+        <div class="flex items-baseline gap-1">
+          <div class="text-4xl font-extrabold text-stone-900">399</div>
+          <div class="text-2xl font-extrabold text-stone-900 tracking-wider">NTD</div>
         </div>
       </div>
 
