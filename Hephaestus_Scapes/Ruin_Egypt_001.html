@@ -148,6 +148,11 @@
             <span class="block text-stone-500 text-xs mt-1">請確認尺寸、材質與商品資訊後再加入購物車。</span>
           </span>
         </label>
+<div class="mt-4 flex items-center justify-between border-y border-stone-200 py-3">
+  <span class="text-sm text-stone-600">庫存</span>
+  <span id="stockText" class="text-sm font-medium text-stone-800">剩餘 5 件</span>
+</div>
+
 
         <button id="cartBtn" disabled onclick="addToCart()"
           class="w-full rounded-xl py-4 font-bold text-white bg-stone-300 cursor-not-allowed transition">
@@ -335,5 +340,117 @@ function addToCart() {
   document.getElementById('cartBtn').textContent = '✓ 已加入購物車';
 }
 </script>
+
+<script>
+(function () {
+  const STOCK = 5;
+  const PRODUCT = {
+    id: "Ruin_Egypt_001",
+    name: "聖甲蟲神殿遺跡",
+    price: 399,
+    image: "Ruin_Egypt_001_Pic1.png"
+  };
+
+  function getCart() {
+    try { return JSON.parse(localStorage.getItem("hephaestus_cart") || "[]"); }
+    catch (e) { return []; }
+  }
+
+  function saveCart(cart) {
+    localStorage.setItem("hephaestus_cart", JSON.stringify(cart));
+  }
+
+  function updateCartCount() {
+    const countEl = document.getElementById("cartCount");
+    if (!countEl) return;
+    const count = getCart().reduce((sum, item) => sum + Number(item.qty || 0), 0);
+    countEl.textContent = count;
+  }
+
+  function updateStockText() {
+    const el = document.getElementById("stockText");
+    if (!el) return;
+    const cart = getCart();
+    const selectedSize = document.querySelector("select")?.value || "";
+    const selectedColor = Array.from(document.querySelectorAll("input[type=radio]"))
+      .find(x => x.checked)?.value || "";
+    const selectedMaterial = Array.from(document.querySelectorAll("select"))[1]?.value || "";
+
+    // Phase 1 uses a fixed demo stock of 5 per product/variant.
+    const used = cart
+      .filter(item => item.id === PRODUCT.id &&
+                      item.size === selectedSize &&
+                      item.color === selectedColor &&
+                      item.material === selectedMaterial)
+      .reduce((sum, item) => sum + Number(item.qty || 0), 0);
+
+    const remaining = Math.max(0, STOCK - used);
+    el.textContent = `剩餘 ${remaining} 件`;
+  }
+
+  function addProductToCart() {
+    const selects = document.querySelectorAll("select");
+    const size = selects[0]?.value || "標準尺寸";
+    const material = selects[1]?.value || "PLA";
+    const colorRadio = Array.from(document.querySelectorAll("input[type=radio]"))
+      .find(x => x.checked);
+    const color = colorRadio?.value || "岩石灰";
+
+    const qtyInput = document.querySelector('input[type="number"]');
+    const qty = Math.max(1, Number(qtyInput?.value || 1));
+
+    const cart = getCart();
+    const keyMatch = item => item.id === PRODUCT.id &&
+      item.size === size && item.color === color && item.material === material;
+
+    const existing = cart.find(keyMatch);
+    const currentQty = existing ? Number(existing.qty || 0) : 0;
+
+    if (currentQty + qty > STOCK) {
+      alert(`目前此規格最多可購買 ${STOCK - currentQty} 件。`);
+      return;
+    }
+
+    if (existing) {
+      existing.qty = currentQty + qty;
+    } else {
+      cart.push({
+        ...PRODUCT,
+        size, color, material,
+        qty,
+        stock: STOCK
+      });
+    }
+
+    saveCart(cart);
+    updateCartCount();
+    updateStockText();
+    alert("已加入購物車！");
+  }
+
+  // Capture the existing demo cart button without requiring a specific ID.
+  document.addEventListener("click", function (e) {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    const label = (btn.textContent || "").trim();
+    if (label.includes("加入購物車")) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      addProductToCart();
+    }
+  }, true);
+
+  document.addEventListener("DOMContentLoaded", function () {
+    updateCartCount();
+    updateStockText();
+  });
+})();
+</script>
+
+
+<div class="text-center text-xs text-stone-400 mt-2">
+  目前庫存與購物車為前端展示版；正式上線後可改由 Supabase 即時管理庫存與訂單。
+</div>
+
 </body>
 </html>
