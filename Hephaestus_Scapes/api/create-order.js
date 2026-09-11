@@ -1,29 +1,33 @@
-import { createClient } from "@supabase/supabase-js";
+import crypto from "node:crypto";
+import { getSupabase } from "../lib/supabase.js";
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { "content-type": "application/json; charset=utf-8" }
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store"
+    }
   });
 }
 
-function getSupabase() {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!url || !key) {
-    throw new Error("Vercel Environment Variables 缺少 SUPABASE_URL 或 SUPABASE_SERVICE_ROLE_KEY/SUPABASE_SECRET_KEY");
-  }
-
-  return createClient(url, key);
-}
-
 function makeOrderNo() {
-  const d = new Date();
-  const pad = n => String(n).padStart(2, "0");
-  const base = `HS${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
-  const random = Math.random().toString(36).slice(2, 8).toUpperCase();
-  return `${base}${random}`.slice(0, 20);
+  // ECPay MerchantTradeNo 最多 20 字元；使用台灣時間到分鐘 + 6 位 hex。
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Taipei",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23"
+  }).formatToParts(new Date());
+
+  const get = type => parts.find(p => p.type === type)?.value || "00";
+  const timestamp = `${get("year")}${get("month")}${get("day")}${get("hour")}${get("minute")}`;
+  const random = crypto.randomBytes(3).toString("hex").toUpperCase();
+
+  return `HS${timestamp}${random}`; // 2 + 12 + 6 = 20
 }
 
 function validCustomer(c) {
@@ -37,18 +41,25 @@ function validCustomer(c) {
 }
 
 export default async function handler(req) {
-  if (req.method !== "POST") return json({ error: "Method Not Allowed" }, 405);
+  if (req.method !== "POST") {
+    return json({ error: "Method Not Allowed" }, 405);
+  }
 
   try {
-    const supabase = getSupabase();
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return json({ error: "Request body 必須是有效的 JSON" }, 400);
+    }
+
     const {
       customer,
       paymentMethod = "ecpay",
       note = "",
       items
-    } = await req.json();
+    } = body || {};
 
-    // 目前只開放 ECPay；銀行轉帳尚未接上正式付款流程。
     if (paymentMethod !== "ecpay") {
       return json({ error: "目前僅提供 ECPay 綠界金流" }, 400);
     }
@@ -61,9 +72,19 @@ export default async function handler(req) {
       return json({ error: "購物車是空的" }, 400);
     }
 
+    if (items.length > 50) {
+      return json({ error: "購物車商品數量過多" }, 400);
+    }
+
     const ids = [...new Set(
-      items.map(x => String(x.id || "")).filter(Boolean)
+      items.map(x => String(x?.id || "").trim()).filter(Boolean)
     )];
+
+    if (!ids.length) {
+      return json({ error: "購物車商品資料無效" }, 400);
+    }
+
+    const supabase = getSupabase();
 
     const { data: products, error: productError } = await supabase
       .from("products")
@@ -73,12 +94,12 @@ export default async function handler(req) {
 
     if (productError) throw productError;
 
-    const map = new Map((products || []).map(p => [p.id, p]));
+    const map = new Map((products || []).map(p => [String(p.id), p]));
     const normalized = [];
 
     for (const raw of items) {
-      const p = map.get(String(raw.id || ""));
-      const qty = Number(raw.qty);
+      const p = map.get(String(raw?.id || "").trim());
+      const qty = Number(raw?.qty);
 
       if (!p) return json({ error: "商品不存在或已下架" }, 400);
       if (!Number.isInteger(qty) || qty < 1) {
@@ -91,10 +112,10 @@ export default async function handler(req) {
       normalized.push({
         product_id: p.id,
         product_name: p.name,
-        size: raw.size || null,
-        color: raw.color || null,
-        material: raw.material || null,
-        unit_price: p.price,
+        size: raw?.size ? String(raw.size).slice(0, 100) : null,
+        color: raw?.color ? String(raw.color).slice(0, 100) : null,
+        material: raw?.material ? String(raw.material).slice(0, 100) : null,
+        unit_price: Number(p.price),
         quantity: qty
       });
     }
@@ -103,6 +124,10 @@ export default async function handler(req) {
       (sum, item) => sum + item.unit_price * item.quantity,
       0
     );
+
+    if (!Number.isSafeInteger(subtotal)) {
+      return json({ error: "訂單金額無效" }, 400);
+    }
 
     const orderNo = makeOrderNo();
 
@@ -116,7 +141,7 @@ export default async function handler(req) {
         shipping_city: String(customer.city).trim(),
         shipping_district: String(customer.district).trim(),
         shipping_address: String(customer.address).trim(),
-        note: String(note || "").trim() || null,
+        note: String(note || "").trim().slice(0, 2000) || null,
         payment_method: "ecpay",
         payment_status: "pending",
         order_status: "pending_payment",
@@ -137,9 +162,22 @@ export default async function handler(req) {
       })));
 
     if (itemError) {
-      await supabase.from("orders").delete().eq("id", order.id);
+      // 訂單明細失敗時嘗試清除孤立的 pending 訂單。
+      const { error: cleanupError } = await supabase
+        .from("orders")
+        .delete()
+        .eq("id", order.id)
+        .eq("payment_status", "pending");
+
+      if (cleanupError) console.error("order cleanup error:", cleanupError);
       throw itemError;
     }
+
+    console.log("Order created", {
+      orderNo: order.order_no,
+      total: order.total,
+      itemCount: normalized.length
+    });
 
     return json({
       ok: true,
@@ -152,7 +190,9 @@ export default async function handler(req) {
   } catch (error) {
     console.error("create-order error:", error);
     return json({
-      error: error?.message || "建立訂單失敗"
+      error: error?.name === "TimeoutError"
+        ? "Supabase 連線逾時，請稍後再試"
+        : error?.message || "建立訂單失敗"
     }, 500);
   }
 }
