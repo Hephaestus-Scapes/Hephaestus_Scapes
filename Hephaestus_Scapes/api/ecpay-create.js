@@ -1,29 +1,21 @@
 import { getSupabase } from "../lib/supabase.js";
 import { ecpayConfig, makeCheckMacValue, ecpayDate, esc } from "../lib/ecpay.js";
+import { json, readJsonBody } from "../lib/http.js";
 
-function json(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      "content-type": "application/json; charset=utf-8",
-      "cache-control": "no-store"
-    }
-  });
-}
 
-export default async function handler(req) {
-  if (req.method !== "POST") return json({ error: "Method Not Allowed" }, 405);
+export default async function handler(req, res) {
+  if (req.method !== "POST") return json(res, { error: "Method Not Allowed" }, 405);
 
   try {
     let body;
     try {
-      body = await req.json();
+      body = await readJsonBody(req);
     } catch {
-      return json({ error: "Request body 必須是有效的 JSON" }, 400);
+      return json(res, { error: "Request body 必須是有效的 JSON" }, 400);
     }
 
     const orderNo = String(body?.orderNo || "").trim();
-    if (!orderNo) return json({ error: "缺少 orderNo" }, 400);
+    if (!orderNo) return json(res, { error: "缺少 orderNo" }, 400);
 
     const supabase = getSupabase();
 
@@ -33,9 +25,9 @@ export default async function handler(req) {
       .eq("order_no", orderNo)
       .single();
 
-    if (orderError || !order) return json({ error: "找不到訂單" }, 404);
+    if (orderError || !order) return json(res, { error: "找不到訂單" }, 404);
     if (order.payment_status !== "pending") {
-      return json({ error: "此訂單不是待付款狀態" }, 409);
+      return json(res, { error: "此訂單不是待付款狀態" }, 409);
     }
 
     const { data: items, error: itemError } = await supabase
@@ -47,7 +39,7 @@ export default async function handler(req) {
 
     const siteUrl = (process.env.SITE_URL || "").replace(/\/$/, "");
     if (!siteUrl || !/^https:\/\//i.test(siteUrl)) {
-      return json({ error: "SITE_URL 尚未正確設定（必須是 HTTPS 網址）" }, 500);
+      return json(res, { error: "SITE_URL 尚未正確設定（必須是 HTTPS 網址）" }, 500);
     }
 
     const itemName = (items || [])
@@ -91,16 +83,14 @@ ${fields}
 </body>
 </html>`;
 
-    return new Response(html, {
-      status: 200,
-      headers: {
-        "content-type": "text/html; charset=utf-8",
-        "cache-control": "no-store"
-      }
-    });
+    res.statusCode = 200;
+    res.setHeader("content-type", "text/html; charset=utf-8");
+    res.setHeader("cache-control", "no-store");
+    res.end(html);
+    return;
   } catch (error) {
     console.error("ecpay-create error:", error);
-    return json({
+    return json(res, {
       error: error?.name === "TimeoutError"
         ? "Supabase 連線逾時，請稍後再試"
         : error?.message || "建立 ECPay 付款失敗"
