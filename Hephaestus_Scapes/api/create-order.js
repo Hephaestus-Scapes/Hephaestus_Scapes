@@ -1,10 +1,41 @@
+import crypto from "node:crypto";
 import { getSupabase } from "../lib/supabase.js";
-import { ecpayConfig, makeCheckMacValue, ecpayDate, esc } from "../lib/ecpay.js";
 import { json, readJsonBody } from "../lib/http.js";
 
 
+function makeOrderNo() {
+  // ECPay MerchantTradeNo 最多 20 字元；使用台灣時間到分鐘 + 6 位 hex。
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Taipei",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23"
+  }).formatToParts(new Date());
+
+  const get = type => parts.find(p => p.type === type)?.value || "00";
+  const timestamp = `${get("year")}${get("month")}${get("day")}${get("hour")}${get("minute")}`;
+  const random = crypto.randomBytes(3).toString("hex").toUpperCase();
+
+  return `HS${timestamp}${random}`; // 2 + 12 + 6 = 20
+}
+
+function validCustomer(c) {
+  return c &&
+    String(c.name || "").trim() &&
+    String(c.phone || "").trim() &&
+    String(c.email || "").trim() &&
+    String(c.city || "").trim() &&
+    String(c.district || "").trim() &&
+    String(c.address || "").trim();
+}
+
 export default async function handler(req, res) {
-  if (req.method !== "POST") return json(res, { error: "Method Not Allowed" }, 405);
+  if (req.method !== "POST") {
+    return json(res, { error: "Method Not Allowed" }, 405);
+  }
 
   try {
     let body;
@@ -14,86 +45,146 @@ export default async function handler(req, res) {
       return json(res, { error: "Request body 必須是有效的 JSON" }, 400);
     }
 
-    const orderNo = String(body?.orderNo || "").trim();
-    if (!orderNo) return json(res, { error: "缺少 orderNo" }, 400);
+    const {
+      customer,
+      paymentMethod = "ecpay",
+      note = "",
+      items
+    } = body || {};
+
+    if (paymentMethod !== "ecpay") {
+      return json(res, { error: "目前僅提供 ECPay 綠界金流" }, 400);
+    }
+
+    if (!validCustomer(customer)) {
+      return json(res, { error: "收件資料不完整" }, 400);
+    }
+
+    if (!Array.isArray(items) || !items.length) {
+      return json(res, { error: "購物車是空的" }, 400);
+    }
+
+    if (items.length > 50) {
+      return json(res, { error: "購物車商品數量過多" }, 400);
+    }
+
+    const ids = [...new Set(
+      items.map(x => String(x?.id || "").trim()).filter(Boolean)
+    )];
+
+    if (!ids.length) {
+      return json(res, { error: "購物車商品資料無效" }, 400);
+    }
 
     const supabase = getSupabase();
 
+    const { data: products, error: productError } = await supabase
+      .from("products")
+      .select("id,name,price,stock,active")
+      .in("id", ids)
+      .eq("active", true);
+
+    if (productError) throw productError;
+
+    const map = new Map((products || []).map(p => [String(p.id), p]));
+    const normalized = [];
+
+    for (const raw of items) {
+      const p = map.get(String(raw?.id || "").trim());
+      const qty = Number(raw?.qty);
+
+      if (!p) return json(res, { error: "商品不存在或已下架" }, 400);
+      if (!Number.isInteger(qty) || qty < 1) {
+        return json(res, { error: `商品數量無效：${p.name}` }, 400);
+      }
+      if (qty > p.stock) {
+        return json(res, { error: `庫存不足：${p.name}`, available: p.stock }, 409);
+      }
+
+      normalized.push({
+        product_id: p.id,
+        product_name: p.name,
+        size: raw?.size ? String(raw.size).slice(0, 100) : null,
+        color: raw?.color ? String(raw.color).slice(0, 100) : null,
+        material: raw?.material ? String(raw.material).slice(0, 100) : null,
+        unit_price: Number(p.price),
+        quantity: qty
+      });
+    }
+
+    const subtotal = normalized.reduce(
+      (sum, item) => sum + item.unit_price * item.quantity,
+      0
+    );
+
+    if (!Number.isSafeInteger(subtotal)) {
+      return json(res, { error: "訂單金額無效" }, 400);
+    }
+
+    const orderNo = makeOrderNo();
+
     const { data: order, error: orderError } = await supabase
       .from("orders")
-      .select("id,order_no,total,payment_status,order_status")
-      .eq("order_no", orderNo)
+      .insert({
+        order_no: orderNo,
+        customer_name: String(customer.name).trim(),
+        customer_phone: String(customer.phone).trim(),
+        customer_email: String(customer.email).trim(),
+        shipping_city: String(customer.city).trim(),
+        shipping_district: String(customer.district).trim(),
+        shipping_address: String(customer.address).trim(),
+        note: String(note || "").trim().slice(0, 2000) || null,
+        payment_method: "ecpay",
+        payment_status: "pending",
+        order_status: "pending_payment",
+        subtotal,
+        shipping_fee: 0,
+        total: subtotal
+      })
+      .select("id,order_no,total")
       .single();
 
-    if (orderError || !order) return json(res, { error: "找不到訂單" }, 404);
-    if (order.payment_status !== "pending") {
-      return json(res, { error: "此訂單不是待付款狀態" }, 409);
-    }
+    if (orderError) throw orderError;
 
-    const { data: items, error: itemError } = await supabase
+    const { error: itemError } = await supabase
       .from("order_items")
-      .select("product_name,quantity,unit_price")
-      .eq("order_id", order.id);
+      .insert(normalized.map(item => ({
+        ...item,
+        order_id: order.id
+      })));
 
-    if (itemError) throw itemError;
+    if (itemError) {
+      // 訂單明細失敗時嘗試清除孤立的 pending 訂單。
+      const { error: cleanupError } = await supabase
+        .from("orders")
+        .delete()
+        .eq("id", order.id)
+        .eq("payment_status", "pending");
 
-    const siteUrl = (process.env.SITE_URL || "").replace(/\/$/, "");
-    if (!siteUrl || !/^https:\/\//i.test(siteUrl)) {
-      return json(res, { error: "SITE_URL 尚未正確設定（必須是 HTTPS 網址）" }, 500);
+      if (cleanupError) console.error("order cleanup error:", cleanupError);
+      throw itemError;
     }
 
-    const itemName = (items || [])
-      .map(x => `${String(x.product_name).replace(/[|#]/g, " ")} x ${x.quantity}`)
-      .join("#")
-      .slice(0, 400);
+    console.log("Order created", {
+      orderNo: order.order_no,
+      total: order.total,
+      itemCount: normalized.length
+    });
 
-    const { merchantId, hashKey, hashIv, checkoutUrl } = ecpayConfig();
-
-    const params = {
-      MerchantID: merchantId,
-      MerchantTradeNo: order.order_no,
-      MerchantTradeDate: ecpayDate(),
-      PaymentType: "aio",
-      TotalAmount: Number(order.total),
-      TradeDesc: "Hephaestus Scapes 商品訂單",
-      ItemName: itemName || "Hephaestus Scapes 商品",
-      ReturnURL: `${siteUrl}/api/ecpay-return`,
-      ChoosePayment: "ALL",
-      EncryptType: 1,
-      ClientBackURL: `${siteUrl}/cart.html`
-    };
-
-    params.CheckMacValue = makeCheckMacValue(params, hashKey, hashIv);
-
-    const fields = Object.entries(params)
-      .map(([key, value]) =>
-        `<input type="hidden" name="${esc(key)}" value="${esc(value)}">`
-      )
-      .join("");
-
-    const html = `<!doctype html>
-<html lang="zh-Hant">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>前往綠界付款</title></head>
-<body>
-<p style="font-family:sans-serif;text-align:center;margin-top:20vh">正在前往綠界付款頁面…</p>
-<form id="ecpay" method="POST" action="${esc(checkoutUrl)}">
-${fields}
-</form>
-<script>document.getElementById("ecpay").submit();</script>
-</body>
-</html>`;
-
-    res.statusCode = 200;
-    res.setHeader("content-type", "text/html; charset=utf-8");
-    res.setHeader("cache-control", "no-store");
-    res.end(html);
-    return;
+    return json(res, {
+      ok: true,
+      order: {
+        id: order.id,
+        orderNo: order.order_no,
+        total: order.total
+      }
+    });
   } catch (error) {
-    console.error("ecpay-create error:", error);
+    console.error("create-order error:", error);
     return json(res, {
       error: error?.name === "TimeoutError"
         ? "Supabase 連線逾時，請稍後再試"
-        : error?.message || "建立 ECPay 付款失敗"
+        : error?.message || "建立訂單失敗"
     }, 500);
   }
 }
