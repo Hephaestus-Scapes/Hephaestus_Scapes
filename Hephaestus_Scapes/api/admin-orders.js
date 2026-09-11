@@ -1,31 +1,23 @@
 import { createClient } from "@supabase/supabase-js";
+import { json } from "../lib/http.js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-function json(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      "content-type": "application/json; charset=utf-8",
-      "cache-control": "no-store"
-    }
-  });
-}
 
 function unauthorized() {
-  return json({ error: "Unauthorized" }, 401);
+  return json(res, { error: "Unauthorized" }, 401);
 }
 
-export default async function handler(req) {
-  if (req.method !== "GET") return json({ error: "Method Not Allowed" }, 405);
+export default async function handler(req, res) {
+  if (req.method !== "GET") return json(res, { error: "Method Not Allowed" }, 405);
 
   // 第一版先用 ADMIN_TOKEN 保護。
   // 不要把這個 token 寫進前端；真正上線建議改成 Supabase Auth + admin role。
   const expected = process.env.ADMIN_TOKEN;
-  const received = req.headers.get("x-admin-token");
+  const received = req.headers["x-admin-token"];
 
   if (!expected || !received || received !== expected) {
     return unauthorized();
@@ -48,9 +40,9 @@ export default async function handler(req) {
       .limit(100);
 
     if (error) throw error;
-    return json({ ok: true, orders: data || [] });
+    return json(res, { ok: true, orders: data || [] });
   } catch (error) {
     console.error(error);
-    return json({ error: "讀取訂單失敗" }, 500);
+    return json(res, { error: "讀取訂單失敗" }, 500);
   }
 }
