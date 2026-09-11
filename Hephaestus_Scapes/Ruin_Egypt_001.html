@@ -9,6 +9,7 @@
   body { font-family:'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing:antialiased; }
   .thumb.active { border-color:#047857; box-shadow:0 0 0 2px rgba(4,120,87,.12); }
   .gallery-main img { transition:opacity .2s ease; }
+  .gallery-main { touch-action: pan-y; }
   select:focus, input:focus { outline:none; box-shadow:0 0 0 3px rgba(16,185,129,.15); border-color:#059669; }
   .purchase-sticky { position:sticky; top:24px; }
   @media (max-width:767px) { .purchase-sticky { position:static; } }
@@ -20,10 +21,10 @@
 <!-- 導覽列修改：Logo與品牌名移至左側，回上一頁/首頁移至右側 -->
 <nav class="container mx-auto px-5 md:px-8 py-5 flex justify-between items-center border-b border-stone-200">
   <div class="flex items-center gap-3">
-    <!-- Logo 區域 (佔位符) -->
-    <div class="w-8 h-8 rounded-full bg-stone-200 border border-stone-300 flex items-center justify-center text-[10px] text-stone-500 font-bold overflow-hidden">
-      <img src="https://placehold.co/100x100/E7E5E4/78716C?text=Logo" alt="Logo" class="w-full h-full object-cover">
-    </div>
+    <!-- Logo -->
+    <a href="index.html" class="w-8 h-8 rounded-full bg-stone-200 border border-stone-300 flex items-center justify-center overflow-hidden hover:opacity-80 transition" aria-label="返回首頁">
+      <img src="Logo.png" alt="Hephaestus Scapes Logo" class="w-full h-full object-cover">
+    </a>
     <div class="text-sm md:text-base font-extrabold text-stone-800 tracking-widest">HEPHAESTUS SCAPES</div>
   </div>
   <div class="flex items-center gap-3">
@@ -39,12 +40,21 @@
 
     <!-- Gallery -->
     <section>
-      <div class="gallery-main bg-stone-200 rounded-3xl overflow-hidden border border-stone-200">
-        <!-- 圖片名稱更新為 Ruin_Egypt_001_Pic1... -->
+      <div id="galleryMain" class="gallery-main bg-stone-200 rounded-3xl overflow-hidden border border-stone-200 touch-pan-y">
+        <!-- 圖片名稱：Ruin_Egypt_001_Pic1 ~ Pic6 -->
         <img id="mainImage"
              src="Ruin_Egypt_001_Pic1.png"
              alt="聖甲蟲神殿遺跡商品主視覺"
-             class="w-full aspect-[4/3] object-cover">
+             class="w-full aspect-[4/3] object-cover select-none"
+             draggable="false">
+      </div>
+      <div id="mobileDots" class="flex md:hidden justify-center gap-2 mt-3" aria-label="商品圖片切換">
+        <button type="button" class="gallery-dot w-2 h-2 rounded-full bg-emerald-700" onclick="showImageIndex(0)" aria-label="第1張圖片"></button>
+        <button type="button" class="gallery-dot w-2 h-2 rounded-full bg-stone-300" onclick="showImageIndex(1)" aria-label="第2張圖片"></button>
+        <button type="button" class="gallery-dot w-2 h-2 rounded-full bg-stone-300" onclick="showImageIndex(2)" aria-label="第3張圖片"></button>
+        <button type="button" class="gallery-dot w-2 h-2 rounded-full bg-stone-300" onclick="showImageIndex(3)" aria-label="第4張圖片"></button>
+        <button type="button" class="gallery-dot w-2 h-2 rounded-full bg-stone-300" onclick="showImageIndex(4)" aria-label="第5張圖片"></button>
+        <button type="button" class="gallery-dot w-2 h-2 rounded-full bg-stone-300" onclick="showImageIndex(5)" aria-label="第6張圖片"></button>
       </div>
 
       <div class="grid grid-cols-4 sm:grid-cols-6 gap-3 mt-4">
@@ -73,7 +83,8 @@
           <img src="Ruin_Egypt_001_Pic6.png" alt="生態缸情境" class="w-full aspect-[4/3] object-cover">
         </button>
       </div>
-      <p class="text-xs text-stone-400 mt-3 text-center">點選縮圖查看商品細節</p>
+      <p class="hidden md:block text-xs text-stone-400 mt-3 text-center">點選縮圖查看商品細節</p>
+      <p class="md:hidden text-xs text-stone-400 mt-3 text-center">左右滑動切換商品圖片</p>
     </section>
 
     <!-- Purchase -->
@@ -102,6 +113,14 @@
           <select id="size" class="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm">
             <option value="399">標準版（15cm × 12cm × 8cm）</option>
             <option value="599">加大版（20cm × 16cm × 10cm）— NTD 599</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="color" class="block text-sm font-bold mb-2">顏色</label>
+          <select id="color" class="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm">
+            <option value="岩灰">消光岩灰</option>
+            <option value="砂岩">自然砂岩</option>
           </select>
         </div>
 
@@ -163,23 +182,23 @@
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <div class="rounded-2xl bg-stone-50 border border-stone-200 p-6">
         <div class="text-emerald-700 text-xs font-bold mb-4">01</div>
-        <h3 class="font-bold text-lg mb-2">聖甲蟲造型</h3>
-        <p class="text-sm text-stone-500 leading-6">以聖甲蟲輪廓作為整體視覺核心，融合建築與生物形態。</p>
+        <h3 class="font-bold text-lg mb-2">聖甲蟲形態 <span class="text-xs font-medium text-stone-400 tracking-wider">SCARAB FORM</span></h3>
+        <p class="text-sm text-stone-500 leading-6">以聖甲蟲輪廓作為視覺核心，將古文明的建築語彙轉化為具有棲息功能的立體形態。</p>
       </div>
       <div class="rounded-2xl bg-stone-50 border border-stone-200 p-6">
         <div class="text-emerald-700 text-xs font-bold mb-4">02</div>
-        <h3 class="font-bold text-lg mb-2">深層躲避</h3>
-        <p class="text-sm text-stone-500 leading-6">單一主要入口通往較深的藏身空間，形成相對封閉的休息區。</p>
+        <h3 class="font-bold text-lg mb-2">深層躲避 <span class="text-xs font-medium text-stone-400 tracking-wider">DEEP HIDE</span></h3>
+        <p class="text-sm text-stone-500 leading-6">單一主要入口通往較深的藏身空間，形成相對封閉的休息與躲避區域。</p>
       </div>
       <div class="rounded-2xl bg-stone-50 border border-stone-200 p-6">
         <div class="text-emerald-700 text-xs font-bold mb-4">03</div>
-        <h3 class="font-bold text-lg mb-2">平坦頂部</h3>
-        <p class="text-sm text-stone-500 leading-6">平坦頂部提供額外立體空間，可作為停留與攀爬區域。</p>
+        <h3 class="font-bold text-lg mb-2">立體停留 <span class="text-xs font-medium text-stone-400 tracking-wider">FLAT TOP</span></h3>
+        <p class="text-sm text-stone-500 leading-6">平坦頂部延伸出額外立體空間，可作為停留、觀察與攀爬區域。</p>
       </div>
       <div class="rounded-2xl bg-stone-50 border border-stone-200 p-6">
         <div class="text-emerald-700 text-xs font-bold mb-4">04</div>
-        <h3 class="font-bold text-lg mb-2">厚實結構</h3>
-        <p class="text-sm text-stone-500 leading-6">以厚實幾何輪廓建立穩定量體，同時兼顧造景與實際使用。</p>
+        <h3 class="font-bold text-lg mb-2">厚實結構 <span class="text-xs font-medium text-stone-400 tracking-wider">SOLID FORM</span></h3>
+        <p class="text-sm text-stone-500 leading-6">以厚實幾何輪廓建立穩定量體，在視覺造景與實際使用之間取得平衡。</p>
       </div>
     </div>
   </div>
@@ -232,12 +251,66 @@
 </footer>
 
 <script>
+const galleryImages = [
+  { src: 'Ruin_Egypt_001_Pic1.png', alt: '商品全貌' },
+  { src: 'Ruin_Egypt_001_Pic2.png', alt: '入口細節' },
+  { src: 'Ruin_Egypt_001_Pic3.png', alt: '內部躲避空間' },
+  { src: 'Ruin_Egypt_001_Pic4.png', alt: '頂部細節' },
+  { src: 'Ruin_Egypt_001_Pic5.png', alt: '材質紋理' },
+  { src: 'Ruin_Egypt_001_Pic6.png', alt: '生態缸情境' }
+];
+
+let currentImageIndex = 0;
+
+function showImageIndex(index) {
+  currentImageIndex = (index + galleryImages.length) % galleryImages.length;
+  const image = galleryImages[currentImageIndex];
+  document.getElementById('mainImage').src = image.src;
+  document.getElementById('mainImage').alt = image.alt;
+
+  document.querySelectorAll('.thumb').forEach((t, i) => {
+    t.classList.toggle('active', i === currentImageIndex);
+  });
+
+  document.querySelectorAll('.gallery-dot').forEach((dot, i) => {
+    dot.classList.toggle('bg-emerald-700', i === currentImageIndex);
+    dot.classList.toggle('bg-stone-300', i !== currentImageIndex);
+  });
+}
+
 function changeImage(button, src, alt) {
+  const index = galleryImages.findIndex(item => item.src === src);
+  currentImageIndex = index >= 0 ? index : currentImageIndex;
   document.getElementById('mainImage').src = src;
   document.getElementById('mainImage').alt = alt;
   document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
   button.classList.add('active');
+
+  document.querySelectorAll('.gallery-dot').forEach((dot, i) => {
+    dot.classList.toggle('bg-emerald-700', i === currentImageIndex);
+    dot.classList.toggle('bg-stone-300', i !== currentImageIndex);
+  });
 }
+
+// Mobile: swipe left/right on the main image to switch photos.
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.getElementById('galleryMain').addEventListener('touchstart', (event) => {
+  const touch = event.changedTouches[0];
+  touchStartX = touch.clientX;
+  touchStartY = touch.clientY;
+}, { passive: true });
+
+document.getElementById('galleryMain').addEventListener('touchend', (event) => {
+  const touch = event.changedTouches[0];
+  const deltaX = touch.clientX - touchStartX;
+  const deltaY = touch.clientY - touchStartY;
+
+  if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY)) {
+    showImageIndex(currentImageIndex + (deltaX < 0 ? 1 : -1));
+  }
+}, { passive: true });
 
 function adjustQty(delta) {
   const input = document.getElementById('qty');
