@@ -166,6 +166,44 @@
   document.getElementById("subtotal").textContent = money(subtotal);
   document.getElementById("total").textContent = money(subtotal);
 
+  async function fetchWithTimeout(url, options = {}, timeoutMs = 20000) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+      return await fetch(url, { ...options, signal: controller.signal });
+    } catch (error) {
+      if (error?.name === "AbortError") {
+        throw new Error("伺服器回應逾時，請稍後再試。若持續發生，請檢查 Vercel API 設定。");
+      }
+      throw error;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  async function readJsonResponse(response) {
+    const contentType = response.headers.get("content-type") || "";
+    const raw = await response.text();
+
+    if (!contentType.includes("application/json")) {
+      throw new Error(
+        response.ok
+          ? "伺服器回傳了非 JSON 資料，請檢查 API 部署。"
+          : `伺服器錯誤（HTTP ${response.status}），請檢查 Vercel Logs。`
+      );
+    }
+
+    let data;
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      throw new Error("伺服器回傳資料格式錯誤，請檢查 Vercel Logs。");
+    }
+
+    return data;
+  }
+
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
@@ -175,7 +213,7 @@
     submitButton.textContent = "建立訂單中…";
 
     try {
-      const response = await fetch("/api/create-order", {
+      const response = await fetchWithTimeout("/api/create-order", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
@@ -193,15 +231,17 @@
         })
       });
 
-      const result = await response.json();
+      const result = await readJsonResponse(response);
 
       if (!response.ok || !result.ok) {
-        throw new Error(result.error || "建立訂單失敗");
+        throw new Error(result.error || `建立訂單失敗（HTTP ${response.status}）`);
       }
 
       // ECPay：下一步直接由 server 建立付款表單並導轉。
       if (result.order && result.order.orderNo && fd.get("payment") === "ecpay") {
-        const pay = await fetch("/api/ecpay-create", {
+        submitButton.textContent = "前往綠界付款…";
+
+        const pay = await fetchWithTimeout("/api/ecpay-create", {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({ orderNo: result.order.orderNo })
@@ -209,7 +249,14 @@
 
         const html = await pay.text();
 
-        if (!pay.ok) throw new Error("無法建立 ECPay 付款頁");
+        if (!pay.ok) {
+          let message = "無法建立 ECPay 付款頁";
+          try {
+            const data = JSON.parse(html);
+            message = data.error || message;
+          } catch {}
+          throw new Error(message);
+        }
 
         // 把 server 回傳的自動 POST 頁面載入目前頁面。
         document.open();
