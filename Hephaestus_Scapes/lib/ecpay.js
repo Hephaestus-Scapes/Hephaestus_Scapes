@@ -22,14 +22,11 @@ export function ecpayConfig() {
 }
 
 function encodeEcpay(value) {
+  // ECPay uses application/x-www-form-urlencoded style encoding:
+  // spaces become +, while encodeURIComponent's unescaped -_.!~*\'() remain unchanged.
   return encodeURIComponent(String(value))
-    .toLowerCase()
     .replace(/%20/g, "+")
-    .replace(/!/g, "%21")
-    .replace(/'/g, "%27")
-    .replace(/\(/g, "%28")
-    .replace(/\)/g, "%29")
-    .replace(/\*/g, "%2a");
+    .toLowerCase();
 }
 
 export function makeCheckMacValue(params, hashKey, hashIv) {
@@ -37,8 +34,7 @@ export function makeCheckMacValue(params, hashKey, hashIv) {
     .filter(([key, value]) =>
       key.toLowerCase() !== "checkmacvalue" &&
       value !== undefined &&
-      value !== null &&
-      value !== ""
+      value !== null
     )
     .sort(([a], [b]) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
