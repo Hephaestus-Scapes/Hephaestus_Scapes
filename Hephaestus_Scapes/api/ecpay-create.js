@@ -62,8 +62,7 @@ export default async function handler(req, res) {
       ReturnURL: `${siteUrl}/api/ecpay-return`,
       ChoosePayment: "ALL",
       EncryptType: 1,
-      ClientBackURL: `${siteUrl}/Ruin_Egypt_001.html`,
-      OrderResultURL: `${siteUrl}/api/ecpay-result`
+      ClientBackURL: `${siteUrl}/Ruin_Egypt_001.html`
     };
 
     params.CheckMacValue = makeCheckMacValue(params, hashKey, hashIv);
@@ -72,7 +71,6 @@ export default async function handler(req, res) {
       orderNo: order.order_no,
       total: order.total,
       returnURL: params.ReturnURL,
-      orderResultURL: params.OrderResultURL,
       checkoutUrl
     });
 
