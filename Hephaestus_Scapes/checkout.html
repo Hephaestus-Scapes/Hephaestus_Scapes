@@ -258,12 +258,18 @@
           throw new Error(message);
         }
 
-        // 記住這筆訂單，付款完成後由 payment-success.html
-        // 確認訂單狀態為 paid 後再清空購物車。
+        // 記住這筆訂單，讓付款完成後的 payment-success.html
+        // 仍可查詢訂單狀態。
         localStorage.setItem(DRAFT_KEY, JSON.stringify({
           orderNo: result.order.orderNo,
           createdAt: Date.now()
         }));
+
+        // ⭐ ECPay 付款頁已成功建立，訂單也已寫入資料庫。
+        // ATM / 超商等非同步付款不會一定回到買家的瀏覽器，
+        // 因此不能等 ReturnURL 才清 localStorage。
+        // 這裡先清空前端購物車；實際庫存仍由後端付款成功通知時才扣除。
+        localStorage.removeItem(CART_KEY);
 
         // 把 server 回傳的自動 POST 頁面載入目前頁面。
         document.open();
