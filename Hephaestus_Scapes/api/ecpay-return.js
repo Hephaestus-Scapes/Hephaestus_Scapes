@@ -13,7 +13,8 @@ export default async function handler(req, res) {
       RtnCode: params.RtnCode,
       RtnMsg: params.RtnMsg,
       TradeNo: params.TradeNo,
-      TradeAmt: params.TradeAmt
+      TradeAmt: params.TradeAmt,
+      SimulatePaid: params.SimulatePaid
     });
 
     if (!verifyCheckMacValue(params)) {
@@ -52,6 +53,17 @@ export default async function handler(req, res) {
         expected: order.total
       });
       return text(res, "0|Amount Mismatch", 400);
+    }
+
+    // ECPay 廠商後台的「模擬付款」只用來測試 ReturnURL 是否能收到通知。
+    // 官方會帶 SimulatePaid=1；這不是消費者真的付款，絕對不能更新 paid 或扣庫存。
+    if (String(params.SimulatePaid || "") === "1") {
+      console.log("ECPay simulated payment notification received", {
+        orderNo,
+        rtnCode,
+        rtnMsg
+      });
+      return text(res, "1|OK");
     }
 
     if (rtnCode !== "1") {
