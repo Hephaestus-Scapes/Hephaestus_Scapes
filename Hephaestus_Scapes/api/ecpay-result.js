@@ -1,14 +1,18 @@
 import { getSupabase } from "../lib/supabase.js";
 import { verifyCheckMacValue } from "../lib/ecpay.js";
-import { text, readFormBody } from "../lib/http.js";
+import { readFormBody } from "../lib/http.js";
 
+// ECPay OrderResultURL：付款完成後由消費者瀏覽器 POST 到這裡。
+// ReturnURL 才是主要的 Server-to-Server 付款通知；本頁只負責讓使用者離開綠界頁面。
 export default async function handler(req, res) {
-  if (req.method !== "POST") return text(res, "Method Not Allowed", 405);
+  if (req.method !== "POST") {
+    return sendResultPage(res, "/Ruin_Egypt_001.html?payment=pending");
+  }
 
   try {
     const params = await readFormBody(req);
 
-    console.log("ECPay ReturnURL received", {
+    console.log("ECPay OrderResultURL received", {
       MerchantTradeNo: params.MerchantTradeNo,
       RtnCode: params.RtnCode,
       RtnMsg: params.RtnMsg,
@@ -17,92 +21,89 @@ export default async function handler(req, res) {
     });
 
     if (!verifyCheckMacValue(params)) {
-      console.error("ECPay ReturnURL CheckMacValue mismatch", {
+      console.error("ECPay OrderResultURL CheckMacValue mismatch", {
         MerchantTradeNo: params.MerchantTradeNo
       });
-      return text(res, "0|CheckMacValue Error", 400);
+      return sendResultPage(res, "/Ruin_Egypt_001.html?payment=failed&reason=checkmac");
     }
 
     const orderNo = String(params.MerchantTradeNo || "").trim();
     const rtnCode = String(params.RtnCode || "");
-    const rtnMsg = String(params.RtnMsg || "");
-    const tradeNo = String(params.TradeNo || "").trim();
-    const tradeDate = params.PaymentDate ? new Date(params.PaymentDate) : null;
 
-    if (!orderNo) return text(res, "0|Missing MerchantTradeNo", 400);
+    if (!orderNo) {
+      return sendResultPage(res, "/Ruin_Egypt_001.html?payment=failed&reason=missing-order");
+    }
 
     const supabase = getSupabase();
-
     const { data: order, error: orderError } = await supabase
       .from("orders")
-      .select("id,total,payment_status,order_status")
+      .select("id,total,payment_status")
       .eq("order_no", orderNo)
       .single();
 
     if (orderError || !order) {
-      console.error("ECPay ReturnURL order not found", { orderNo, orderError });
-      return text(res, "0|Order Not Found", 404);
+      console.error("ECPay OrderResultURL order not found", { orderNo, orderError });
+      return sendResultPage(res, "/Ruin_Egypt_001.html?payment=failed&reason=order-not-found");
     }
 
     const ecpayAmount = Number(params.TradeAmt || 0);
     if (!Number.isSafeInteger(ecpayAmount) || ecpayAmount !== Number(order.total)) {
-      console.error("ECPay ReturnURL amount mismatch", {
+      console.error("ECPay OrderResultURL amount mismatch", {
         orderNo,
         ecpayAmount,
         expected: order.total
       });
-      return text(res, "0|Amount Mismatch", 400);
+      return sendResultPage(res, "/Ruin_Egypt_001.html?payment=failed&reason=amount");
     }
 
-    if (rtnCode !== "1") {
-      await supabase
-        .from("orders")
-        .update({
-          payment_status: "failed",
-          order_status: "cancelled",
-          ecpay_trade_no: tradeNo || null,
-          ecpay_trade_date: tradeDate && !Number.isNaN(tradeDate.getTime())
-            ? tradeDate.toISOString()
-            : null,
-          updated_at: new Date().toISOString()
-        })
-        .eq("id", order.id)
-        .eq("payment_status", "pending");
-
-      console.log("ECPay payment failed", { orderNo, rtnCode, rtnMsg });
-      return text(res, "1|OK");
+    // 若 ReturnURL 已經先完成，直接導回商品頁。
+    if (rtnCode === "1" && order.payment_status === "paid") {
+      return sendResultPage(
+        res,
+        `/Ruin_Egypt_001.html?payment=success&orderNo=${encodeURIComponent(orderNo)}`
+      );
     }
 
-    // 綠界可能重送成功通知。已付款直接回 OK，避免重複扣庫存。
-    if (order.payment_status === "paid") {
-      console.log("ECPay duplicate success notification", { orderNo });
-      return text(res, "1|OK");
+    // OrderResultURL 不再自行扣庫存，避免 Client / Server 兩條回傳路徑互相競爭。
+    // 如果使用者端先收到結果而 ReturnURL 尚未到達，顯示 pending，避免誤稱付款成功。
+    if (rtnCode === "1") {
+      return sendResultPage(
+        res,
+        `/Ruin_Egypt_001.html?payment=pending&orderNo=${encodeURIComponent(orderNo)}`
+      );
     }
 
-    const { error: finalizeError } = await supabase.rpc("finalize_paid_order", {
-      p_order_id: order.id,
-      p_ecpay_trade_no: tradeNo || null,
-      p_ecpay_trade_date: tradeDate && !Number.isNaN(tradeDate.getTime())
-        ? tradeDate.toISOString()
-        : null
-    });
-
-    if (finalizeError) {
-      console.error("finalize_paid_order failed", {
-        orderNo,
-        finalizeError
-      });
-      return text(res, "0|Stock Finalize Error", 500);
-    }
-
-    console.log("ECPay payment success", { orderNo, rtnMsg });
-    return text(res, "1|OK");
-  } catch (error) {
-    console.error("ecpay-return error:", error);
-    return text(
+    return sendResultPage(
       res,
-      error?.name === "TimeoutError" ? "0|Database Timeout" : "0|Server Error",
-      500
+      `/Ruin_Egypt_001.html?payment=failed&orderNo=${encodeURIComponent(orderNo)}`
     );
+  } catch (error) {
+    console.error("ecpay-result error:", error);
+    return sendResultPage(res, "/Ruin_Egypt_001.html?payment=pending");
   }
+}
+
+function sendResultPage(res, target) {
+  const safeTarget = String(target).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+
+  const html = `<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="refresh" content="0;url=${safeTarget}">
+<title>付款結果</title>
+</head>
+<body style="font-family:sans-serif;text-align:center;padding-top:20vh">
+<p>正在返回商品頁面…</p>
+<script>
+  window.location.replace(${JSON.stringify(target)});
+</script>
+</body>
+</html>`;
+
+  res.statusCode = 200;
+  res.setHeader("content-type", "text/html; charset=utf-8");
+  res.setHeader("cache-control", "no-store, no-cache, must-revalidate");
+  res.end(html);
 }
