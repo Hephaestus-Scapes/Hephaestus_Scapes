@@ -158,7 +158,7 @@
         </label>
 <div class="mt-4 flex items-center justify-between border-y border-stone-200 py-3">
   <span class="text-sm text-stone-600">庫存</span>
-  <span id="stockText" class="text-sm font-medium text-stone-800">剩餘 5 件</span>
+  <span id="stockText" class="text-sm font-medium text-stone-800">庫存讀取中…</span>
 </div>
 
 
@@ -369,7 +369,7 @@ function addToCart() {
 
 <script>
 (function () {
-  const STOCK = 5;
+  let STOCK = null;
   const PRODUCT = {
     id: "Ruin_Egypt_001",
     name: "聖甲蟲神殿遺跡",
@@ -402,7 +402,6 @@ function addToCart() {
       .find(x => x.checked)?.value || "";
     const selectedMaterial = Array.from(document.querySelectorAll("select"))[1]?.value || "";
 
-    // Phase 1 uses a fixed demo stock of 5 per product/variant.
     const used = cart
       .filter(item => item.id === PRODUCT.id &&
                       item.size === selectedSize &&
@@ -410,11 +409,30 @@ function addToCart() {
                       item.material === selectedMaterial)
       .reduce((sum, item) => sum + Number(item.qty || 0), 0);
 
+    if (STOCK === null) {
+      el.textContent = "庫存讀取中…";
+      return;
+    }
     const remaining = Math.max(0, STOCK - used);
     el.textContent = `剩餘 ${remaining} 件`;
   }
 
-  function addProductToCart() {
+  async function fetchStock() {
+    const response = await fetch(`/api/product-stock?id=${encodeURIComponent(PRODUCT.id)}`, {
+      cache: "no-store"
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data?.ok || !data.products?.[PRODUCT.id]) {
+      throw new Error(data?.error || "無法取得庫存");
+    }
+    const product = data.products[PRODUCT.id];
+    if (!product.active) throw new Error("商品已下架");
+    STOCK = Math.max(0, Number(product.stock || 0));
+    updateStockText();
+    return STOCK;
+  }
+
+  async function addProductToCart() {
     const selects = document.querySelectorAll("select");
     const size = selects[0]?.value || "標準尺寸";
     const material = selects[1]?.value || "PLA";
@@ -424,6 +442,19 @@ function addToCart() {
 
     const qtyInput = document.querySelector('input[type="number"]');
     const qty = Math.max(1, Number(qtyInput?.value || 1));
+
+    let liveStock;
+    try {
+      liveStock = await fetchStock();
+    } catch (error) {
+      alert(error.message || "目前無法取得庫存，請稍後再試。");
+      return;
+    }
+
+    if (liveStock < 1) {
+      alert("目前已售罄。");
+      return;
+    }
 
     const cart = getCart();
     const keyMatch = item => item.id === PRODUCT.id &&
@@ -466,17 +497,21 @@ function addToCart() {
     }
   }, true);
 
-  document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", async function () {
     updateCartCount();
     updateStockText();
+    try {
+      await fetchStock();
+    } catch (error) {
+      const el = document.getElementById("stockText");
+      if (el) el.textContent = "庫存暫時無法取得";
+    }
   });
 })();
 </script>
 
 
-<div class="text-center text-xs text-stone-400 mt-2">
-  目前庫存與購物車為前端展示版；正式上線後可改由 Supabase 即時管理庫存與訂單。
-</div>
+
 
 </body>
 </html>
