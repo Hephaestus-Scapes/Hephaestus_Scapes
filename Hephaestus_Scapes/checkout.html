@@ -258,6 +258,13 @@
           throw new Error(message);
         }
 
+        // 記住這筆訂單，付款完成後由 payment-success.html
+        // 確認訂單狀態為 paid 後再清空購物車。
+        localStorage.setItem(DRAFT_KEY, JSON.stringify({
+          orderNo: result.order.orderNo,
+          createdAt: Date.now()
+        }));
+
         // 把 server 回傳的自動 POST 頁面載入目前頁面。
         document.open();
         document.write(html);
