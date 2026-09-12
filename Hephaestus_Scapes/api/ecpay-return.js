@@ -2,15 +2,22 @@ import { getSupabase } from "../lib/supabase.js";
 import { verifyCheckMacValue } from "../lib/ecpay.js";
 import { text, readFormBody } from "../lib/http.js";
 
-
 export default async function handler(req, res) {
   if (req.method !== "POST") return text(res, "Method Not Allowed", 405);
 
   try {
     const params = await readFormBody(req);
 
+    console.log("ECPay ReturnURL received", {
+      MerchantTradeNo: params.MerchantTradeNo,
+      RtnCode: params.RtnCode,
+      RtnMsg: params.RtnMsg,
+      TradeNo: params.TradeNo,
+      TradeAmt: params.TradeAmt
+    });
+
     if (!verifyCheckMacValue(params)) {
-      console.error("ECPay CheckMacValue mismatch", {
+      console.error("ECPay ReturnURL CheckMacValue mismatch", {
         MerchantTradeNo: params.MerchantTradeNo
       });
       return text(res, "0|CheckMacValue Error", 400);
@@ -32,11 +39,14 @@ export default async function handler(req, res) {
       .eq("order_no", orderNo)
       .single();
 
-    if (orderError || !order) return text(res, "0|Order Not Found", 404);
+    if (orderError || !order) {
+      console.error("ECPay ReturnURL order not found", { orderNo, orderError });
+      return text(res, "0|Order Not Found", 404);
+    }
 
     const ecpayAmount = Number(params.TradeAmt || 0);
     if (!Number.isSafeInteger(ecpayAmount) || ecpayAmount !== Number(order.total)) {
-      console.error("ECPay amount mismatch", {
+      console.error("ECPay ReturnURL amount mismatch", {
         orderNo,
         ecpayAmount,
         expected: order.total
@@ -45,21 +55,27 @@ export default async function handler(req, res) {
     }
 
     if (rtnCode !== "1") {
-      await supabase.from("orders").update({
-        payment_status: "failed",
-        order_status: "cancelled",
-        ecpay_trade_no: tradeNo || null,
-        ecpay_trade_date: tradeDate && !Number.isNaN(tradeDate.getTime())
-          ? tradeDate.toISOString()
-          : null,
-        updated_at: new Date().toISOString()
-      }).eq("id", order.id).eq("payment_status", "pending");
+      await supabase
+        .from("orders")
+        .update({
+          payment_status: "failed",
+          order_status: "cancelled",
+          ecpay_trade_no: tradeNo || null,
+          ecpay_trade_date: tradeDate && !Number.isNaN(tradeDate.getTime())
+            ? tradeDate.toISOString()
+            : null,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", order.id)
+        .eq("payment_status", "pending");
 
+      console.log("ECPay payment failed", { orderNo, rtnCode, rtnMsg });
       return text(res, "1|OK");
     }
 
-    // ECPay 可能重送成功通知；已付款時直接回 OK，避免重複扣庫存。
+    // 綠界可能重送成功通知。已付款直接回 OK，避免重複扣庫存。
     if (order.payment_status === "paid") {
+      console.log("ECPay duplicate success notification", { orderNo });
       return text(res, "1|OK");
     }
 
@@ -72,7 +88,10 @@ export default async function handler(req, res) {
     });
 
     if (finalizeError) {
-      console.error("finalize_paid_order failed", finalizeError);
+      console.error("finalize_paid_order failed", {
+        orderNo,
+        finalizeError
+      });
       return text(res, "0|Stock Finalize Error", 500);
     }
 
@@ -80,7 +99,8 @@ export default async function handler(req, res) {
     return text(res, "1|OK");
   } catch (error) {
     console.error("ecpay-return error:", error);
-    return text(res,
+    return text(
+      res,
       error?.name === "TimeoutError" ? "0|Database Timeout" : "0|Server Error",
       500
     );
