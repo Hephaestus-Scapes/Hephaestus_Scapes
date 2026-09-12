@@ -60,7 +60,10 @@ export default async function handler(req, res) {
       ReturnURL: `${siteUrl}/api/ecpay-return`,
       ChoosePayment: "ALL",
       EncryptType: 1,
-      ClientBackURL: `${siteUrl}/cart.html`
+      // ClientBackURL 只是綠界頁面的「返回商店」按鈕。
+      // OrderResultURL 才是付款完成後由瀏覽器 POST 結果並導回本站的流程。
+      ClientBackURL: `${siteUrl}/Ruin_Egypt_001.html`,
+      OrderResultURL: `${siteUrl}/api/ecpay-result`
     };
 
     params.CheckMacValue = makeCheckMacValue(params, hashKey, hashIv);
