@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>付款結果 · Hephaestus Scapes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-[#F7F7F5] text-stone-900">
+  <main class="flex min-h-screen items-center justify-center px-6">
+    <section class="w-full max-w-lg rounded-2xl border border-stone-200 bg-white p-10 text-center">
+      <p class="text-xs tracking-[0.25em] text-stone-400">PAYMENT RESULT</p>
+      <h1 id="title" class="mt-3 text-2xl font-light">正在確認付款結果…</h1>
+      <p id="message" class="mt-4 text-sm leading-6 text-stone-500">
+        請稍候，系統正在確認訂單狀態。
+      </p>
+      <a id="back" href="Ruin_Egypt_001.html"
+         class="mt-7 inline-block rounded-xl bg-stone-900 px-6 py-3 text-sm text-white">
+        返回商品頁
+      </a>
+    </section>
+  </main>
+
+<script>
+(async function () {
+  const CART_KEY = "hephaestus_cart";
+  const DRAFT_KEY = "hephaestus_order_draft";
+  const title = document.getElementById("title");
+  const message = document.getElementById("message");
+
+  let draft = null;
+  try {
+    draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+  } catch {}
+
+  const orderNo = String(draft?.orderNo || "").trim();
+
+  if (!orderNo) {
+    title.textContent = "付款流程已完成";
+    message.textContent = "找不到本次訂單資訊。若你已完成付款，請查看訂單通知。";
+    return;
+  }
+
+  async function checkStatus() {
+    const response = await fetch(
+      `/api/order-status?orderNo=${encodeURIComponent(orderNo)}`,
+      { cache: "no-store" }
+    );
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.ok) {
+      throw new Error(data.error || "無法確認訂單狀態");
+    }
+    return data;
+  }
+
+  // ReturnURL 是 server-to-server 通知，可能比消費者瀏覽器回來稍晚。
+  // 因此短時間重試，確認 paid 後才清空購物車。
+  for (let i = 0; i < 10; i++) {
+    try {
+      const data = await checkStatus();
+
+      if (data.paymentStatus === "paid") {
+        localStorage.removeItem(CART_KEY);
+        localStorage.removeItem(DRAFT_KEY);
+
+        title.textContent = "付款成功";
+        message.innerHTML =
+          `訂單 <strong class="text-stone-900">${data.orderNo}</strong> 已確認付款完成。<br>` +
+          "購物車已清空，即將返回商品頁。";
+
+        setTimeout(() => {
+          window.location.href = "Ruin_Egypt_001.html";
+        }, 1500);
+        return;
+      }
+
+      if (data.paymentStatus === "failed") {
+        localStorage.removeItem(DRAFT_KEY);
+        title.textContent = "付款未完成";
+        message.textContent = "這筆訂單尚未完成付款，購物車將保留。";
+        return;
+      }
+    } catch (error) {
+      // 繼續重試；若最後仍無法確認，不清空購物車。
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+
+  title.textContent = "正在處理付款結果";
+  message.textContent =
+    "目前尚未收到最終付款狀態，因此購物車暫時保留。請稍後重新整理或查看訂單狀態。";
+})();
+</script>
+</body>
+</html>
