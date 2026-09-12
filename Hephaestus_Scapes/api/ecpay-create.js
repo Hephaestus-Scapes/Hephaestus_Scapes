@@ -2,7 +2,6 @@ import { getSupabase } from "../lib/supabase.js";
 import { ecpayConfig, makeCheckMacValue, ecpayDate, esc } from "../lib/ecpay.js";
 import { json, readJsonBody } from "../lib/http.js";
 
-
 export default async function handler(req, res) {
   if (req.method !== "POST") return json(res, { error: "Method Not Allowed" }, 405);
 
@@ -49,6 +48,9 @@ export default async function handler(req, res) {
 
     const { merchantId, hashKey, hashIv, checkoutUrl } = ecpayConfig();
 
+    // ReturnURL：綠界 Server -> Server 的付款結果通知。
+    // 這裡負責真正更新 paid / 扣庫存。
+    // OrderResultURL：消費者瀏覽器付款完成後的 Client 端結果頁。
     const params = {
       MerchantID: merchantId,
       MerchantTradeNo: order.order_no,
@@ -60,13 +62,19 @@ export default async function handler(req, res) {
       ReturnURL: `${siteUrl}/api/ecpay-return`,
       ChoosePayment: "ALL",
       EncryptType: 1,
-      // ClientBackURL 只是綠界頁面的「返回商店」按鈕。
-      // OrderResultURL 才是付款完成後由瀏覽器 POST 結果並導回本站的流程。
       ClientBackURL: `${siteUrl}/Ruin_Egypt_001.html`,
       OrderResultURL: `${siteUrl}/api/ecpay-result`
     };
 
     params.CheckMacValue = makeCheckMacValue(params, hashKey, hashIv);
+
+    console.log("ECPay checkout created", {
+      orderNo: order.order_no,
+      total: order.total,
+      returnURL: params.ReturnURL,
+      orderResultURL: params.OrderResultURL,
+      checkoutUrl
+    });
 
     const fields = Object.entries(params)
       .map(([key, value]) =>
@@ -76,21 +84,26 @@ export default async function handler(req, res) {
 
     const html = `<!doctype html>
 <html lang="zh-Hant">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>前往綠界付款</title></head>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>前往綠界付款</title>
+</head>
 <body>
 <p style="font-family:sans-serif;text-align:center;margin-top:20vh">正在前往綠界付款頁面…</p>
 <form id="ecpay" method="POST" action="${esc(checkoutUrl)}">
 ${fields}
 </form>
-<script>document.getElementById("ecpay").submit();</script>
+<script>
+  document.getElementById("ecpay").submit();
+</script>
 </body>
 </html>`;
 
     res.statusCode = 200;
     res.setHeader("content-type", "text/html; charset=utf-8");
-    res.setHeader("cache-control", "no-store");
+    res.setHeader("cache-control", "no-store, no-cache, must-revalidate");
     res.end(html);
-    return;
   } catch (error) {
     console.error("ecpay-create error:", error);
     return json(res, {
