@@ -55,7 +55,6 @@
 
 <script>
 (function () {
-  const STOCK = 5;
   const CART_KEY = "hephaestus_cart";
 
   function getCart() {
@@ -68,9 +67,24 @@
   function money(n) {
     return "NT$ " + Number(n).toLocaleString("zh-TW");
   }
-  function render() {
+  async function fetchStocks(cart) {
+    const ids = [...new Set(cart.map(item => String(item.id || "").trim()).filter(Boolean))];
+    if (!ids.length) return {};
+
+    const response = await fetch(`/api/product-stock?ids=${encodeURIComponent(ids.join(","))}`, {
+      cache: "no-store"
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data?.ok) {
+      throw new Error(data?.error || "無法取得庫存");
+    }
+    return data.products || {};
+  }
+
+  async function render() {
     const cart = getCart();
     const itemsEl = document.getElementById("cartItems");
+    let stocks = {};
     const emptyEl = document.getElementById("emptyState");
     const areaEl = document.getElementById("cartArea");
 
@@ -84,10 +98,29 @@
     emptyEl.classList.add("hidden");
     itemsEl.innerHTML = "";
 
+    try {
+      stocks = await fetchStocks(cart);
+    } catch (error) {
+      itemsEl.innerHTML = `<div class="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-800">
+        目前無法取得即時庫存，請重新整理頁面後再試。
+      </div>`;
+      document.getElementById("checkoutBtn").classList.add("pointer-events-none", "opacity-50");
+      return;
+    }
+    document.getElementById("checkoutBtn").classList.remove("pointer-events-none", "opacity-50");
+
     let subtotal = 0;
 
     cart.forEach((item, index) => {
       const qty = Math.max(1, Number(item.qty || 1));
+      const product = stocks[String(item.id)] || { stock: 0, active: false };
+      const liveStock = Math.max(0, Number(product.stock || 0));
+      const overStock = !product.active || qty > liveStock;
+      const stockText = !product.active
+        ? "商品已下架"
+        : liveStock > 0
+          ? `目前庫存：${liveStock} 件`
+          : "目前售罄";
       const lineTotal = Number(item.price || 0) * qty;
       subtotal += lineTotal;
 
@@ -112,7 +145,7 @@
               </div>
               <span class="font-medium">${money(lineTotal)}</span>
             </div>
-            <p class="mt-2 text-xs text-stone-400">此規格庫存上限：${STOCK} 件</p>
+            <p class="mt-2 text-xs ${overStock ? 'text-red-600 font-medium' : 'text-stone-400'}">${stockText}${overStock && product.active ? `；購物車數量 ${qty} 超過目前庫存` : ""}</p>
           </div>
         </div>
       `;
@@ -123,7 +156,7 @@
     document.getElementById("total").textContent = money(subtotal);
   }
 
-  document.addEventListener("click", function (e) {
+  document.addEventListener("click", async function (e) {
     const remove = e.target.closest("[data-remove]");
     const minus = e.target.closest("[data-minus]");
     const plus = e.target.closest("[data-plus]");
@@ -143,12 +176,32 @@
       if (!item) return;
 
       const next = Number(item.qty || 1) + (plus ? 1 : -1);
-      if (next <= 0) cart.splice(index, 1);
-      else if (next <= STOCK) item.qty = next;
-      else alert(`此規格目前最多 ${STOCK} 件。`);
+      if (next <= 0) {
+        cart.splice(index, 1);
+        saveCart(cart);
+        render();
+        return;
+      }
 
-      saveCart(cart);
-      render();
+      try {
+        const stocks = await fetchStocks([item]);
+        const liveStock = Number(stocks[String(item.id)]?.stock || 0);
+        if (!stocks[String(item.id)]?.active) {
+          alert("商品已下架。");
+          render();
+          return;
+        }
+        if (next > liveStock) {
+          alert(`目前庫存只剩 ${liveStock} 件。`);
+          render();
+          return;
+        }
+        item.qty = next;
+        saveCart(cart);
+        render();
+      } catch (error) {
+        alert("目前無法取得即時庫存，請稍後再試。");
+      }
     }
   });
 
