@@ -1521,64 +1521,84 @@
 
 
     <!-- LIMITED AUCTION -->
-    <section id="auctions" class="relative overflow-hidden bg-[#101718] py-24 md:py-32">
-        <div class="absolute inset-0 pointer-events-none">
-            <div class="absolute -right-32 top-20 w-96 h-96 rounded-full bg-[#b99a63]/10 blur-3xl"></div>
-            <div class="absolute -left-40 bottom-0 w-96 h-96 rounded-full bg-emerald-900/10 blur-3xl"></div>
+    <section id="auctions" class="relative overflow-hidden bg-[#f1eee6] text-[#0f1718] py-24 md:py-32">
+        <!-- subtle brand texture -->
+        <div class="absolute inset-0 pointer-events-none overflow-hidden">
+            <div class="absolute -right-40 -top-32 w-[520px] h-[520px] rounded-full bg-[#b99a63]/10 blur-3xl"></div>
+            <div class="absolute -left-48 bottom-[-180px] w-[520px] h-[520px] rounded-full bg-[#6f8062]/10 blur-3xl"></div>
+            <div class="absolute inset-x-0 top-0 h-px bg-[#0f1718]/10"></div>
         </div>
 
-        <div class="max-w-[1500px] mx-auto px-6 md:px-10 relative">
-            <div class="flex items-end justify-between gap-8 mb-12 md:mb-16 reveal">
-                <div>
-                    <div class="flex items-center gap-4 text-[#b99a63] text-xs tracking-[.22em] font-medium mb-5">
-                        <span class="w-10 h-px bg-[#b99a63]"></span>
-                        LIMITED EDITION
-                        <span class="text-stone-600">02</span>
-                    </div>
-                    <h2 class="text-4xl md:text-6xl font-semibold tracking-tight">限定競標專區</h2>
-                    <p class="text-stone-400 max-w-2xl mt-6 leading-7">
-                        不定期推出特製棲地、限定造景與主題創作作品。每件作品皆以非活體形式呈現，<br class="hidden md:block">
-                        透過競標，讓少量而獨特的作品找到它真正的收藏者。
-                    </p>
+        <div class="max-w-[1320px] mx-auto px-6 md:px-10 relative">
+
+            <!-- section heading -->
+            <div class="max-w-3xl reveal">
+                <div class="flex items-center gap-4 text-[#9b7b45] text-xs tracking-[.24em] font-medium mb-6">
+                    <span class="w-10 h-px bg-[#b99a63]"></span>
+                    LIMITED AUCTION
+                    <span class="text-[#8b887f]">02</span>
                 </div>
-                <a href="auction/" class="hidden md:inline-flex items-center gap-3 border border-white/15 rounded-full px-6 py-3 text-sm text-stone-300 hover:bg-white hover:text-stone-900 transition duration-300">
-                    進入競標專區 <span>↗</span>
-                </a>
+
+                <h2 class="text-4xl md:text-6xl font-semibold tracking-tight leading-[1.08]">
+                    限定競標專區
+                </h2>
+
+                <p class="text-[#5f625d] max-w-2xl mt-6 leading-8 text-base md:text-[17px]">
+                    不定期推出特製棲地、限定造景與主題創作。透過專屬競標，讓每一件獨特的作品，找到真正鍾愛它的收藏者。
+                </p>
             </div>
 
-            <a href="auction/" class="group block reveal">
-                <div class="grid lg:grid-cols-[1.15fr_.85fr] min-h-[460px] rounded-[28px] overflow-hidden border border-white/10 bg-[#182122] shadow-2xl">
-                    <div class="relative min-h-[330px] lg:min-h-[560px] overflow-hidden">
-                        <img src="Ruin_Egypt_001_Pic2.png" alt="限定競標作品" class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.035] transition duration-1000">
-                        <div class="absolute inset-0 bg-gradient-to-r from-black/10 via-black/10 to-[#182122] lg:to-[#182122]/95"></div>
+            <!-- auction feature -->
+            <a href="auction/" class="group block mt-12 md:mt-16 reveal">
+                <div class="grid lg:grid-cols-[1.12fr_.88fr] rounded-[30px] overflow-hidden border border-[#0f1718]/10 bg-[#17251f] shadow-[0_24px_70px_rgba(15,23,24,0.12)] transition duration-500 group-hover:shadow-[0_30px_85px_rgba(15,23,24,0.18)]">
+
+                    <!-- image -->
+                    <div class="relative min-h-[360px] md:min-h-[480px] lg:min-h-[570px] overflow-hidden">
+                        <img src="Ruin_Egypt_001_Pic2.png"
+                             alt="限定競標作品"
+                             class="absolute inset-0 w-full h-full object-cover transition duration-1000 ease-out group-hover:scale-[1.035]">
+
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0f1718]/55 via-transparent to-transparent"></div>
+
                         <div class="absolute left-7 md:left-10 top-7 md:top-10">
-                            <span class="inline-flex items-center rounded-full border border-white/20 bg-black/20 backdrop-blur-sm px-4 py-2 text-[10px] tracking-[.22em] text-stone-200">
+                            <span class="inline-flex items-center rounded-full border border-white/25 bg-[#0f1718]/35 backdrop-blur-md px-4 py-2 text-[10px] tracking-[.22em] text-[#f1eee6]">
                                 NON-LIVING WORKS
                             </span>
                         </div>
+
+                        <div class="absolute left-7 md:left-10 bottom-7 md:bottom-10 text-[#f1eee6]">
+                            <p class="text-[10px] tracking-[.22em] uppercase text-[#d2b77e] mb-2">COLLECTOR'S EDITION</p>
+                            <p class="text-sm text-white/75">A singular piece, made to be kept.</p>
+                        </div>
                     </div>
 
-                    <div class="relative flex flex-col justify-between p-8 md:p-12 lg:p-16">
+                    <!-- content -->
+                    <div class="relative flex flex-col justify-between p-8 md:p-12 lg:p-14 text-[#f1eee6]">
                         <div>
-                            <p class="text-xs tracking-[.22em] text-[#b99a63] mb-5">AUCTION COLLECTION</p>
-                            <h3 class="text-3xl md:text-5xl font-semibold leading-tight mb-6">
-                                為特殊作品<br>保留一場特別的競標
+                            <div class="flex items-center justify-between mb-10">
+                                <p class="text-xs tracking-[.24em] text-[#b99a63]">AUCTION COLLECTION</p>
+                                <span class="text-xs tracking-[.16em] text-white/35">02 / 03</span>
+                            </div>
+
+                            <h3 class="text-3xl md:text-4xl lg:text-[46px] font-semibold leading-[1.12] tracking-tight">
+                                為特殊作品<br>
+                                保留一場特別的競標
                             </h3>
-                            <p class="text-stone-400 leading-7 max-w-xl">
-                                從特殊結構到主題造景，這裡收錄不定期推出的限定作品。進入目錄後，可依作品類型瀏覽目前的競標企劃。
+
+                            <div class="w-14 h-px bg-[#b99a63] mt-8 mb-7"></div>
+
+                            <p class="text-white/60 leading-8 max-w-md">
+                                每件作品皆有獨立的創作概念與存在理由。進入競標目錄後，可依作品類型查看目前的限定企劃。
                             </p>
                         </div>
 
-                        <div class="mt-12 pt-6 border-t border-white/10 flex items-center justify-between">
-                            <span class="text-sm text-stone-500 tracking-wide">EXPLORE THE COLLECTION</span>
-                            <span class="w-12 h-12 rounded-full border border-white/15 flex items-center justify-center text-xl group-hover:bg-white group-hover:text-stone-900 transition duration-300">↗</span>
+                        <!-- single CTA -->
+                        <div class="mt-12 pt-7 border-t border-white/10 flex items-center justify-between">
+                            <span class="text-sm tracking-wide text-[#f1eee6]">進入競標專區</span>
+                            <span class="w-12 h-12 rounded-full border border-[#b99a63]/60 text-[#d2b77e] flex items-center justify-center text-lg transition duration-300 group-hover:bg-[#b99a63] group-hover:text-[#0f1718] group-hover:border-[#b99a63] group-hover:rotate-45">↗</span>
                         </div>
                     </div>
                 </div>
-            </a>
-
-            <a href="auction/" class="md:hidden mt-6 flex items-center justify-between border border-white/10 rounded-2xl px-5 py-4 text-sm text-stone-300 hover:bg-white hover:text-stone-900 transition">
-                <span>進入競標專區</span><span>↗</span>
             </a>
         </div>
     </section>
