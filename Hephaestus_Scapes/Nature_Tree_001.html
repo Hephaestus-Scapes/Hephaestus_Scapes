@@ -25,9 +25,9 @@
     <div class="text-sm md:text-base font-extrabold text-stone-800 tracking-widest">HEPHAESTUS SCAPES</div>
   </div>
   <div class="flex items-center gap-3">
-    <a href="index.html#products" class="text-sm text-stone-500 hover:text-stone-900 transition">返回精選造景</a>
+    <a href="product.html" class="text-sm text-stone-500 hover:text-stone-900 transition">↶ 返回造景系列</a>
     <span class="text-stone-300">/</span>
-    <a href="index.html" class="text-sm text-stone-500 hover:text-stone-900 transition">返回主頁</a>
+    <a href="index.html" class="text-sm text-stone-500 hover:text-stone-900 transition">⌂ 返回主頁</a>
     <a href="cart.html" class="relative ml-1 inline-flex items-center justify-center w-10 h-10 rounded-full border border-stone-200 bg-white hover:bg-stone-100 transition" aria-label="購物車">
       <svg viewBox="0 0 24 24" class="w-5 h-5 text-stone-700" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 1.9-1.4L21 8H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="18" cy="20" r="1.2"/></svg>
       <span id="cartCount" class="absolute -right-1 -top-1 min-w-5 h-5 px-1 rounded-full bg-stone-900 text-white text-[10px] leading-5 text-center">0</span>
@@ -38,13 +38,9 @@
 <main class="container mx-auto px-5 md:px-8 py-10 md:py-14">
   <div class="grid lg:grid-cols-[minmax(0,1.35fr)_minmax(360px,.65fr)] gap-8 lg:gap-12 items-start">
     <section>
-      <div id="galleryMain" class="gallery-main relative aspect-[4/3] rounded-3xl overflow-hidden border border-stone-300 shadow-sm bg-stone-200">
-        <div id="mainVisual" class="absolute inset-0">
-          <img id="mainImage"
-               src="products/NATURE/Tree_001/Tree_001_Pic1.png"
-               alt="古木殘根躲避屋商品主視覺"
-               class="w-full h-full object-cover select-none block"
-               draggable="false">
+      <div id="galleryMain" class="gallery-main rounded-3xl overflow-hidden border border-stone-300 shadow-sm">
+        <div id="mainVisual" class="relative aspect-[4/3] bg-stone-100">
+          <img src="products/NATURE/Tree_001/Tree_001_Pic1.png" alt="古木殘根躲避屋商品主視覺" class="absolute inset-0 w-full h-full object-cover select-none" draggable="false">
         </div>
       </div>
       <div id="mobileDots" class="flex md:hidden justify-center gap-2 mt-3" aria-label="商品圖片切換"></div>
@@ -78,7 +74,7 @@
         <div>
           <label for="color" class="block text-sm font-bold mb-2">顏色</label>
           <select id="color" class="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm">
-            <option value="申賠咖啡">申賠咖啡</option>
+            <option value="深焙咖啡">深焙咖啡</option>
           </select>
         </div>
         <div>
@@ -131,7 +127,7 @@
 <section class="container mx-auto px-5 md:px-8 py-12 md:py-16">
   <div class="grid lg:grid-cols-2 gap-10 lg:gap-16">
     <div><div class="text-xs text-stone-500 font-bold tracking-widest mb-2">PRODUCT DETAILS</div><h2 class="text-2xl md:text-3xl font-extrabold text-stone-900 mb-6">商品資訊</h2><p class="text-stone-500 leading-7 mb-5">將大自然中的古木殘根語彙轉化為爬蟲棲息造景，讓作品同時具備實用躲避屋與微縮藝術造景的雙重身分。</p><p class="text-stone-500 leading-7">透過精密的 FDM 3D 列印技術，我們不刻意撫平，而是巧妙利用「層層堆疊」的物理特性來模擬原木的紋理；極高畫質的列印參數確保了表面無奇怪的網格或哈密瓜紋，只有純粹、乾淨且猶如木雕大師鑿刻般的專業質感。厚實的結構加上消光深灰棕色調，能在飼養箱中完美融入自然環境。</p></div>
-    <div class="rounded-2xl bg-[#ECE9E2] border border-stone-300 p-6 md:p-8"><div class="text-xs tracking-[.18em] text-stone-400 mb-5">SPECIFICATIONS</div><div class="grid grid-cols-2 gap-y-5 text-sm"><div class="text-stone-500">系列</div><div class="font-medium">NATURE</div><div class="text-stone-500">編號</div><div class="font-medium">TREE_001</div><div class="text-stone-500">類型</div><div class="font-medium">躲避屋／棲地造景</div><div class="text-stone-500">空間形式</div><div class="font-medium">天然樹洞／盤根結構／立體攀爬</div><div class="text-stone-500">列印材質</div><div class="font-medium">環保無毒 PLA</div><div class="text-stone-500">正式尺寸</div><div class="font-medium">15 x 15 x 12 cm</div></div></div>
+    <div class="rounded-2xl bg-[#ECE9E2] border border-stone-300 p-6 md:p-8"><div class="text-xs tracking-[.18em] text-stone-400 mb-5">SPECIFICATIONS</div><div class="grid grid-cols-2 gap-y-5 text-sm"><div class="text-stone-500">系列</div><div class="font-medium">NATURE</div><div class="text-stone-500">編號</div><div class="font-medium">TREE_001</div><div class="text-stone-500">類型</div><div class="font-medium">躲避屋／棲地造景</div><div class="text-stone-500">空間形式</div><div class="font-medium">天然樹洞／盤根結構／立體攀爬</div><div class="text-stone-500">材質</div><div class="font-medium">環保無毒 PLA（仿木雕消光處理）</div><div class="text-stone-500">標準尺寸</div><div class="font-medium">15 x 15 x 12 cm</div></div></div>
   </div>
 </section>
 
@@ -157,35 +153,89 @@ function showImage(i){
   document.querySelectorAll('.thumb').forEach((x,j)=>x.classList.toggle('active',j===currentImageIndex));
   document.querySelectorAll('#mobileDots button').forEach((x,j)=>{x.classList.toggle('bg-stone-700',j===currentImageIndex);x.classList.toggle('bg-stone-300',j!==currentImageIndex)});
   const visual=document.getElementById('mainVisual');
-  visual.innerHTML='<img src="products/NATURE/Tree_001/'+images[currentImageIndex]+'" alt="'+labels[currentImageIndex]+'" class="w-full h-full object-cover block" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'+
+  visual.innerHTML='<img src="products/NATURE/Tree_001/'+images[currentImageIndex]+'" alt="'+labels[currentImageIndex]+'" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'+
     '<div class="absolute inset-0 items-center justify-center p-10 text-center hidden"><div class="max-w-md text-stone-200"><div class="text-[10px] tracking-[.3em] text-stone-400 mb-4">NATURE / TREE_001</div><div class="text-3xl md:text-5xl font-semibold">'+labels[currentImageIndex]+'</div><p class="mt-4 text-sm text-stone-400">正式商品攝影檔：'+images[currentImageIndex]+'</p></div></div>';
 }
 let sx=0,sy=0;
 document.getElementById('galleryMain').addEventListener('touchstart',e=>{sx=e.changedTouches[0].clientX;sy=e.changedTouches[0].clientY},{passive:true});
 document.getElementById('galleryMain').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy))showImage(currentImageIndex+(dx<0?1:-1));},{passive:true});
-function adjustQty(delta){const input=document.getElementById('qty');input.value=Math.max(1,Math.min(99,parseInt(input.value||1)+delta));}
-function toggleCart(){const checked=document.getElementById('confirm').checked;const btn=document.getElementById('cartBtn');btn.disabled=!checked;btn.classList.toggle('bg-stone-300',!checked);btn.classList.toggle('cursor-not-allowed',!checked);btn.classList.toggle('bg-emerald-700',checked);btn.classList.toggle('hover:bg-emerald-800',checked);btn.classList.toggle('cursor-pointer',checked);}
+let STOCK = null;
+const PRODUCT = {id:'Tree_001',name:'古木殘根躲避屋',price:499,image:'products/NATURE/Tree_001/Tree_001_Pic1.png'};
+
 function getCart(){try{return JSON.parse(localStorage.getItem('hephaestus_cart')||'[]')}catch(e){return[]}}
 function saveCart(cart){localStorage.setItem('hephaestus_cart',JSON.stringify(cart))}
 function updateCartCount(){const el=document.getElementById('cartCount');if(el)el.textContent=getCart().reduce((s,x)=>s+Number(x.qty||0),0)}
-function addProductToCart(){
-  if(!document.getElementById('confirm').checked)return;
-  const size=document.getElementById('size').value;
-  const sizeLabel=document.getElementById('size').selectedOptions[0].textContent;
-  const color=document.getElementById('color').value;
-  const colorLabel=document.getElementById('color').selectedOptions[0].textContent;
-  const material=document.getElementById('material').value;
-  const qty=Math.max(1,Number(document.getElementById('qty').value||1));
-  const PRODUCT={id:'Tree_001',name:'古木殘根躲避屋',price:499,image:'products/NATURE/Tree_001/Tree_001_Pic1.png'};
+function getCurrentCartQty(){
   const cart=getCart();
-  const key=item=>item.id===PRODUCT.id&&item.size===sizeLabel&&item.color===colorLabel&&item.material===material;
-  const existing=cart.find(key);
-  if(existing)existing.qty=Number(existing.qty||0)+qty;
+  const sizeLabel=document.getElementById('size').selectedOptions[0]?.textContent||'';
+  const colorLabel=document.getElementById('color').selectedOptions[0]?.textContent||'';
+  const material=document.getElementById('material').value||'';
+  return cart.filter(item=>item.id===PRODUCT.id&&item.size===sizeLabel&&item.color===colorLabel&&item.material===material)
+    .reduce((s,x)=>s+Number(x.qty||0),0);
+}
+function updateStockUI(){
+  const el=document.getElementById('stockText');
+  if(!el)return;
+  if(STOCK===null){el.textContent='庫存讀取中…';return;}
+  const remaining=Math.max(0,STOCK-getCurrentCartQty());
+  el.textContent=remaining>0?`剩餘 ${remaining} 件`:'售罄';
+  const input=document.getElementById('qty');
+  const minus=document.querySelector('button[onclick="adjustQty(-1)"]');
+  const plus=document.querySelector('button[onclick="adjustQty(1)"]');
+  if(input)input.value=Math.max(1,Math.min(Number(input.value||1),Math.max(1,remaining)));
+  if(minus)minus.disabled=remaining<=0;
+  if(plus)plus.disabled=remaining<=0;
+  if(remaining<=0){
+    const btn=document.getElementById('cartBtn');
+    if(btn){btn.disabled=true;btn.classList.add('bg-stone-300','cursor-not-allowed');btn.classList.remove('bg-emerald-700','hover:bg-emerald-800','cursor-pointer');}
+  }
+}
+async function fetchStock(){
+  const response=await fetch(`/api/product-stock?id=${encodeURIComponent(PRODUCT.id)}`,{cache:'no-store'});
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok||!data?.ok||!data.products?.[PRODUCT.id])throw new Error(data?.error||'無法取得庫存');
+  const product=data.products[PRODUCT.id];
+  if(!product.active)throw new Error('商品已下架');
+  STOCK=Math.max(0,Number(product.stock||0));
+  updateStockUI();
+  return STOCK;
+}
+function adjustQty(delta){
+  const input=document.getElementById('qty');
+  const remaining=STOCK===null?99:Math.max(0,STOCK-getCurrentCartQty());
+  if(remaining<=0){input.value=1;return;}
+  input.value=Math.max(1,Math.min(remaining,parseInt(input.value||1)+delta));
+}
+function toggleCart(){
+  const checked=document.getElementById('confirm').checked;
+  const btn=document.getElementById('cartBtn');
+  const hasStock=STOCK===null||STOCK>getCurrentCartQty();
+  btn.disabled=!checked||!hasStock;
+  btn.classList.toggle('bg-stone-300',btn.disabled);
+  btn.classList.toggle('cursor-not-allowed',btn.disabled);
+  btn.classList.toggle('bg-emerald-700',!btn.disabled);
+  btn.classList.toggle('hover:bg-emerald-800',!btn.disabled);
+  btn.classList.toggle('cursor-pointer',!btn.disabled);
+}
+async function addProductToCart(){
+  if(!document.getElementById('confirm').checked)return;
+  let liveStock;
+  try{liveStock=await fetchStock();}catch(e){alert(e.message||'目前無法取得庫存，請稍後再試。');return;}
+  const sizeLabel=document.getElementById('size').selectedOptions[0]?.textContent||'';
+  const colorLabel=document.getElementById('color').selectedOptions[0]?.textContent||'';
+  const material=document.getElementById('material').value||'';
+  const qty=Math.max(1,Number(document.getElementById('qty').value||1));
+  const cart=getCart();
+  const existing=cart.find(item=>item.id===PRODUCT.id&&item.size===sizeLabel&&item.color===colorLabel&&item.material===material);
+  const currentQty=existing?Number(existing.qty||0):0;
+  if(currentQty+qty>liveStock){alert(`目前庫存剩餘 ${Math.max(0,liveStock-currentQty)} 件。`);updateStockUI();return;}
+  if(existing)existing.qty=currentQty+qty;
   else cart.push({...PRODUCT,size:sizeLabel,color:colorLabel,material,qty});
-  saveCart(cart);updateCartCount();
+  saveCart(cart);updateCartCount();updateStockUI();
   document.getElementById('cartMessage').classList.remove('hidden');
   document.getElementById('cartBtn').textContent='✓ 已加入購物車';
 }
 updateCartCount();
+fetchStock().catch(error=>{document.getElementById('stockText').textContent='暫時無法取得庫存';console.error(error);});
 </script>
 </body></html>
