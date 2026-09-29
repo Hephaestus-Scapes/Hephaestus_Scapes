@@ -22,7 +22,7 @@
       <p class="text-xs tracking-[0.25em] text-stone-400">CHECKOUT</p>
       <h1 class="mt-2 text-3xl font-light tracking-wide">確認訂單</h1>
       <p class="mt-3 text-sm leading-6 text-stone-500">
-        請確認收件資料與付款方式後送出訂單。訂單價格與庫存將由伺服器再次驗證。
+        請確認收件資料、配送方式與付款方式後送出訂單。訂單價格與庫存將由伺服器再次驗證。
       </p>
     </div>
 
@@ -42,7 +42,7 @@
             </label>
             <label class="block">
               <span class="text-sm text-stone-600">手機 *</span>
-              <input name="phone" required inputmode="tel" class="mt-2 w-full rounded-xl border border-stone-200 px-4 py-3 outline-none focus:border-stone-500" placeholder="0912345678">
+              <input name="phone" required inputmode="tel" pattern="09[0-9]{8}" class="mt-2 w-full rounded-xl border border-stone-200 px-4 py-3 outline-none focus:border-stone-500" placeholder="0912345678">
             </label>
             <label class="block sm:col-span-2">
               <span class="text-sm text-stone-600">Email *</span>
@@ -60,6 +60,63 @@
               <span class="text-sm text-stone-600">詳細地址 *</span>
               <input name="address" required class="mt-2 w-full rounded-xl border border-stone-200 px-4 py-3 outline-none focus:border-stone-500" placeholder="○○路○○號○樓">
             </label>
+          </div>
+        </section>
+
+        <section class="rounded-2xl border border-stone-200 bg-white p-6">
+          <h2 class="text-lg font-medium">配送方式</h2>
+          <div class="mt-5 space-y-3">
+            <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-stone-200 p-4">
+              <input type="radio" name="shipping" value="home" checked class="mt-1">
+              <span class="flex-1">
+                <span class="flex items-center justify-between gap-4">
+                  <span class="block text-sm font-medium">宅配</span>
+                  <span class="text-sm text-stone-600">免運</span>
+                </span>
+                <span class="mt-1 block text-xs leading-5 text-stone-500">寄送至上方填寫的收件地址。</span>
+              </span>
+            </label>
+
+            <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-stone-200 p-4">
+              <input type="radio" name="shipping" value="cvs" class="mt-1">
+              <span class="flex-1">
+                <span class="flex items-center justify-between gap-4">
+                  <span class="block text-sm font-medium">超商取貨</span>
+                  <span class="text-sm text-stone-600">NT$ 60</span>
+                </span>
+                <span class="mt-1 block text-xs leading-5 text-stone-500">透過綠界選擇 7-ELEVEN、全家或萊爾富取貨門市。</span>
+              </span>
+            </label>
+          </div>
+
+          <div id="cvsPanel" class="mt-5 hidden rounded-xl bg-stone-50 p-4">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p class="text-sm font-medium">取貨門市</p>
+                <p id="storeHint" class="mt-1 text-xs leading-5 text-stone-500">尚未選擇門市。</p>
+              </div>
+              <button id="chooseStore" type="button" class="shrink-0 rounded-xl bg-stone-900 px-5 py-3 text-sm text-white hover:bg-stone-800">
+                選擇門市
+              </button>
+            </div>
+            <div id="storeInfo" class="mt-4 hidden rounded-lg border border-stone-200 bg-white p-4 text-sm">
+              <div class="flex justify-between gap-4">
+                <span class="text-stone-400">門市</span>
+                <strong id="storeName" class="text-right"></strong>
+              </div>
+              <div class="mt-2 flex justify-between gap-4">
+                <span class="text-stone-400">門市代碼</span>
+                <span id="storeId" class="text-right"></span>
+              </div>
+              <div id="storeAddressRow" class="mt-2 flex justify-between gap-4">
+                <span class="text-stone-400">地址</span>
+                <span id="storeAddress" class="max-w-[70%] text-right"></span>
+              </div>
+              <div id="storePhoneRow" class="mt-2 hidden flex justify-between gap-4">
+                <span class="text-stone-400">電話</span>
+                <span id="storePhone" class="text-right"></span>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -91,6 +148,9 @@
           <div class="flex justify-between text-sm text-stone-500">
             <span>商品小計</span><span id="subtotal">NT$ 0</span>
           </div>
+          <div class="mt-3 flex justify-between text-sm text-stone-500">
+            <span>運費</span><span id="shippingFee">NT$ 0</span>
+          </div>
           <div class="mt-3 flex justify-between text-base font-medium">
             <span>應付金額</span><span id="total">NT$ 0</span>
           </div>
@@ -118,26 +178,28 @@
 (function () {
   const CART_KEY = "hephaestus_cart";
   const DRAFT_KEY = "hephaestus_order_draft";
+  const STORE_KEY = "hephaestus_logistics_selection";
+  const CVS_FEE = 60;
 
   function getCart() {
     try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
     catch (e) { return []; }
   }
+
   function money(n) {
     return "NT$ " + Number(n).toLocaleString("zh-TW");
-  }
-  function orderNo() {
-    const d = new Date();
-    const pad = n => String(n).padStart(2, "0");
-    return "HS" + d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) +
-      pad(d.getHours()) + pad(d.getMinutes()) + pad(d.getSeconds()) +
-      Math.random().toString(36).slice(2, 6).toUpperCase();
   }
 
   const cart = getCart();
   const form = document.getElementById("checkoutForm");
   const empty = document.getElementById("empty");
   const summary = document.getElementById("summary");
+  const cvsPanel = document.getElementById("cvsPanel");
+  const chooseStore = document.getElementById("chooseStore");
+  const storeHint = document.getElementById("storeHint");
+  const storeInfo = document.getElementById("storeInfo");
+  const shippingFeeEl = document.getElementById("shippingFee");
+  const totalEl = document.getElementById("total");
 
   if (!cart.length) {
     form.classList.add("hidden");
@@ -155,7 +217,7 @@
         <img src="${item.image}" class="h-16 w-16 rounded-lg object-cover bg-stone-100" alt="">
         <div class="min-w-0 flex-1">
           <p class="text-sm">${item.name}</p>
-          <p class="mt-1 text-xs text-stone-400">${item.size} · ${item.color}</p>
+          <p class="mt-1 text-xs text-stone-400">${item.size || ""} ${item.color ? "· " + item.color : ""}</p>
           <p class="mt-1 text-xs text-stone-500">× ${qty}</p>
         </div>
         <span class="text-sm">${money(line)}</span>
@@ -164,12 +226,126 @@
   }).join("");
 
   document.getElementById("subtotal").textContent = money(subtotal);
-  document.getElementById("total").textContent = money(subtotal);
+
+  let selectedStore = null;
+
+  function getSelectedStore() {
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function saveSelectedStore(store) {
+    selectedStore = store;
+    localStorage.setItem(STORE_KEY, JSON.stringify(store));
+    renderStore();
+  }
+
+  function renderStore() {
+    if (!selectedStore) {
+      storeHint.textContent = "尚未選擇門市。";
+      storeInfo.classList.add("hidden");
+      return;
+    }
+
+    const typeNames = {
+      UNIMARTC2C: "7-ELEVEN",
+      FAMIC2C: "全家",
+      HILIFEC2C: "萊爾富"
+    };
+
+    storeHint.textContent = `已選擇 ${typeNames[selectedStore.logisticsSubType] || "超商"} 門市`;
+    document.getElementById("storeName").textContent = selectedStore.receiverStoreName || "";
+    document.getElementById("storeId").textContent = selectedStore.receiverStoreId || "";
+    document.getElementById("storeAddress").textContent = selectedStore.receiverAddress || "—";
+
+    const phone = selectedStore.receiverPhone || selectedStore.receiverCellPhone || "";
+    if (phone) {
+      document.getElementById("storePhone").textContent = phone;
+      document.getElementById("storePhoneRow").classList.remove("hidden");
+    } else {
+      document.getElementById("storePhoneRow").classList.add("hidden");
+    }
+
+    storeInfo.classList.remove("hidden");
+  }
+
+  function updateTotals() {
+    const shipping = document.querySelector('input[name="shipping"]:checked')?.value === "cvs" ? CVS_FEE : 0;
+    shippingFeeEl.textContent = money(shipping);
+    totalEl.textContent = money(subtotal + shipping);
+  }
+
+  selectedStore = getSelectedStore();
+  renderStore();
+  updateTotals();
+
+  document.querySelectorAll('input[name="shipping"]').forEach(input => {
+    input.addEventListener("change", () => {
+      const isCvs = input.value === "cvs" && input.checked;
+      cvsPanel.classList.toggle("hidden", !isCvs);
+      updateTotals();
+    });
+  });
+
+  chooseStore.addEventListener("click", async () => {
+    if (!form.reportValidity()) return;
+
+    if (subtotal < 1 || subtotal > 20000) {
+      alert("超商取貨目前要求商品金額介於 NT$1～20,000，請調整購物車內容。");
+      return;
+    }
+
+    chooseStore.disabled = true;
+    chooseStore.textContent = "準備門市地圖…";
+
+    try {
+      // 物流選擇頁會由綠界接手，完成後透過 ClientReplyURL 回到本網站。
+      const response = await fetch("/api/ecpay-logistics-map", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          amount: subtotal,
+          goodsName: "Hephaestus Scapes 商品",
+          customer: {
+            name: form.elements.name.value.trim(),
+            phone: form.elements.phone.value.trim(),
+            city: form.elements.city.value.trim(),
+            district: form.elements.district.value.trim(),
+            address: form.elements.address.value.trim()
+          }
+        })
+      });
+
+      const contentType = response.headers.get("content-type") || "";
+      if (!response.ok) {
+        const text = await response.text();
+        let message = "無法開啟綠界門市選擇頁";
+        try { message = JSON.parse(text).error || message; } catch {}
+        throw new Error(message);
+      }
+
+      if (!contentType.includes("text/html")) {
+        throw new Error("綠界物流 API 沒有回傳正確的門市選擇頁面。");
+      }
+
+      const html = await response.text();
+      document.open();
+      document.write(html);
+      document.close();
+    } catch (error) {
+      alert(error.message || "無法開啟門市選擇頁");
+      chooseStore.disabled = false;
+      chooseStore.textContent = "選擇門市";
+    }
+  });
 
   async function fetchWithTimeout(url, options = {}, timeoutMs = 20000) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
-
     try {
       return await fetch(url, { ...options, signal: controller.signal });
     } catch (error) {
@@ -185,29 +361,30 @@
   async function readJsonResponse(response) {
     const contentType = response.headers.get("content-type") || "";
     const raw = await response.text();
-
     if (!contentType.includes("application/json")) {
-      throw new Error(
-        response.ok
-          ? "伺服器回傳了非 JSON 資料，請檢查 API 部署。"
-          : `伺服器錯誤（HTTP ${response.status}），請檢查 Vercel Logs。`
-      );
+      throw new Error(response.ok
+        ? "伺服器回傳了非 JSON 資料，請檢查 API 部署。"
+        : `伺服器錯誤（HTTP ${response.status}），請檢查 Vercel Logs。`);
     }
-
-    let data;
-    try {
-      data = JSON.parse(raw);
-    } catch {
-      throw new Error("伺服器回傳資料格式錯誤，請檢查 Vercel Logs。");
-    }
-
-    return data;
+    try { return JSON.parse(raw); }
+    catch { throw new Error("伺服器回傳資料格式錯誤，請檢查 Vercel Logs。"); }
   }
 
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
+    if (!form.reportValidity()) return;
 
     const fd = new FormData(form);
+    const shippingMethod = String(fd.get("shipping") || "home");
+
+    if (shippingMethod === "cvs") {
+      selectedStore = getSelectedStore();
+      if (!selectedStore || !selectedStore.receiverStoreId || !selectedStore.receiverStoreName) {
+        alert("請先選擇超商取貨門市。");
+        return;
+      }
+    }
+
     const submitButton = form.querySelector('button[type="submit"]');
     submitButton.disabled = true;
     submitButton.textContent = "建立訂單中…";
@@ -226,18 +403,21 @@
             address: fd.get("address")
           },
           paymentMethod: fd.get("payment"),
+          shippingMethod,
+          logisticsSubType: shippingMethod === "cvs" ? selectedStore.logisticsSubType : "",
+          receiverStoreId: shippingMethod === "cvs" ? selectedStore.receiverStoreId : "",
+          receiverStoreName: shippingMethod === "cvs" ? selectedStore.receiverStoreName : "",
+          receiverStoreAddress: shippingMethod === "cvs" ? selectedStore.receiverAddress : "",
+          receiverStorePhone: shippingMethod === "cvs" ? (selectedStore.receiverPhone || selectedStore.receiverCellPhone) : "",
+          logisticsTempId: shippingMethod === "cvs" ? selectedStore.tempLogisticsId : "",
           note: fd.get("note") || "",
           items: cart
         })
       });
 
       const result = await readJsonResponse(response);
+      if (!response.ok || !result.ok) throw new Error(result.error || `建立訂單失敗（HTTP ${response.status}）`);
 
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || `建立訂單失敗（HTTP ${response.status}）`);
-      }
-
-      // ECPay：下一步直接由 server 建立付款表單並導轉。
       if (result.order && result.order.orderNo && fd.get("payment") === "ecpay") {
         submitButton.textContent = "前往綠界付款…";
 
@@ -248,30 +428,19 @@
         });
 
         const html = await pay.text();
-
         if (!pay.ok) {
           let message = "無法建立 ECPay 付款頁";
-          try {
-            const data = JSON.parse(html);
-            message = data.error || message;
-          } catch {}
+          try { message = JSON.parse(html).error || message; } catch {}
           throw new Error(message);
         }
 
-        // 記住這筆訂單，讓付款完成後的 payment-success.html
-        // 仍可查詢訂單狀態。
         localStorage.setItem(DRAFT_KEY, JSON.stringify({
           orderNo: result.order.orderNo,
           createdAt: Date.now()
         }));
-
-        // ⭐ ECPay 付款頁已成功建立，訂單也已寫入資料庫。
-        // ATM / 超商等非同步付款不會一定回到買家的瀏覽器，
-        // 因此不能等 ReturnURL 才清 localStorage。
-        // 這裡先清空前端購物車；實際庫存仍由後端付款成功通知時才扣除。
         localStorage.removeItem(CART_KEY);
+        localStorage.removeItem(STORE_KEY);
 
-        // 把 server 回傳的自動 POST 頁面載入目前頁面。
         document.open();
         document.write(html);
         document.close();
@@ -279,17 +448,14 @@
       }
 
       localStorage.removeItem(CART_KEY);
+      localStorage.removeItem(STORE_KEY);
 
       document.getElementById("result").classList.remove("hidden");
       document.getElementById("result").innerHTML = `
         <p class="text-xs tracking-[0.2em] text-stone-400">ORDER CREATED</p>
         <h2 class="mt-2 text-xl font-medium">訂單已建立</h2>
         <p class="mt-3 text-sm text-stone-500">訂單編號：<strong class="text-stone-900">${result.order.orderNo}</strong></p>
-        <p class="mt-2 text-sm leading-6 text-stone-500">
-          付款完成後，系統會依綠界回傳結果更新訂單狀態。
-        </p>
       `;
-
       form.classList.add("hidden");
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     } catch (error) {
