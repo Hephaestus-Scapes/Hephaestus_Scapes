@@ -3,8 +3,8 @@
 // ECPay 官方要求 SenderName / SenderZipCode / SenderAddress 必填。
 export const ECPAY_LOGISTICS_CONFIG = {
   senderName: "赫菲斯微景",
-  senderZipCode: "請填寄件郵遞區號",
-  senderAddress: "請填實際寄件地址",
+  senderZipCode: "234",
+  senderAddress: "新北市永和區竹林路97號5樓",
 
   // C2C 常溫、60cm。
   temperature: "0001",
