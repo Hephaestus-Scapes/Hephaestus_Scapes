@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { getSupabase } from "../lib/supabase.js";
 import { json, readJsonBody } from "../lib/http.js";
+import { ECPAY_LOGISTICS_CONFIG } from "../lib/ecpay-logistics-config.js";
 
 
 function makeOrderNo() {
@@ -48,12 +49,36 @@ export default async function handler(req, res) {
     const {
       customer,
       paymentMethod = "ecpay",
+      shippingMethod = "home",
+      logisticsSubType = "",
+      receiverStoreId = "",
+      receiverStoreName = "",
+      receiverStoreAddress = "",
+      receiverStorePhone = "",
+      logisticsTempId = "",
       note = "",
       items
     } = body || {};
 
     if (paymentMethod !== "ecpay") {
       return json(res, { error: "目前僅提供 ECPay 綠界金流" }, 400);
+    }
+
+    if (!['home', 'cvs'].includes(String(shippingMethod))) {
+      return json(res, { error: "配送方式無效" }, 400);
+    }
+
+    const allowedLogistics = new Set(['UNIMARTC2C', 'FAMIC2C', 'HILIFEC2C']);
+    if (shippingMethod === 'cvs') {
+      if (!allowedLogistics.has(String(logisticsSubType))) {
+        return json(res, { error: "超商配送方式無效" }, 400);
+      }
+      if (!String(receiverStoreId).trim() || !String(receiverStoreName).trim()) {
+        return json(res, { error: "請先選擇取貨門市" }, 400);
+      }
+      if (!String(logisticsTempId).trim()) {
+        return json(res, { error: "缺少綠界暫存物流訂單編號，請重新選擇門市" }, 400);
+      }
     }
 
     if (!validCustomer(customer)) {
@@ -121,6 +146,15 @@ export default async function handler(req, res) {
       return json(res, { error: "訂單金額無效" }, 400);
     }
 
+    const shippingFee = shippingMethod === "cvs"
+      ? Number(ECPAY_LOGISTICS_CONFIG.shippingFees[String(logisticsSubType)] || 0)
+      : 0;
+    const total = subtotal + shippingFee;
+
+    if (!Number.isSafeInteger(total)) {
+      return json(res, { error: "訂單總金額無效" }, 400);
+    }
+
     const orderNo = makeOrderNo();
 
     const { data: order, error: orderError } = await supabase
@@ -137,9 +171,20 @@ export default async function handler(req, res) {
         payment_method: "ecpay",
         payment_status: "pending",
         order_status: "pending_payment",
+        shipping_fee: shippingFee,
+        shipping_method: String(shippingMethod),
+        logistics_sub_type: shippingMethod === "cvs" ? String(logisticsSubType) : null,
+        receiver_store_id: shippingMethod === "cvs" ? String(receiverStoreId).trim() : null,
+        receiver_store_name: shippingMethod === "cvs" ? String(receiverStoreName).trim() : null,
+        receiver_store_address: shippingMethod === "cvs" ? String(receiverStoreAddress || "").trim() : null,
+        receiver_store_phone: shippingMethod === "cvs" ? String(receiverStorePhone || "").trim() : null,
+        logistics_status: shippingMethod === "cvs" ? "TEMP_SELECTED" : null,
+        logistics_status_message: shippingMethod === "cvs" ? "已選擇取貨門市，等待建立正式物流訂單" : null,
+        ecpay_logistics_id: null,
+        ecpay_cvs_payment_no: null,
+        ecpay_cvs_validation_no: null,
         subtotal,
-        shipping_fee: 0,
-        total: subtotal
+        total
       })
       .select("id,order_no,total")
       .single();
@@ -176,7 +221,10 @@ export default async function handler(req, res) {
       order: {
         id: order.id,
         orderNo: order.order_no,
-        total: order.total
+        subtotal: order.subtotal,
+        shippingFee: order.shipping_fee,
+        total: order.total,
+        shippingMethod: shippingMethod
       }
     });
   } catch (error) {
