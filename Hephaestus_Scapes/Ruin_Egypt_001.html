@@ -28,9 +28,9 @@
     <div class="text-sm md:text-base font-extrabold text-stone-800 tracking-widest">HEPHAESTUS SCAPES</div>
   </div>
   <div class="flex items-center gap-3">
-    <a href="javascript:history.back()" class="text-sm text-stone-500 hover:text-stone-900 transition">↶ 回上一頁</a>
+    <a href="index.html#products" class="text-sm text-stone-500 hover:text-stone-900 transition">返回精選造景</a>
     <span class="text-stone-300">/</span>
-    <a href="index.html" class="text-sm text-stone-500 hover:text-stone-900 transition">⌂ 返回首頁</a>
+    <a href="index.html" class="text-sm text-stone-500 hover:text-stone-900 transition">返回主頁</a>
     <a href="cart.html" class="relative ml-1 inline-flex items-center justify-center w-10 h-10 rounded-full border border-stone-200 bg-white hover:bg-stone-100 transition" aria-label="購物車">
       <svg viewBox="0 0 24 24" class="w-5 h-5 text-stone-700" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 1.9-1.4L21 8H6"/>
@@ -53,7 +53,7 @@
         <img id="mainImage"
              src="Ruin_Egypt_001_Pic1.png"
              alt="聖甲蟲神殿遺跡商品主視覺"
-             class="w-full aspect-[4/3] object-cover select-none"
+             class="w-full h-full aspect-[4/3] object-cover select-none block"
              draggable="false">
       </div>
       <div id="mobileDots" class="flex md:hidden justify-center gap-2 mt-3" aria-label="商品圖片切換">
@@ -91,7 +91,7 @@
           <img src="Ruin_Egypt_001_Pic6.png" alt="生態缸情境" class="w-full aspect-[4/3] object-cover">
         </button>
       </div>
-      <p class="hidden md:block text-xs text-stone-400 mt-3 text-center">點選縮圖查看商品細節</p>
+      <p class="hidden md:block text-xs text-stone-400 mt-3 text-center">點選縮圖以查看細節</p>
       <p class="md:hidden text-xs text-stone-400 mt-3 text-center">左右滑動切換商品圖片</p>
     </section>
 
@@ -119,15 +119,13 @@
         <div>
           <label for="size" class="block text-sm font-bold mb-2">商品尺寸</label>
           <select id="size" class="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm">
-            <option value="399">標準版（15cm × 12cm × 8cm）</option>
-            <option value="599">加大版（20cm × 16cm × 10cm）— NTD 599</option>
+            <option value="399">標準版（15 x 12 x 8 cm）</option>
           </select>
         </div>
 
         <div>
           <label for="color" class="block text-sm font-bold mb-2">顏色</label>
           <select id="color" class="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm">
-            <option value="岩灰">消光岩灰</option>
             <option value="砂岩">自然砂岩</option>
           </select>
         </div>
@@ -135,8 +133,7 @@
         <div>
           <label for="material" class="block text-sm font-bold mb-2">列印材質與製程</label>
           <select id="material" class="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm">
-            <option>FDM 環保無毒 PLA（消光岩灰）</option>
-            <option>FDM 環保無毒 PLA（自然砂岩）</option>
+            <option value="環保無毒 PLA">環保無毒 PLA</option>
           </select>
         </div>
 
@@ -162,7 +159,7 @@
 </div>
 
 
-        <button id="cartBtn" disabled onclick="addToCart()"
+        <button id="cartBtn" disabled onclick="addProductToCart()"
           class="w-full rounded-xl py-4 font-bold text-white bg-stone-300 cursor-not-allowed transition">
           🛒 加入購物車
         </button>
@@ -236,7 +233,7 @@
         <div class="text-stone-500">類型</div><div class="font-medium">躲避屋／棲地造景</div>
         <div class="text-stone-500">空間形式</div><div class="font-medium">單一入口／深層藏身／平坦頂部</div>
         <div class="text-stone-500">材質</div><div class="font-medium">環保無毒 PLA</div>
-        <div class="text-stone-500">標準尺寸</div><div class="font-medium">15 × 12 × 8 cm</div>
+        <div class="text-stone-500">正式尺寸</div><div class="font-medium">15 x 12 x 8 cm</div>
       </div>
     </div>
   </div>
@@ -264,7 +261,7 @@
       </div>
       <div>
         <div class="text-xs font-bold tracking-widest text-stone-400">CUSTOMER SERVICE</div>
-        <p class="mt-2 text-xs leading-6 text-stone-500">訂單、商品與退換貨問題，請透過品牌提供的客服聯絡方式洽詢。</p>
+        <p class="mt-2 text-xs leading-6 text-stone-500">客服 Email：<a href="mailto:hephaestus.scapes@gmail.com" class="hover:text-stone-900 hover:underline">hephaestus.scapes@gmail.com</a></p>
       </div>
       <div>
         <div class="text-xs font-bold tracking-widest text-stone-400">POLICIES</div>
@@ -360,11 +357,6 @@ function toggleCart() {
   btn.classList.toggle('cursor-pointer', checked);
 }
 
-function addToCart() {
-  if (!document.getElementById('confirm').checked) return;
-  document.getElementById('cartMessage').classList.remove('hidden');
-  document.getElementById('cartBtn').textContent = '✓ 已加入購物車';
-}
 </script>
 
 <script>
@@ -397,10 +389,9 @@ function addToCart() {
     const el = document.getElementById("stockText");
     if (!el) return;
     const cart = getCart();
-    const selectedSize = document.querySelector("select")?.value || "";
-    const selectedColor = Array.from(document.querySelectorAll("input[type=radio]"))
-      .find(x => x.checked)?.value || "";
-    const selectedMaterial = Array.from(document.querySelectorAll("select"))[1]?.value || "";
+    const selectedSize = document.getElementById("size")?.value || "";
+    const selectedColor = document.getElementById("color")?.value || "";
+    const selectedMaterial = document.getElementById("material")?.value || "";
 
     const used = cart
       .filter(item => item.id === PRODUCT.id &&
@@ -433,14 +424,11 @@ function addToCart() {
   }
 
   async function addProductToCart() {
-    const selects = document.querySelectorAll("select");
-    const size = selects[0]?.value || "標準尺寸";
-    const material = selects[1]?.value || "PLA";
-    const colorRadio = Array.from(document.querySelectorAll("input[type=radio]"))
-      .find(x => x.checked);
-    const color = colorRadio?.value || "岩石灰";
+    const size = document.getElementById("size")?.value || "標準版（15 x 12 x 8 cm）";
+    const material = document.getElementById("material")?.value || "環保無毒 PLA";
+    const color = document.getElementById("color")?.value || "砂岩";
 
-    const qtyInput = document.querySelector('input[type="number"]');
+    const qtyInput = document.getElementById("qty");
     const qty = Math.max(1, Number(qtyInput?.value || 1));
 
     let liveStock;
