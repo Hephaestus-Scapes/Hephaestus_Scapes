@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>古木根雕躲避屋 | Hephaestus Scapes</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body{font-family:'Helvetica Neue',Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .thumb.active{border-color:#57534e;box-shadow:0 0 0 2px rgba(87,83,78,.12)}
+  .gallery-main{touch-action:pan-y}
+  .purchase-sticky{position:sticky;top:24px}
+  select:focus{outline:none;box-shadow:0 0 0 3px rgba(87,83,78,.12);border-color:#78716c}
+  @media(max-width:767px){.purchase-sticky{position:static}}
+  .image-placeholder{background:radial-gradient(circle at 50% 35%,#6b5b4d 0,#3f372f 34%,#26231f 70%,#181715 100%)}
+</style>
+</head>
+<body class="bg-[#F4F2ED] text-stone-800">
+
+<nav class="container mx-auto px-5 md:px-8 py-5 flex justify-between items-center border-b border-stone-300/70 bg-[#F4F2ED]">
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="w-8 h-8 rounded-full bg-stone-200 border border-stone-300 flex items-center justify-center overflow-hidden hover:opacity-80 transition" aria-label="返回首頁">
+      <img src="Logo.png" alt="Hephaestus Scapes Logo" class="w-full h-full object-cover">
+    </a>
+    <div class="text-sm md:text-base font-extrabold text-stone-800 tracking-widest">HEPHAESTUS SCAPES</div>
+  </div>
+  <div class="flex items-center gap-3">
+    <a href="javascript:history.back()" class="text-sm text-stone-500 hover:text-stone-900 transition">↶ 回上一頁</a>
+    <span class="text-stone-300">/</span>
+    <a href="product.html" class="text-sm text-stone-500 hover:text-stone-900 transition">⌂ 返回棲地系列</a>
+    <a href="cart.html" class="relative ml-1 inline-flex items-center justify-center w-10 h-10 rounded-full border border-stone-200 bg-white hover:bg-stone-100 transition" aria-label="購物車">
+      <svg viewBox="0 0 24 24" class="w-5 h-5 text-stone-700" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 1.9-1.4L21 8H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="18" cy="20" r="1.2"/></svg>
+      <span id="cartCount" class="absolute -right-1 -top-1 min-w-5 h-5 px-1 rounded-full bg-stone-900 text-white text-[10px] leading-5 text-center">0</span>
+    </a>
+  </div>
+</nav>
+
+<main class="container mx-auto px-5 md:px-8 py-10 md:py-14">
+  <div class="grid lg:grid-cols-[minmax(0,1.35fr)_minmax(360px,.65fr)] gap-8 lg:gap-12 items-start">
+    <section>
+      <div id="galleryMain" class="gallery-main rounded-3xl overflow-hidden border border-stone-300 shadow-sm">
+        <div id="mainVisual" class="image-placeholder relative aspect-[4/3] flex items-center justify-center p-10 text-center">
+          <div class="max-w-md text-stone-200">
+            <div class="text-[10px] tracking-[.3em] text-stone-400 mb-4">NATURE / WOOD_001</div>
+            <div class="text-3xl md:text-5xl font-semibold tracking-tight">古木根雕躲避屋</div>
+            <p class="mt-4 text-sm text-stone-400 leading-7">商品主視覺預留位<br>WOOD_001_Pic1.png</p>
+          </div>
+        </div>
+      </div>
+      <div id="mobileDots" class="flex md:hidden justify-center gap-2 mt-3" aria-label="商品圖片切換"></div>
+      <div id="thumbGrid" class="grid grid-cols-3 sm:grid-cols-6 gap-3 mt-4"></div>
+      <p class="hidden md:block text-xs text-stone-400 mt-3 text-center">建議每件商品固定使用 6 張標準商品圖</p>
+      <p class="md:hidden text-xs text-stone-400 mt-3 text-center">左右滑動切換商品圖片</p>
+    </section>
+
+    <aside class="purchase-sticky">
+      <div class="text-xs text-stone-500 font-bold tracking-widest mb-3">NATURE / WOOD_001</div>
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-stone-900">古木根雕躲避屋</h1>
+      <p class="text-sm text-stone-400 mt-2">Ancient Root Carving Hideout</p>
+      <p class="text-base font-medium text-stone-900 mt-3">尺寸為成體肥尾、豹紋守宮適用</p>
+
+      <div class="h-px bg-stone-300 my-6"></div>
+      <div class="space-y-5">
+        <div><label for="style" class="block text-sm font-bold mb-2">款式</label><select id="style" class="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm"><option>標準版（適合一般成體守宮）</option><option>加大版（適合大型守宮或造景需求）</option></select></div>
+        <div><label for="color" class="block text-sm font-bold mb-2">顏色</label><select id="color" class="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm"><option>沉木岩灰（深焙咖啡與灰黑交織，無泛紅感）</option></select></div>
+        <div><label for="material" class="block text-sm font-bold mb-2">材質</label><select id="material" class="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm"><option>FDM 環保無毒 PLA（消光木雕質感）</option></select></div>
+        <div class="rounded-2xl bg-white border border-stone-200 p-4"><div class="text-xs tracking-[.18em] text-stone-400 mb-2">PRODUCT NOTE</div><p class="text-sm text-stone-600 leading-6">實際尺寸、價格與可購買狀態，以上架時商品資料與結帳頁面顯示為準。</p></div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<section class="bg-[#292822] text-stone-100 border-y border-stone-700">
+  <div class="container mx-auto px-5 md:px-8 py-14 md:py-18">
+    <div class="flex items-end justify-between gap-5 mb-8"><div><div class="text-xs text-stone-400 font-bold tracking-widest mb-2">PRODUCT FEATURES</div><h2 class="text-2xl md:text-3xl font-extrabold">商品特色</h2></div><p class="hidden md:block text-sm text-stone-400">造景 × 躲避 × 木雕肌理</p></div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="rounded-2xl bg-white/5 border border-white/10 p-6"><div class="text-stone-400 text-xs font-bold mb-4">01</div><h3 class="font-bold text-lg mb-2">盤根錯節形態 <span class="text-xs font-medium text-stone-400 tracking-wider">TWISTED ROOTS</span></h3><p class="text-sm text-stone-400 leading-6">將森林中歷經風霜的古老樹根輪廓，轉化為具有棲息功能的立體形態，營造極具張力的微縮自然景觀。</p></div>
+      <div class="rounded-2xl bg-white/5 border border-white/10 p-6"><div class="text-stone-400 text-xs font-bold mb-4">02</div><h3 class="font-bold text-lg mb-2">深邃隱蔽樹洞 <span class="text-xs font-medium text-stone-400 tracking-wider">DEEP HOLLOW</span></h3><p class="text-sm text-stone-400 leading-6">交織的粗壯樹根形成天然的遮蔽屏障，內部為深邃且相對封閉的樹洞空間，提供守宮極佳的安全感與休息環境。</p></div>
+      <div class="rounded-2xl bg-white/5 border border-white/10 p-6"><div class="text-stone-400 text-xs font-bold mb-4">03</div><h3 class="font-bold text-lg mb-2">木雕工藝層紋 <span class="text-xs font-medium text-stone-400 tracking-wider">CARVING TEXTURE</span></h3><p class="text-sm text-stone-400 leading-6">專業的高品質 3D 列印工藝，去除了粗糙毛邊，並刻意保留一層一層的堆疊紋理，完美還原樹木年輪與手工木雕般的醇厚質感。</p></div>
+      <div class="rounded-2xl bg-white/5 border border-white/10 p-6"><div class="text-stone-400 text-xs font-bold mb-4">04</div><h3 class="font-bold text-lg mb-2">消光沉穩色澤 <span class="text-xs font-medium text-stone-400 tracking-wider">MATTE FINISH</span></h3><p class="text-sm text-stone-400 leading-6">採用特調的深咖啡與灰黑結合色調（無突兀紅光），搭配極致消光的表面處理，拒絕塑膠玩具感，呈現如真實朽木般的沉穩與厚重。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="container mx-auto px-5 md:px-8 py-12 md:py-16">
+  <div class="grid lg:grid-cols-2 gap-10 lg:gap-16">
+    <div><div class="text-xs text-stone-500 font-bold tracking-widest mb-2">PRODUCT DETAILS</div><h2 class="text-2xl md:text-3xl font-extrabold text-stone-900 mb-6">商品資訊</h2><p class="text-stone-500 leading-7 mb-5">將大自然中的古木殘根語彙轉化為爬蟲棲息造景，讓作品同時具備實用躲避屋與微縮藝術造景的雙重身分。</p><p class="text-stone-500 leading-7">透過精密的 FDM 3D 列印技術，我們不刻意撫平，而是巧妙利用「層層堆疊」的物理特性來模擬原木的紋理；極高畫質的列印參數確保了表面無奇怪的網格或哈密瓜紋，只有純粹、乾淨且猶如木雕大師鑿刻般的專業質感。厚實的結構加上消光深灰棕色調，能在飼養箱中完美融入自然環境。</p></div>
+    <div class="rounded-2xl bg-[#ECE9E2] border border-stone-300 p-6 md:p-8"><div class="text-xs tracking-[.18em] text-stone-400 mb-5">SPECIFICATIONS</div><div class="grid grid-cols-2 gap-y-5 text-sm"><div class="text-stone-500">系列</div><div class="font-medium">NATURE</div><div class="text-stone-500">編號</div><div class="font-medium">WOOD_001</div><div class="text-stone-500">類型</div><div class="font-medium">躲避屋／棲地造景</div><div class="text-stone-500">空間形式</div><div class="font-medium">天然樹洞／盤根結構／立體攀爬</div><div class="text-stone-500">材質</div><div class="font-medium">環保無毒 PLA（仿木雕消光處理）</div><div class="text-stone-500">標準尺寸</div><div class="font-medium">15 × 12 × 8 cm</div></div><p class="text-xs text-stone-400 mt-6 leading-6">※ 尺寸為目前規劃值；正式上架前請依實際列印尺寸確認。</p></div>
+  </div>
+</section>
+
+<section class="bg-stone-900 text-stone-100"><div class="container mx-auto px-5 md:px-8 py-10 md:py-12"><div class="max-w-4xl mx-auto"><div class="text-xs text-stone-400 font-bold tracking-widest mb-3">IMPORTANT</div><h2 class="text-xl md:text-2xl font-extrabold mb-4">使用前請確認</h2><p class="text-stone-400 text-sm leading-7">實際使用仍應依個體體型、飼養環境與動物習性評估，並確認入口尺寸、結構穩定性、表面處理及材質符合實際飼養需求。</p></div></div></section>
+
+<footer class="border-t border-stone-300 bg-[#F4F2ED]"><div class="container mx-auto px-5 md:px-8 py-10"><div class="grid gap-8 md:grid-cols-3"><div><div class="text-sm font-bold tracking-[0.18em] text-stone-800">HEPHAESTUS SCAPES</div><p class="mt-2 text-xs leading-6 text-stone-500">赫菲斯微景｜3D 列印爬蟲微縮棲息造景設計</p></div><div><div class="text-xs font-bold tracking-widest text-stone-400">CUSTOMER SERVICE</div><p class="mt-2 text-xs leading-6 text-stone-500">客服 Email：<a href="mailto:hephaestus.scapes@gmail.com" class="hover:text-stone-900 hover:underline">hephaestus.scapes@gmail.com</a></p></div><div><div class="text-xs font-bold tracking-widest text-stone-400">POLICIES</div><div class="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-xs"><a href="return-policy.html" class="text-stone-500 hover:text-stone-900">退換貨政策</a><a href="privacy-policy.html" class="text-stone-500 hover:text-stone-900">隱私權政策</a><a href="terms.html" class="text-stone-500 hover:text-stone-900">服務條款</a></div></div></div><div class="mt-8 border-t border-stone-300 pt-5 text-center text-xs text-stone-400">© 2026 Hephaestus Scapes. All rights reserved.</div></div></footer>
+
+<script>
+const images=['WOOD_001_Pic1.png','WOOD_001_Pic2.png','WOOD_001_Pic3.png','WOOD_001_Pic4.png','WOOD_001_Pic5.png','WOOD_001_Pic6.png'];
+const labels=['商品全貌','入口細節','內部躲避空間','根雕結構','材質紋理','生態缸情境'];
+const grid=document.getElementById('thumbGrid');
+const dots=document.getElementById('mobileDots');
+images.forEach((src,i)=>{
+  const b=document.createElement('button'); b.type='button'; b.className='thumb '+(i===0?'active ':'')+'rounded-xl overflow-hidden border-2 border-transparent bg-stone-200 relative aspect-[4/3]';
+  b.innerHTML='<img src="products/NATURE/WOOD_001/'+src+'" alt="'+labels[i]+'" class="w-full h-full object-cover" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="absolute inset-0 items-center justify-center bg-stone-800 text-stone-300 text-[9px] tracking-wider hidden">WOOD_001<br>'+String(i+1).padStart(2,'0')+'</div>';
+  b.onclick=()=>showImage(i); grid.appendChild(b);
+  const d=document.createElement('button'); d.type='button'; d.className='w-2 h-2 rounded-full '+(i===0?'bg-stone-700':'bg-stone-300'); d.setAttribute('aria-label','第'+(i+1)+'張圖片'); d.onclick=()=>showImage(i); dots.appendChild(d);
+});
+function showImage(i){
+  document.querySelectorAll('.thumb').forEach((x,j)=>x.classList.toggle('active',j===i));
+  document.querySelectorAll('#mobileDots button').forEach((x,j)=>{x.classList.toggle('bg-stone-700',j===i);x.classList.toggle('bg-stone-300',j!==i)});
+  const visual=document.getElementById('mainVisual');
+  visual.innerHTML='<img src="products/NATURE/WOOD_001/'+images[i]+'" alt="'+labels[i]+'" class="w-full aspect-[4/3] object-cover" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="absolute inset-0 items-center justify-center p-10 text-center hidden"><div class="max-w-md text-stone-200"><div class="text-[10px] tracking-[.3em] text-stone-400 mb-4">NATURE / WOOD_001</div><div class="text-3xl md:text-5xl font-semibold">'+labels[i]+'</div><p class="mt-4 text-sm text-stone-400">正式商品攝影檔：'+images[i]+'</p></div></div>';
+}
+let sx=0,sy=0; document.getElementById('galleryMain').addEventListener('touchstart',e=>{sx=e.changedTouches[0].clientX;sy=e.changedTouches[0].clientY},{passive:true}); document.getElementById('galleryMain').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)){const n=Math.max(0,Math.min(5,Math.round((dx<0?1:-1)+(0))));}} ,{passive:true});
+(function(){try{const c=JSON.parse(localStorage.getItem('hephaestus_cart')||'[]');document.getElementById('cartCount').textContent=c.reduce((s,x)=>s+Number(x.qty||0),0)}catch(e){}})();
+</script>
+</body></html>
