@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { getSupabase } from "../lib/supabase.js";
 import { json, readJsonBody } from "../lib/http.js";
 import { ECPAY_LOGISTICS_CONFIG } from "../lib/ecpay-logistics-config.js";
+import { buildC2CLogisticsCreateParams, createC2CLogisticsOrder, parseC2CLogisticsCreateResponse } from "../lib/ecpay-logistics.js";
 
 
 function makeOrderNo() {
@@ -70,8 +71,12 @@ export default async function handler(req, res) {
       items
     } = body || {};
 
-    if (paymentMethod !== "ecpay") {
-      return json(res, { error: "目前僅提供 ECPay 綠界金流" }, 400);
+    if (!new Set(["ecpay", "cod"]).has(String(paymentMethod))) {
+      return json(res, { error: "付款方式無效" }, 400);
+    }
+
+    if (paymentMethod === "cod" && String(shippingMethod) !== "cvs") {
+      return json(res, { error: "貨到付款目前僅支援超商取貨" }, 400);
     }
 
     if (!['home', 'cvs'].includes(String(shippingMethod))) {
@@ -180,7 +185,7 @@ export default async function handler(req, res) {
         shipping_district: String(customer.district || "").trim(),
         shipping_address: String(customer.address || "").trim(),
         note: String(note || "").trim().slice(0, 2000) || null,
-        payment_method: "ecpay",
+        payment_method: String(paymentMethod),
         payment_status: "pending",
         order_status: "pending_payment",
         shipping_fee: shippingFee,
@@ -222,10 +227,76 @@ export default async function handler(req, res) {
       throw itemError;
     }
 
+    let logistics = null;
+
+    // 貨到付款：不走 ECPay 金流付款頁，而是直接建立 ECPay C2C 代收物流單。
+    if (paymentMethod === "cod") {
+      try {
+        const siteUrl = (process.env.PUBLIC_BASE_URL || process.env.SITE_URL || "").replace(/\/$/, "");
+        if (!siteUrl || !/^https:\/\//i.test(siteUrl)) {
+          throw new Error("PUBLIC_BASE_URL / SITE_URL 尚未正確設定（必須是 HTTPS）");
+        }
+
+        const logisticsParams = buildC2CLogisticsCreateParams({
+          orderNo: order.order_no,
+          goodsAmount: total,
+          collectionAmount: total,
+          goodsName: "Hephaestus Scapes 商品",
+          logisticsSubType: String(logisticsSubType),
+          senderName: ECPAY_LOGISTICS_CONFIG.senderName,
+          senderCellPhone: ECPAY_LOGISTICS_CONFIG.senderCellPhone,
+          senderZipCode: ECPAY_LOGISTICS_CONFIG.senderZipCode,
+          senderAddress: ECPAY_LOGISTICS_CONFIG.senderAddress,
+          receiverName: String(customer.name).trim(),
+          receiverPhone: String(receiverStorePhone || ""),
+          receiverCellPhone: String(customer.phone).trim(),
+          receiverEmail: String(customer.email).trim(),
+          receiverStoreId: String(receiverStoreId).trim(),
+          serverReplyURL: `${siteUrl}/api/ecpay-logistics-notify`,
+          remark: String(note || "").trim(),
+          isCollection: "Y"
+        });
+
+        const created = await createC2CLogisticsOrder(logisticsParams);
+        const parsed = parseC2CLogisticsCreateResponse(created.text);
+
+        const logisticsUpdate = {
+          logistics_status: String(parsed.RtnCode || "300"),
+          logistics_status_message: String(parsed.RtnMsg || "物流訂單已建立"),
+          ecpay_logistics_id: String(parsed.AllPayLogisticsID || "") || null,
+          ecpay_cvs_payment_no: String(parsed.CVSPaymentNo || "") || null,
+          ecpay_cvs_validation_no: String(parsed.CVSValidationNo || "") || null,
+          updated_at: new Date().toISOString()
+        };
+
+        const { error: logisticsUpdateError } = await supabase
+          .from("orders")
+          .update(logisticsUpdate)
+          .eq("id", order.id);
+        if (logisticsUpdateError) throw logisticsUpdateError;
+
+        logistics = logisticsUpdate;
+      } catch (logisticsError) {
+        // 物流單建立失敗時，不把訂單假裝成已出貨；保留 pending 訂單讓後續可重試。
+        console.error("create COD logistics error:", logisticsError);
+        await supabase.from("orders").update({
+          logistics_status: "CREATE_FAILED",
+          logistics_status_message: String(logisticsError?.message || "建立物流訂單失敗").slice(0, 200),
+          updated_at: new Date().toISOString()
+        }).eq("id", order.id);
+        return json(res, {
+          error: logisticsError?.message || "貨到付款物流訂單建立失敗",
+          order: { orderNo: order.order_no }
+        }, 502);
+      }
+    }
+
     console.log("Order created", {
       orderNo: order.order_no,
       total: order.total,
-      itemCount: normalized.length
+      paymentMethod,
+      itemCount: normalized.length,
+      logisticsId: logistics?.ecpay_logistics_id || null
     });
 
     return json(res, {
@@ -236,7 +307,9 @@ export default async function handler(req, res) {
         subtotal: order.subtotal,
         shippingFee: order.shipping_fee,
         total: order.total,
-        shippingMethod: shippingMethod
+        shippingMethod: shippingMethod,
+        paymentMethod: paymentMethod,
+        logistics: logistics
       }
     });
   } catch (error) {
