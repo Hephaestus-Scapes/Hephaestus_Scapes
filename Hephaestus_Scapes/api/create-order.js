@@ -75,12 +75,16 @@ export default async function handler(req, res) {
       return json(res, { error: "付款方式無效" }, 400);
     }
 
-    if (paymentMethod === "cod" && String(shippingMethod) !== "cvs") {
-      return json(res, { error: "貨到付款目前僅支援超商取貨" }, 400);
-    }
-
     if (!['home', 'cvs'].includes(String(shippingMethod))) {
       return json(res, { error: "配送方式無效" }, 400);
+    }
+
+    // 商業規則：超商取貨只能貨到付款；黑貓宅配只能線上付款。
+    if (String(shippingMethod) === "cvs" && paymentMethod !== "cod") {
+      return json(res, { error: "超商取貨僅支援貨到付款" }, 400);
+    }
+    if (String(shippingMethod) === "home" && paymentMethod !== "ecpay") {
+      return json(res, { error: "黑貓宅配僅支援線上付款" }, 400);
     }
 
     const allowedLogistics = new Set(['UNIMARTC2C', 'FAMIC2C', 'HILIFEC2C']);
@@ -164,7 +168,7 @@ export default async function handler(req, res) {
 
     const shippingFee = shippingMethod === "cvs"
       ? Number(ECPAY_LOGISTICS_CONFIG.shippingFees[String(logisticsSubType)] || 0)
-      : 0;
+      : 120; // 黑貓宅配
     const total = subtotal + shippingFee;
 
     if (!Number.isSafeInteger(total)) {
