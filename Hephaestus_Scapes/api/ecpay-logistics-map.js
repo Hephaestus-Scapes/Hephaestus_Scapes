@@ -51,6 +51,7 @@ export default async function handler(req, res) {
     const { merchantId, stage } = ecpayLogisticsConfig();
     const amount = Number(body?.amount);
     const logisticsSubType = String(body?.logisticsSubType || "").trim();
+    const isCollection = body?.isCollection === true || String(body?.isCollection || "").toUpperCase() === "Y";
     const customer = body?.customer || {};
 
     if (!Number.isInteger(amount) || amount < 1 || amount > 20000) {
@@ -83,7 +84,7 @@ export default async function handler(req, res) {
       MerchantTradeNo: makeMapTradeNo(),
       LogisticsType: "CVS",
       LogisticsSubType: logisticsSubType,
-      IsCollection: "N",
+      IsCollection: isCollection ? "Y" : "N",
       ServerReplyURL: `${siteUrl}/api/ecpay-logistics-map-reply`,
       ExtraData: "HS_CHECKOUT",
       Device: "0"
