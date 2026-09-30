@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     const update = {
       logistics_status: String(data.LogisticsStatus || ""),
       logistics_status_message: String(data.LogisticsStatusName || data.RtnMsg || ""),
-      ecpay_logistics_id: String(data.LogisticsID || "") || null,
+      ecpay_logistics_id: String(data.LogisticsID || data.AllPayLogisticsID || "") || null,
       ecpay_cvs_payment_no: String(data.CVSPaymentNo || "") || null,
       ecpay_cvs_validation_no: String(data.CVSValidationNo || "") || null,
       updated_at: new Date().toISOString()
