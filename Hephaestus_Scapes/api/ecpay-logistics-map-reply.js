@@ -41,9 +41,9 @@ export default async function handler(req, res) {
       return json(res, { error: "綠界沒有回傳完整的門市資料" }, 400);
     }
 
-    const siteUrl = (process.env.SITE_URL || "").replace(/\/$/, "");
+    const siteUrl = (process.env.PUBLIC_BASE_URL || process.env.SITE_URL || "").replace(/\/$/, "");
     if (!siteUrl || !/^https:\/\//i.test(siteUrl)) {
-      return json(res, { error: "SITE_URL 尚未正確設定（必須是 HTTPS）" }, 500);
+      return json(res, { error: "PUBLIC_BASE_URL / SITE_URL 尚未正確設定（必須是 HTTPS）" }, 500);
     }
 
     const store = {
