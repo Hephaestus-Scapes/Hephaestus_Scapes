@@ -9,7 +9,8 @@ export function ecpayConfig() {
     throw new Error("缺少 ECPay 環境變數：ECPAY_MERCHANT_ID / ECPAY_HASH_KEY / ECPAY_HASH_IV");
   }
 
-  const stage = (process.env.ECPAY_ENV || "stage").toLowerCase() !== "production";
+  const env = String(process.env.ECPAY_ENV || "stage").trim().toLowerCase();
+  const stage = !["production", "prod", "live"].includes(env);
 
   return {
     merchantId,
