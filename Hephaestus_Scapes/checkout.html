@@ -70,10 +70,10 @@
               <input type="radio" name="shipping" value="home" checked class="mt-1">
               <span class="flex-1">
                 <span class="flex items-center justify-between gap-4">
-                  <span class="block text-sm font-medium">宅配</span>
-                  <span class="text-sm text-stone-600">免運</span>
+                  <span class="block text-sm font-medium">黑貓宅配</span>
+                  <span class="text-sm text-stone-600">NT$ 120</span>
                 </span>
-                <span class="mt-1 block text-xs leading-5 text-stone-500">寄送至上方填寫的收件地址。</span>
+                <span class="mt-1 block text-xs leading-5 text-stone-500">透過黑貓宅配寄送至上方填寫的收件地址。</span>
               </span>
             </label>
 
@@ -204,11 +204,17 @@
   const DRAFT_KEY = "hephaestus_checkout_draft";
   const STORE_KEY = "hephaestus_logistics_selection";
   const PAYMENT_KEY = "hephaestus_pending_order";
-
-  // 清除舊版曾永久留在 localStorage 的結帳草稿／門市資料，避免舊失敗訂單再次出現。
-  localStorage.removeItem("hephaestus_order_draft");
-  localStorage.removeItem(STORE_KEY);
+  const HOME_FEE = 120;
   const CVS_FEE = 60;
+
+  // 只有從綠界門市選擇頁返回時，才保留本次結帳暫存。
+  // 一般重新進入 checkout 時清掉上一次未完成的草稿，避免失敗訂單殘留。
+  const isStoreReturn = new URLSearchParams(location.search).get("logistics") === "selected";
+  if (!isStoreReturn) {
+    sessionStorage.removeItem(DRAFT_KEY);
+    sessionStorage.removeItem(STORE_KEY);
+  }
+  localStorage.removeItem("hephaestus_order_draft");
 
   function getCart() {
     try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
@@ -386,7 +392,8 @@
   }
 
   function updateTotals() {
-    const shipping = document.querySelector('input[name="shipping"]:checked')?.value === "cvs" ? CVS_FEE : 0;
+    const shippingMethod = document.querySelector('input[name="shipping"]:checked')?.value || "home";
+    const shipping = shippingMethod === "cvs" ? CVS_FEE : HOME_FEE;
     shippingFeeEl.textContent = money(shipping);
     totalEl.textContent = money(subtotal + shipping);
   }
@@ -394,25 +401,26 @@
   function restoreStoreFromQuery() {
     const params = new URLSearchParams(location.search);
     const encoded = params.get("store");
-    if (!encoded) return;
+    if (!encoded) return null;
 
     try {
       // URLSearchParams.get() 已經完成一次 URL decode；不要再次 decode，避免中文地址或特殊字元被破壞。
       const store = JSON.parse(encoded);
       if (store?.receiverStoreId && store?.receiverStoreName && store?.logisticsSubType) {
-        saveSelectedStore(store);
+        // 直接更新記憶體狀態 + sessionStorage，確保第一次從綠界返回時就立即顯示。
+        selectedStore = store;
+        sessionStorage.setItem(STORE_KEY, JSON.stringify(store));
+        return store;
       }
     } catch (error) {
       console.error("store query parse error", error);
     }
-
-    const cleanUrl = location.pathname + location.hash;
-    history.replaceState({}, document.title, cleanUrl);
+    return null;
   }
 
   restoreFormDraft();
-  restoreStoreFromQuery();
-  selectedStore = getSelectedStore();
+  const returnedStore = restoreStoreFromQuery();
+  if (!returnedStore) selectedStore = getSelectedStore();
   renderStore();
   applyShippingValidation();
   updateTotals();
@@ -422,15 +430,29 @@
 
   function syncPaymentOptions() {
     const isCvs = document.querySelector('input[name="shipping"]:checked')?.value === "cvs";
-    if (codRadio) {
-      codRadio.disabled = !isCvs;
-      const label = codRadio.closest("label");
-      if (label) label.classList.toggle("opacity-50", !isCvs);
-      if (!isCvs && codRadio.checked) {
-        const online = form.querySelector('input[name="payment"][value="ecpay"]');
-        if (online) online.checked = true;
+    const online = form.querySelector('input[name="payment"][value="ecpay"]');
+    const onlineLabel = online?.closest("label");
+    const codLabel = codRadio?.closest("label");
+
+    // 商業規則：超商取貨 = 只能貨到付款；宅配 = 只能線上付款。
+    if (isCvs) {
+      if (online) online.disabled = true;
+      if (onlineLabel) onlineLabel.classList.add("opacity-50");
+      if (codRadio) {
+        codRadio.disabled = false;
+        codRadio.checked = true;
       }
+      if (codLabel) codLabel.classList.remove("opacity-50");
+    } else {
+      if (online) {
+        online.disabled = false;
+        online.checked = true;
+      }
+      if (onlineLabel) onlineLabel.classList.remove("opacity-50");
+      if (codRadio) codRadio.disabled = true;
+      if (codLabel) codLabel.classList.add("opacity-50");
     }
+    saveFormDraft();
   }
 
   paymentRadios.forEach(input => input.addEventListener("change", saveFormDraft));
@@ -446,6 +468,8 @@
     });
   });
 
+  const initialIsCvs = document.querySelector('input[name="shipping"]:checked')?.value === "cvs";
+  cvsPanel.classList.toggle("hidden", !initialIsCvs);
   syncPaymentOptions();
 
   document.querySelectorAll('input[name="cvsBrand"]').forEach(input => {
@@ -481,6 +505,7 @@
           amount: subtotal,
           goodsName: "Hephaestus Scapes 商品",
           logisticsSubType,
+          isCollection: true,
           customer: {
             name: form.elements.name.value.trim(),
             phone: form.elements.phone.value.trim()
@@ -545,6 +570,11 @@
 
     const fd = new FormData(form);
     const shippingMethod = String(fd.get("shipping") || "home");
+    const paymentMethod = shippingMethod === "cvs" ? "cod" : "ecpay";
+
+    // 防止舊版暫存或瀏覽器狀態造成配送／付款組合錯誤。
+    syncPaymentOptions();
+    fd.set("payment", paymentMethod);
 
     if (shippingMethod === "cvs") {
       selectedStore = getSelectedStore();
@@ -571,7 +601,7 @@
             district: fd.get("district"),
             address: fd.get("address")
           },
-          paymentMethod: fd.get("payment"),
+          paymentMethod,
           shippingMethod,
           logisticsSubType: shippingMethod === "cvs" ? selectedStore.logisticsSubType : "",
           receiverStoreId: shippingMethod === "cvs" ? selectedStore.receiverStoreId : "",
@@ -587,7 +617,7 @@
       const result = await readJsonResponse(response);
       if (!response.ok || !result.ok) throw new Error(result.error || `建立訂單失敗（HTTP ${response.status}）`);
 
-      if (result.order && result.order.orderNo && fd.get("payment") === "ecpay") {
+      if (result.order && result.order.orderNo && paymentMethod === "ecpay") {
         submitButton.textContent = "前往綠界付款…";
 
         const pay = await fetchWithTimeout("/api/ecpay-create", {
@@ -621,7 +651,7 @@
       sessionStorage.removeItem(DRAFT_KEY);
 
       document.getElementById("result").classList.remove("hidden");
-      const codMessage = fd.get("payment") === "cod"
+      const codMessage = paymentMethod === "cod"
         ? `<p class="mt-3 text-sm text-stone-500">付款方式：<strong class="text-stone-900">超商取貨付款</strong></p><p class="mt-2 text-sm text-stone-500">請於取貨門市付款。</p>`
         : `<p class="mt-3 text-sm text-stone-500">付款方式：<strong class="text-stone-900">線上付款</strong></p>`;
       document.getElementById("result").innerHTML = `
