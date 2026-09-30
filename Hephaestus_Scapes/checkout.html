@@ -194,8 +194,13 @@
 <script>
 (function () {
   const CART_KEY = "hephaestus_cart";
-  const DRAFT_KEY = "hephaestus_order_draft";
+  const DRAFT_KEY = "hephaestus_checkout_draft";
   const STORE_KEY = "hephaestus_logistics_selection";
+  const PAYMENT_KEY = "hephaestus_pending_order";
+
+  // 清除舊版曾永久留在 localStorage 的結帳草稿／門市資料，避免舊失敗訂單再次出現。
+  localStorage.removeItem("hephaestus_order_draft");
+  localStorage.removeItem(STORE_KEY);
   const CVS_FEE = 60;
 
   function getCart() {
@@ -252,7 +257,7 @@
 
   function getSelectedStore() {
     try {
-      const raw = localStorage.getItem(STORE_KEY);
+      const raw = sessionStorage.getItem(STORE_KEY);
       return raw ? JSON.parse(raw) : null;
     } catch {
       return null;
@@ -261,13 +266,13 @@
 
   function saveSelectedStore(store) {
     selectedStore = store;
-    localStorage.setItem(STORE_KEY, JSON.stringify(store));
+    sessionStorage.setItem(STORE_KEY, JSON.stringify(store));
     renderStore();
   }
 
   function saveFormDraft() {
     const fd = new FormData(form);
-    localStorage.setItem(DRAFT_KEY, JSON.stringify({
+    sessionStorage.setItem(DRAFT_KEY, JSON.stringify({
       form: {
         name: String(fd.get("name") || ""),
         phone: String(fd.get("phone") || ""),
@@ -286,7 +291,7 @@
   }
 
   function restoreFormDraft() {
-    const draft = safeJson(localStorage.getItem(DRAFT_KEY));
+    const draft = safeJson(sessionStorage.getItem(DRAFT_KEY));
     if (!draft?.form) return;
 
     const data = draft.form;
@@ -419,7 +424,7 @@
       // 更換超商品牌後，舊門市不再視為有效，避免品牌與門市不一致。
       if (selectedStore?.logisticsSubType !== input.value) {
         selectedStore = null;
-        localStorage.removeItem(STORE_KEY);
+        sessionStorage.removeItem(STORE_KEY);
         renderStore();
       }
       saveFormDraft();
@@ -569,12 +574,12 @@
           throw new Error(message);
         }
 
-        localStorage.setItem(DRAFT_KEY, JSON.stringify({
+        localStorage.setItem(PAYMENT_KEY, JSON.stringify({
           orderNo: result.order.orderNo,
           createdAt: Date.now()
         }));
         localStorage.removeItem(CART_KEY);
-        localStorage.removeItem(STORE_KEY);
+        sessionStorage.removeItem(STORE_KEY);
 
         document.open();
         document.write(html);
@@ -583,8 +588,8 @@
       }
 
       localStorage.removeItem(CART_KEY);
-      localStorage.removeItem(STORE_KEY);
-      localStorage.removeItem(DRAFT_KEY);
+      sessionStorage.removeItem(STORE_KEY);
+      sessionStorage.removeItem(DRAFT_KEY);
 
       document.getElementById("result").classList.remove("hidden");
       document.getElementById("result").innerHTML = `
