@@ -23,14 +23,24 @@ function makeOrderNo() {
   return `HS${timestamp}${random}`; // 2 + 12 + 6 = 20
 }
 
-function validCustomer(c) {
-  return c &&
+function validCustomer(c, shippingMethod) {
+  if (!c) return false;
+
+  const basic =
     String(c.name || "").trim() &&
     String(c.phone || "").trim() &&
-    String(c.email || "").trim() &&
+    String(c.email || "").trim();
+
+  if (!basic) return false;
+
+  // 超商取貨不需要消費者填寫宅配地址；門市地址由綠界回傳。
+  if (String(shippingMethod) === "cvs") return true;
+
+  return Boolean(
     String(c.city || "").trim() &&
     String(c.district || "").trim() &&
-    String(c.address || "").trim();
+    String(c.address || "").trim()
+  );
 }
 
 export default async function handler(req, res) {
@@ -76,13 +86,14 @@ export default async function handler(req, res) {
       if (!String(receiverStoreId).trim() || !String(receiverStoreName).trim()) {
         return json(res, { error: "請先選擇取貨門市" }, 400);
       }
-      if (!String(logisticsTempId).trim()) {
-        return json(res, { error: "缺少綠界暫存物流訂單編號，請重新選擇門市" }, 400);
-      }
     }
 
-    if (!validCustomer(customer)) {
-      return json(res, { error: "收件資料不完整" }, 400);
+    if (!validCustomer(customer, shippingMethod)) {
+      return json(res, {
+        error: shippingMethod === "cvs"
+          ? "超商取貨請完整填寫姓名、手機與 Email"
+          : "宅配請完整填寫姓名、手機、Email、縣市、區／鄉鎮與詳細地址"
+      }, 400);
     }
 
     if (!Array.isArray(items) || !items.length) {
@@ -164,9 +175,10 @@ export default async function handler(req, res) {
         customer_name: String(customer.name).trim(),
         customer_phone: String(customer.phone).trim(),
         customer_email: String(customer.email).trim(),
-        shipping_city: String(customer.city).trim(),
-        shipping_district: String(customer.district).trim(),
-        shipping_address: String(customer.address).trim(),
+        // Supabase 目前欄位仍為 NOT NULL；超商取貨時以空字串表示「無宅配地址」。
+        shipping_city: String(customer.city || "").trim(),
+        shipping_district: String(customer.district || "").trim(),
+        shipping_address: String(customer.address || "").trim(),
         note: String(note || "").trim().slice(0, 2000) || null,
         payment_method: "ecpay",
         payment_status: "pending",
