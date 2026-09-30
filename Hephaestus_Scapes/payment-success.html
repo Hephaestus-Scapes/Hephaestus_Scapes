@@ -24,13 +24,13 @@
 <script>
 (async function () {
   const CART_KEY = "hephaestus_cart";
-  const DRAFT_KEY = "hephaestus_order_draft";
+  const PAYMENT_KEY = "hephaestus_pending_order";
   const title = document.getElementById("title");
   const message = document.getElementById("message");
 
   let draft = null;
   try {
-    draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+    draft = JSON.parse(localStorage.getItem(PAYMENT_KEY) || "null");
   } catch {}
 
   const orderNo = String(draft?.orderNo || "").trim();
@@ -61,7 +61,7 @@
 
       if (data.paymentStatus === "paid") {
         localStorage.removeItem(CART_KEY);
-        localStorage.removeItem(DRAFT_KEY);
+        localStorage.removeItem(PAYMENT_KEY);
 
         title.textContent = "付款成功";
         message.innerHTML =
@@ -75,7 +75,7 @@
       }
 
       if (data.paymentStatus === "failed") {
-        localStorage.removeItem(DRAFT_KEY);
+        localStorage.removeItem(PAYMENT_KEY);
         title.textContent = "付款未完成";
         message.textContent = "這筆訂單尚未完成付款，購物車將保留。";
         return;
