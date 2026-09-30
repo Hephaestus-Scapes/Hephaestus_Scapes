@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { makeCheckMacValue, ecpayDate } from "./ecpay.js";
 
 /**
  * ECPay 物流專用憑證
@@ -103,7 +104,8 @@ export function buildLogisticsSelectionRequest({
   receiverAddress = "",
   receiverCellPhone = "",
   receiverPhone = "",
-  receiverName = ""
+  receiverName = "",
+  isCollection = "N"
 }) {
   const { merchantId } = ecpayLogisticsConfig();
 
@@ -128,7 +130,7 @@ export function buildLogisticsSelectionRequest({
   const data = {
     TempLogisticsID: "0",
     GoodsAmount: Number(goodsAmount),
-    IsCollection: "N",
+    IsCollection: isCollection === "Y" ? "Y" : "N",
     GoodsName: String(goodsName)
       .replace(/[\^‘`!@#%&*+\\"<>|_\[\]]/g, " ")
       .slice(0, 50),
@@ -158,6 +160,125 @@ export function buildLogisticsSelectionRequest({
     },
     Data: encryptLogisticsData(data)
   };
+}
+
+
+export function buildC2CLogisticsCreateParams({
+  orderNo,
+  goodsAmount,
+  collectionAmount,
+  goodsName,
+  logisticsSubType,
+  senderName,
+  senderCellPhone,
+  senderZipCode,
+  senderAddress,
+  receiverName,
+  receiverPhone = "",
+  receiverCellPhone,
+  receiverEmail,
+  receiverStoreId,
+  serverReplyURL,
+  remark = "",
+  isCollection = "N"
+}) {
+  const { merchantId, hashKey, hashIv } = ecpayLogisticsConfig();
+  if (!orderNo) throw new Error("缺少物流訂單編號");
+  if (!Number.isInteger(Number(goodsAmount)) || Number(goodsAmount) < 1 || Number(goodsAmount) > 20000) {
+    throw new Error("ECPay 物流商品金額必須介於 NT$1～20,000");
+  }
+  if (!receiverStoreId) throw new Error("缺少超商取貨門市代碼");
+  if (!/^09\d{8}$/.test(String(receiverCellPhone || "").replace(/\D/g, ""))) {
+    throw new Error("ECPay 超商取貨需要有效的收件人手機");
+  }
+  if (!senderCellPhone && ["UNIMARTC2C", "HILIFEC2C"].includes(logisticsSubType)) {
+    throw new Error("缺少 ECPAY_LOGISTICS_SENDER_CELL_PHONE；7-ELEVEN / 萊爾富 C2C 建立物流單需要寄件人手機");
+  }
+
+  const collection = isCollection === "Y" ? Number(collectionAmount) : 0;
+  if (isCollection === "Y" && (!Number.isInteger(collection) || collection < 1)) {
+    throw new Error("貨到付款代收金額無效");
+  }
+  // ECPay 規定 UNIMARTC2C 的代收金額必須與商品金額一致。
+  if (isCollection === "Y" && logisticsSubType === "UNIMARTC2C" && collection !== Number(goodsAmount)) {
+    throw new Error("7-ELEVEN C2C 貨到付款的代收金額必須等於商品金額");
+  }
+
+  const params = {
+    MerchantID: merchantId,
+    MerchantTradeNo: String(orderNo),
+    MerchantTradeDate: ecpayDate(),
+    LogisticsType: "CVS",
+    LogisticsSubType: String(logisticsSubType),
+    GoodsAmount: Number(goodsAmount),
+    CollectionAmount: collection,
+    IsCollection: isCollection === "Y" ? "Y" : "N",
+    GoodsName: String(goodsName || "Hephaestus Scapes 商品")
+      .replace(/[\^‘`!@#%&*+\\"<>|_\[\]]/g, " ")
+      .slice(0, 50),
+    SenderName: String(senderName || "").slice(0, 10),
+    SenderPhone: "",
+    SenderCellPhone: String(senderCellPhone || "").replace(/\D/g, "").slice(0, 10),
+    SenderEmail: "",
+    SenderZipCode: String(senderZipCode || "").slice(0, 6),
+    SenderAddress: String(senderAddress || "").slice(0, 60),
+    ReceiverName: String(receiverName || "").slice(0, 10),
+    ReceiverPhone: String(receiverPhone || "").slice(0, 20),
+    ReceiverCellPhone: String(receiverCellPhone || "").replace(/\D/g, "").slice(0, 10),
+    ReceiverEmail: String(receiverEmail || "").slice(0, 50),
+    TradeDesc: "Hephaestus Scapes 商品訂單",
+    ServerReplyURL: String(serverReplyURL),
+    ClientReplyURL: "",
+    Remark: String(remark || "").slice(0, 200),
+    PlatformID: "",
+    ReceiverStoreID: String(receiverStoreId).slice(0, 6)
+  };
+
+  params.CheckMacValue = makeCheckMacValue(params, hashKey, hashIv);
+  return params;
+}
+
+export async function createC2CLogisticsOrder(params, timeoutMs = 20000) {
+  const { stage } = ecpayLogisticsConfig();
+  const url = stage
+    ? "https://logistics-stage.ecpay.com.tw/Express/Create"
+    : "https://logistics.ecpay.com.tw/Express/Create";
+  const body = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    body.set(key, String(value ?? ""));
+  }
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded", "accept": "text/html" },
+      body: body.toString(),
+      signal: controller.signal
+    });
+    const text = await response.text();
+    if (!response.ok) throw new Error(`ECPay logistics HTTP ${response.status}: ${text.slice(0, 300)}`);
+    return { text, response };
+  } catch (error) {
+    if (error?.name === "AbortError") throw new Error("ECPay 建立物流訂單逾時");
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+export function parseC2CLogisticsCreateResponse(text) {
+  const raw = String(text || "").trim();
+  if (!raw) throw new Error("ECPay 建立物流訂單沒有回傳資料");
+  if (/^0\|/.test(raw)) throw new Error(raw.replace(/^0\|\s*/, "") || "ECPay 建立物流訂單失敗");
+  if (!/^1\|/.test(raw)) throw new Error(`ECPay 建立物流訂單回傳格式無法辨識：${raw.slice(0, 200)}`);
+
+  const query = raw.slice(2).trim();
+  const params = Object.fromEntries(new URLSearchParams(query).entries());
+  if (String(params.RtnCode) !== "1") throw new Error(params.RtnMsg || "ECPay 建立物流訂單失敗");
+  if (!params.AllPayLogisticsID) throw new Error("ECPay 建立物流訂單成功但缺少物流編號");
+  return params;
 }
 
 export async function postLogisticsRequest(url, payload, timeoutMs = 20000) {
