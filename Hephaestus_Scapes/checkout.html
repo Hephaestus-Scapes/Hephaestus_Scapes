@@ -143,8 +143,15 @@
             <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-stone-200 p-4">
               <input type="radio" name="payment" value="ecpay" checked class="mt-1">
               <span>
-                <span class="block text-sm font-medium">ECPay 綠界金流</span>
-                <span class="mt-1 block text-xs leading-5 text-stone-500">付款方式以綠界目前審核通過、結帳頁面實際提供的項目為準。</span>
+                <span class="block text-sm font-medium">線上付款</span>
+                <span class="mt-1 block text-xs leading-5 text-stone-500">送出訂單後前往綠界付款頁完成付款。</span>
+              </span>
+            </label>
+            <label class="mt-3 flex cursor-pointer items-start gap-3 rounded-xl border border-stone-200 p-4">
+              <input type="radio" name="payment" value="cod" class="mt-1">
+              <span>
+                <span class="block text-sm font-medium">超商取貨付款</span>
+                <span class="mt-1 block text-xs leading-5 text-stone-500">僅限超商取貨；到門市取貨時付款。</span>
               </span>
             </label>
           </div>
@@ -390,7 +397,8 @@
     if (!encoded) return;
 
     try {
-      const store = JSON.parse(decodeURIComponent(encoded));
+      // URLSearchParams.get() 已經完成一次 URL decode；不要再次 decode，避免中文地址或特殊字元被破壞。
+      const store = JSON.parse(encoded);
       if (store?.receiverStoreId && store?.receiverStoreName && store?.logisticsSubType) {
         saveSelectedStore(store);
       }
@@ -409,15 +417,36 @@
   applyShippingValidation();
   updateTotals();
 
+  const paymentRadios = [...document.querySelectorAll('input[name="payment"]')];
+  const codRadio = form.querySelector('input[name="payment"][value="cod"]');
+
+  function syncPaymentOptions() {
+    const isCvs = document.querySelector('input[name="shipping"]:checked')?.value === "cvs";
+    if (codRadio) {
+      codRadio.disabled = !isCvs;
+      const label = codRadio.closest("label");
+      if (label) label.classList.toggle("opacity-50", !isCvs);
+      if (!isCvs && codRadio.checked) {
+        const online = form.querySelector('input[name="payment"][value="ecpay"]');
+        if (online) online.checked = true;
+      }
+    }
+  }
+
+  paymentRadios.forEach(input => input.addEventListener("change", saveFormDraft));
+
   document.querySelectorAll('input[name="shipping"]').forEach(input => {
     input.addEventListener("change", () => {
       const isCvs = input.value === "cvs" && input.checked;
       cvsPanel.classList.toggle("hidden", !isCvs);
       applyShippingValidation();
       updateTotals();
+      syncPaymentOptions();
       saveFormDraft();
     });
   });
+
+  syncPaymentOptions();
 
   document.querySelectorAll('input[name="cvsBrand"]').forEach(input => {
     input.addEventListener("change", () => {
@@ -592,10 +621,14 @@
       sessionStorage.removeItem(DRAFT_KEY);
 
       document.getElementById("result").classList.remove("hidden");
+      const codMessage = fd.get("payment") === "cod"
+        ? `<p class="mt-3 text-sm text-stone-500">付款方式：<strong class="text-stone-900">超商取貨付款</strong></p><p class="mt-2 text-sm text-stone-500">請於取貨門市付款。</p>`
+        : `<p class="mt-3 text-sm text-stone-500">付款方式：<strong class="text-stone-900">線上付款</strong></p>`;
       document.getElementById("result").innerHTML = `
         <p class="text-xs tracking-[0.2em] text-stone-400">ORDER CREATED</p>
         <h2 class="mt-2 text-xl font-medium">訂單已建立</h2>
         <p class="mt-3 text-sm text-stone-500">訂單編號：<strong class="text-stone-900">${result.order.orderNo}</strong></p>
+        ${codMessage}
       `;
       form.classList.add("hidden");
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
