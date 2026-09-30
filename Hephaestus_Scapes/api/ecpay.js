@@ -9,7 +9,8 @@ export function ecpayConfig() {
     throw new Error("Missing ECPay environment variables");
   }
 
-  const stage = (process.env.ECPAY_ENV || "stage").toLowerCase() !== "production";
+  const env = String(process.env.ECPAY_ENV || "stage").trim().toLowerCase();
+  const stage = !["production", "prod", "live"].includes(env);
 
   return {
     merchantId,
