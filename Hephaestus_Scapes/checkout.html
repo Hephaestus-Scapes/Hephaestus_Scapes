@@ -49,16 +49,16 @@
               <input name="email" type="email" required class="mt-2 w-full rounded-xl border border-stone-200 px-4 py-3 outline-none focus:border-stone-500" placeholder="you@example.com">
             </label>
             <label class="block">
-              <span class="text-sm text-stone-600">縣市 *</span>
-              <input name="city" required class="mt-2 w-full rounded-xl border border-stone-200 px-4 py-3 outline-none focus:border-stone-500" placeholder="台北市">
+              <span id="cityLabel" class="text-sm text-stone-600">縣市 *</span>
+              <input name="city" class="mt-2 w-full rounded-xl border border-stone-200 px-4 py-3 outline-none focus:border-stone-500" placeholder="台北市">
             </label>
             <label class="block">
-              <span class="text-sm text-stone-600">區／鄉鎮 *</span>
-              <input name="district" required class="mt-2 w-full rounded-xl border border-stone-200 px-4 py-3 outline-none focus:border-stone-500" placeholder="信義區">
+              <span id="districtLabel" class="text-sm text-stone-600">區／鄉鎮 *</span>
+              <input name="district" class="mt-2 w-full rounded-xl border border-stone-200 px-4 py-3 outline-none focus:border-stone-500" placeholder="信義區">
             </label>
             <label class="block sm:col-span-2">
-              <span class="text-sm text-stone-600">詳細地址 *</span>
-              <input name="address" required class="mt-2 w-full rounded-xl border border-stone-200 px-4 py-3 outline-none focus:border-stone-500" placeholder="○○路○○號○樓">
+              <span id="addressLabel" class="text-sm text-stone-600">詳細地址 *</span>
+              <input name="address" class="mt-2 w-full rounded-xl border border-stone-200 px-4 py-3 outline-none focus:border-stone-500" placeholder="○○路○○號○樓">
             </label>
           </div>
         </section>
@@ -90,7 +90,24 @@
           </div>
 
           <div id="cvsPanel" class="mt-5 hidden rounded-xl bg-stone-50 p-4">
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p class="text-sm font-medium">選擇超商</p>
+              <div class="mt-3 grid gap-2 sm:grid-cols-3">
+                <label class="flex cursor-pointer items-center gap-2 rounded-lg border border-stone-200 bg-white px-3 py-3 text-sm">
+                  <input type="radio" name="cvsBrand" value="UNIMARTC2C" checked>
+                  <span>7-ELEVEN</span>
+                </label>
+                <label class="flex cursor-pointer items-center gap-2 rounded-lg border border-stone-200 bg-white px-3 py-3 text-sm">
+                  <input type="radio" name="cvsBrand" value="FAMIC2C">
+                  <span>全家</span>
+                </label>
+                <label class="flex cursor-pointer items-center gap-2 rounded-lg border border-stone-200 bg-white px-3 py-3 text-sm">
+                  <input type="radio" name="cvsBrand" value="HILIFEC2C">
+                  <span>萊爾富</span>
+                </label>
+              </div>
+            </div>
+            <div class="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p class="text-sm font-medium">取貨門市</p>
                 <p id="storeHint" class="mt-1 text-xs leading-5 text-stone-500">尚未選擇門市。</p>
@@ -190,6 +207,10 @@
     return "NT$ " + Number(n).toLocaleString("zh-TW");
   }
 
+  function safeJson(value) {
+    try { return JSON.parse(value); } catch { return null; }
+  }
+
   const cart = getCart();
   const form = document.getElementById("checkoutForm");
   const empty = document.getElementById("empty");
@@ -244,6 +265,81 @@
     renderStore();
   }
 
+  function saveFormDraft() {
+    const fd = new FormData(form);
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({
+      form: {
+        name: String(fd.get("name") || ""),
+        phone: String(fd.get("phone") || ""),
+        email: String(fd.get("email") || ""),
+        city: String(fd.get("city") || ""),
+        district: String(fd.get("district") || ""),
+        address: String(fd.get("address") || ""),
+        shipping: String(fd.get("shipping") || "home"),
+        cvsBrand: String(fd.get("cvsBrand") || "UNIMARTC2C"),
+        payment: String(fd.get("payment") || "ecpay"),
+        note: String(fd.get("note") || ""),
+        agree: Boolean(document.getElementById("agree")?.checked)
+      },
+      createdAt: Date.now()
+    }));
+  }
+
+  function restoreFormDraft() {
+    const draft = safeJson(localStorage.getItem(DRAFT_KEY));
+    if (!draft?.form) return;
+
+    const data = draft.form;
+    ["name", "phone", "email", "city", "district", "address", "note"].forEach(name => {
+      if (form.elements[name] && data[name] != null) form.elements[name].value = data[name];
+    });
+
+    if (data.shipping) {
+      const radio = form.querySelector(`input[name="shipping"][value="${CSS.escape(data.shipping)}"]`);
+      if (radio) radio.checked = true;
+    }
+
+    if (data.cvsBrand) {
+      const brand = form.querySelector(`input[name="cvsBrand"][value="${CSS.escape(data.cvsBrand)}"]`);
+      if (brand) brand.checked = true;
+    }
+
+    if (data.payment) {
+      const payment = form.querySelector(`input[name="payment"][value="${CSS.escape(data.payment)}"]`);
+      if (payment) payment.checked = true;
+    }
+
+    const agree = document.getElementById("agree");
+    if (agree) agree.checked = Boolean(data.agree);
+  }
+
+  function applyShippingValidation() {
+    const isCvs = document.querySelector('input[name="shipping"]:checked')?.value === "cvs";
+    ["city", "district", "address"].forEach(name => {
+      const input = form.elements[name];
+      const label = document.getElementById(name === "city" ? "cityLabel" : name === "district" ? "districtLabel" : "addressLabel");
+      if (!input) return;
+      input.required = !isCvs;
+      if (label) label.textContent = name === "city"
+        ? `縣市${isCvs ? "（宅配必填）" : " *"}`
+        : name === "district"
+          ? `區／鄉鎮${isCvs ? "（宅配必填）" : " *"}`
+          : `詳細地址${isCvs ? "（宅配必填）" : " *"}`;
+    });
+  }
+
+  function validateContactOnly() {
+    const requiredNames = ["name", "phone", "email"];
+    for (const name of requiredNames) {
+      const input = form.elements[name];
+      if (!input || !input.checkValidity()) {
+        input?.reportValidity();
+        return false;
+      }
+    }
+    return true;
+  }
+
   function renderStore() {
     if (!selectedStore) {
       storeHint.textContent = "尚未選擇門市。";
@@ -257,7 +353,11 @@
       HILIFEC2C: "萊爾富"
     };
 
-    storeHint.textContent = `已選擇 ${typeNames[selectedStore.logisticsSubType] || "超商"} 門市`;
+    const brand = typeNames[selectedStore.logisticsSubType] || "超商";
+    const brandRadio = form.querySelector(`input[name="cvsBrand"][value="${CSS.escape(selectedStore.logisticsSubType)}"]`);
+    if (brandRadio) brandRadio.checked = true;
+
+    storeHint.textContent = `已選擇 ${brand} 門市`;
     document.getElementById("storeName").textContent = selectedStore.receiverStoreName || "";
     document.getElementById("storeId").textContent = selectedStore.receiverStoreId || "";
     document.getElementById("storeAddress").textContent = selectedStore.receiverAddress || "—";
@@ -279,43 +379,77 @@
     totalEl.textContent = money(subtotal + shipping);
   }
 
+  function restoreStoreFromQuery() {
+    const params = new URLSearchParams(location.search);
+    const encoded = params.get("store");
+    if (!encoded) return;
+
+    try {
+      const store = JSON.parse(decodeURIComponent(encoded));
+      if (store?.receiverStoreId && store?.receiverStoreName && store?.logisticsSubType) {
+        saveSelectedStore(store);
+      }
+    } catch (error) {
+      console.error("store query parse error", error);
+    }
+
+    const cleanUrl = location.pathname + location.hash;
+    history.replaceState({}, document.title, cleanUrl);
+  }
+
+  restoreFormDraft();
+  restoreStoreFromQuery();
   selectedStore = getSelectedStore();
   renderStore();
+  applyShippingValidation();
   updateTotals();
 
   document.querySelectorAll('input[name="shipping"]').forEach(input => {
     input.addEventListener("change", () => {
       const isCvs = input.value === "cvs" && input.checked;
       cvsPanel.classList.toggle("hidden", !isCvs);
+      applyShippingValidation();
       updateTotals();
+      saveFormDraft();
+    });
+  });
+
+  document.querySelectorAll('input[name="cvsBrand"]').forEach(input => {
+    input.addEventListener("change", () => {
+      // 更換超商品牌後，舊門市不再視為有效，避免品牌與門市不一致。
+      if (selectedStore?.logisticsSubType !== input.value) {
+        selectedStore = null;
+        localStorage.removeItem(STORE_KEY);
+        renderStore();
+      }
+      saveFormDraft();
     });
   });
 
   chooseStore.addEventListener("click", async () => {
-    if (!form.reportValidity()) return;
+    if (!validateContactOnly()) return;
 
     if (subtotal < 1 || subtotal > 20000) {
       alert("超商取貨目前要求商品金額介於 NT$1～20,000，請調整購物車內容。");
       return;
     }
 
+    const logisticsSubType = form.querySelector('input[name="cvsBrand"]:checked')?.value || "UNIMARTC2C";
+    saveFormDraft();
     chooseStore.disabled = true;
     chooseStore.textContent = "準備門市地圖…";
 
     try {
-      // 物流選擇頁會由綠界接手，完成後透過 ClientReplyURL 回到本網站。
       const response = await fetch("/api/ecpay-logistics-map", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           amount: subtotal,
           goodsName: "Hephaestus Scapes 商品",
+          logisticsSubType,
           customer: {
             name: form.elements.name.value.trim(),
-            phone: form.elements.phone.value.trim(),
-            city: form.elements.city.value.trim(),
-            district: form.elements.district.value.trim(),
-            address: form.elements.address.value.trim()
+            phone: form.elements.phone.value.trim()
           }
         })
       });
@@ -372,6 +506,7 @@
 
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
+    applyShippingValidation();
     if (!form.reportValidity()) return;
 
     const fd = new FormData(form);
@@ -409,7 +544,7 @@
           receiverStoreName: shippingMethod === "cvs" ? selectedStore.receiverStoreName : "",
           receiverStoreAddress: shippingMethod === "cvs" ? selectedStore.receiverAddress : "",
           receiverStorePhone: shippingMethod === "cvs" ? (selectedStore.receiverPhone || selectedStore.receiverCellPhone) : "",
-          logisticsTempId: shippingMethod === "cvs" ? selectedStore.tempLogisticsId : "",
+          logisticsTempId: "",
           note: fd.get("note") || "",
           items: cart
         })
@@ -449,6 +584,7 @@
 
       localStorage.removeItem(CART_KEY);
       localStorage.removeItem(STORE_KEY);
+      localStorage.removeItem(DRAFT_KEY);
 
       document.getElementById("result").classList.remove("hidden");
       document.getElementById("result").innerHTML = `
