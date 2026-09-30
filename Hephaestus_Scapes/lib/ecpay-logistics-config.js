@@ -14,6 +14,8 @@ export const ECPAY_LOGISTICS_CONFIG = {
   senderName: "赫菲斯微景",
   senderZipCode: "234",
   senderAddress: "新北市永和區竹林路97號5樓",
+  // 7-ELEVEN / 萊爾富 C2C 建立物流單需要寄件人手機；請放 Vercel：ECPAY_LOGISTICS_SENDER_CELL_PHONE
+  senderCellPhone: String(process.env.ECPAY_LOGISTICS_SENDER_CELL_PHONE || "").replace(/\D/g, ""),
 
   temperature: "0001",
   specification: "0001",
