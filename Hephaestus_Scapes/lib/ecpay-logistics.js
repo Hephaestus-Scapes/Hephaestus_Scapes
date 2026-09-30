@@ -15,7 +15,10 @@ export function ecpayLogisticsConfig() {
   const merchantId = String(process.env.ECPAY_LOGISTICS_MERCHANT_ID || "").trim();
   const hashKey = String(process.env.ECPAY_LOGISTICS_HASH_KEY || "").trim();
   const hashIv = String(process.env.ECPAY_LOGISTICS_HASH_IV || "").trim();
-  const stage = (process.env.ECPAY_ENV || "stage").toLowerCase() !== "production";
+  const env = String(
+    process.env.ECPAY_LOGISTICS_ENV || process.env.ECPAY_ENV || "stage"
+  ).trim().toLowerCase();
+  const stage = !["prod", "production", "live"].includes(env);
 
   if (!merchantId || !hashKey || !hashIv) {
     throw new Error(
