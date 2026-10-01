@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { makeCheckMacValue, ecpayDate } from "./ecpay.js";
+import { ecpayDate } from "./ecpay.js";
 
 /**
  * ECPay 物流專用憑證
@@ -39,6 +39,46 @@ export function ecpayLogisticsConfig() {
       ? "https://logistics-stage.ecpay.com.tw/Express/v2/RedirectToLogisticsSelection"
       : "https://logistics.ecpay.com.tw/Express/v2/RedirectToLogisticsSelection"
   };
+}
+
+
+/**
+ * ECPay 國內物流 CheckMacValue。
+ * 與 AIO 金流不同：國內物流使用 MD5，不是 SHA256。
+ * 官方流程：A-Z 排序 → HashKey/HashIV → URL encode → .NET 字元替換 → MD5 → 大寫。
+ */
+export function makeLogisticsCheckMacValue(params, hashKey, hashIv) {
+  const entries = Object.entries(params)
+    .filter(([key, value]) => {
+      return String(key).toLowerCase() !== "checkmacvalue" &&
+        value !== undefined &&
+        value !== null &&
+        String(value) !== "";
+    })
+    .sort(([a], [b]) => {
+      const aa = String(a).toLowerCase();
+      const bb = String(b).toLowerCase();
+      return aa < bb ? -1 : aa > bb ? 1 : 0;
+    });
+
+  const raw = `HashKey=${hashKey}&` +
+    entries.map(([key, value]) => `${key}=${String(value)}`).join("&") +
+    `&HashIV=${hashIv}`;
+
+  // encodeURIComponent 採 UTF-8 percent-encoding；再依 ECPay 官方
+  // .NET urlencode 規則把特定編碼還原，最後才做 MD5。
+  const encoded = encodeURIComponent(raw)
+    .toLowerCase()
+    .replace(/%2d/g, "-")
+    .replace(/%5f/g, "_")
+    .replace(/%2e/g, ".")
+    .replace(/%21/g, "!")
+    .replace(/%2a/g, "*")
+    .replace(/%28/g, "(")
+    .replace(/%29/g, ")")
+    .replace(/%20/g, "+");
+
+  return crypto.createHash("md5").update(encoded, "utf8").digest("hex").toUpperCase();
 }
 
 export function ecpayTimestamp() {
@@ -234,7 +274,7 @@ export function buildC2CLogisticsCreateParams({
     ReceiverStoreID: String(receiverStoreId).slice(0, 6)
   };
 
-  params.CheckMacValue = makeCheckMacValue(params, hashKey, hashIv);
+  params.CheckMacValue = makeLogisticsCheckMacValue(params, hashKey, hashIv);
   return params;
 }
 
