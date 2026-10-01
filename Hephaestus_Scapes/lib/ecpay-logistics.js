@@ -241,11 +241,14 @@ export function buildC2CLogisticsCreateParams({
   if (isCollection === "Y" && (!Number.isInteger(collection) || collection < 1)) {
     throw new Error("貨到付款代收金額無效");
   }
-  // ECPay 規定 UNIMARTC2C 的代收金額必須與商品金額一致。
   if (isCollection === "Y" && logisticsSubType === "UNIMARTC2C" && collection !== Number(goodsAmount)) {
     throw new Error("7-ELEVEN C2C 貨到付款的代收金額必須等於商品金額");
   }
 
+  // 重要：只把「實際要送給 ECPay 的欄位」放進 params。
+  // 可選欄位若沒有值就完全省略，而不是送空字串。
+  // 這樣 CheckMacValue 的輸入集合與 HTTP POST 的欄位集合 100% 一致，
+  // 也與 ECPay 官方 C2C 建單範例一致。
   const params = {
     MerchantID: merchantId,
     MerchantTradeNo: String(orderNo),
@@ -259,25 +262,25 @@ export function buildC2CLogisticsCreateParams({
       .replace(/[\^‘`!@#%&*+\\"<>|_\[\]]/g, " ")
       .slice(0, 50),
     SenderName: String(senderName || "").slice(0, 10),
-    SenderPhone: "",
     SenderCellPhone: String(senderCellPhone || "").replace(/\D/g, "").slice(0, 10),
-    SenderEmail: "",
     SenderZipCode: String(senderZipCode || "").slice(0, 6),
     SenderAddress: String(senderAddress || "").slice(0, 60),
     ReceiverName: String(receiverName || "").slice(0, 10),
-    ReceiverPhone: String(receiverPhone || "").slice(0, 20),
     ReceiverCellPhone: String(receiverCellPhone || "").replace(/\D/g, "").slice(0, 10),
     ReceiverEmail: String(receiverEmail || "").slice(0, 50),
-    TradeDesc: "Hephaestus Scapes 商品訂單",
     ServerReplyURL: String(serverReplyURL),
-    ClientReplyURL: "",
-    Remark: String(remark || "").slice(0, 200),
-    PlatformID: "",
     ReceiverStoreID: String(receiverStoreId).slice(0, 6)
   };
 
-  params.CheckMacValue = makeLogisticsCheckMacValue(params, hashKey, hashIv);
-  return params;
+  const clean = Object.fromEntries(
+    Object.entries(params).filter(([, value]) => value !== undefined && value !== null && String(value) !== "")
+  );
+
+  if (receiverPhone) clean.ReceiverPhone = String(receiverPhone).slice(0, 20);
+  if (remark) clean.Remark = String(remark).slice(0, 200);
+
+  clean.CheckMacValue = makeLogisticsCheckMacValue(clean, hashKey, hashIv);
+  return clean;
 }
 
 export async function createC2CLogisticsOrder(params, timeoutMs = 20000) {
