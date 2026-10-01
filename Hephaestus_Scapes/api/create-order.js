@@ -279,6 +279,27 @@ export default async function handler(req, res) {
           .eq("id", order.id);
         if (logisticsUpdateError) throw logisticsUpdateError;
 
+        // 只有正式物流單成功建立後才扣 COD 庫存；RPC 內部會鎖住商品列，
+        // 確保兩位客人同時下單時不會超賣，而且重試不會重複扣庫存。
+        const { error: inventoryError } = await supabase.rpc("finalize_cod_order", {
+          p_order_id: order.id
+        });
+        if (inventoryError) {
+          console.error("finalize_cod_order failed", {
+            orderNo: order.order_no,
+            inventoryError
+          });
+          await supabase.from("orders").update({
+            logistics_status: "INVENTORY_FAILED",
+            logistics_status_message: "物流單已建立，但庫存確認失敗，請勿重複出貨；需要後台重試庫存確認",
+            updated_at: new Date().toISOString()
+          }).eq("id", order.id);
+          return json(res, {
+            error: "物流訂單已建立，但庫存扣除失敗，請先處理這筆訂單後再出貨。",
+            order: { orderNo: order.order_no }
+          }, 500);
+        }
+
         logistics = logisticsUpdate;
       } catch (logisticsError) {
         // 物流單建立失敗時，不把訂單假裝成已出貨；保留 pending 訂單讓後續可重試。
