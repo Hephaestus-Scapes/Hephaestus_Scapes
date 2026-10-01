@@ -252,7 +252,7 @@ export default async function handler(req, res) {
           senderZipCode: ECPAY_LOGISTICS_CONFIG.senderZipCode,
           senderAddress: ECPAY_LOGISTICS_CONFIG.senderAddress,
           receiverName: String(customer.name).trim(),
-          receiverPhone: String(receiverStorePhone || ""),
+          receiverPhone: String(receiverStorePhone || "").trim(),
           receiverCellPhone: String(customer.phone).trim(),
           receiverEmail: String(customer.email).trim(),
           receiverStoreId: String(receiverStoreId).trim(),
