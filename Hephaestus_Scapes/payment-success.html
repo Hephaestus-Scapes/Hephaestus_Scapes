@@ -14,7 +14,7 @@
       <p id="message" class="mt-4 text-sm leading-6 text-stone-500">
         請稍候，系統正在確認訂單狀態。
       </p>
-      <a id="back" href="Ruin_Egypt_001.html"
+      <a id="back" href="index.html"
          class="mt-7 inline-block rounded-xl bg-stone-900 px-6 py-3 text-sm text-white">
         返回商品頁
       </a>
@@ -34,6 +34,9 @@
   } catch {}
 
   const orderNo = String(draft?.orderNo || "").trim();
+  const returnUrl = /^(?:Ruin_Egypt_001|Nature_Tree_001)\.html$/.test(String(draft?.returnUrl || ""))
+    ? String(draft.returnUrl)
+    : "index.html";
 
   if (!orderNo) {
     title.textContent = "付款流程已完成";
@@ -69,7 +72,7 @@
           "購物車已清空，即將返回商品頁。";
 
         setTimeout(() => {
-          window.location.href = "Ruin_Egypt_001.html";
+          window.location.href = returnUrl;
         }, 1500);
         return;
       }
