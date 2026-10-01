@@ -1,28 +1,47 @@
-import { json, readJsonBody } from "../lib/http.js";
+import { readFormBody } from "../lib/http.js";
 import { getSupabase } from "../lib/supabase.js";
-import { decryptLogisticsData } from "../lib/ecpay-logistics.js";
+import { ecpayLogisticsConfig, makeLogisticsCheckMacValue } from "../lib/ecpay-logistics.js";
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") return json(res, { RtnCode: 0, RtnMsg: "Method Not Allowed" }, 405);
+  if (req.method !== "POST") {
+    res.statusCode = 405;
+    res.setHeader("content-type", "text/plain; charset=utf-8");
+    return res.end("0|Method Not Allowed");
+  }
 
   try {
-    const body = await readJsonBody(req);
-    const data = body?.Data ? decryptLogisticsData(body.Data) : body;
+    // 國內物流 ServerReplyURL 是 application/x-www-form-urlencoded，
+    // 不是 AIO 的 JSON/Data AES 格式。
+    const body = await readFormBody(req);
+    const received = String(body.CheckMacValue || "").toUpperCase();
+    const { hashKey, hashIv } = ecpayLogisticsConfig();
+    const calculated = makeLogisticsCheckMacValue(body, hashKey, hashIv);
 
-    if (Number(data?.RtnCode) !== 1) {
-      return json(res, { RtnCode: 1, RtnMsg: "OK" });
+    if (!received || received !== calculated) {
+      console.error("ECPay logistics CheckMacValue mismatch", {
+        merchantTradeNo: body.MerchantTradeNo,
+        received,
+        calculated
+      });
+      res.statusCode = 200;
+      res.setHeader("content-type", "text/plain; charset=utf-8");
+      return res.end("0|CheckMacValue Error");
     }
 
-    const orderNo = String(data?.MerchantTradeNo || "").trim();
-    if (!orderNo) return json(res, { RtnCode: 0, RtnMsg: "Missing MerchantTradeNo" }, 400);
+    const orderNo = String(body.MerchantTradeNo || "").trim();
+    if (!orderNo) {
+      res.statusCode = 200;
+      res.setHeader("content-type", "text/plain; charset=utf-8");
+      return res.end("0|Missing MerchantTradeNo");
+    }
 
     const supabase = getSupabase();
     const update = {
-      logistics_status: String(data.LogisticsStatus || ""),
-      logistics_status_message: String(data.LogisticsStatusName || data.RtnMsg || ""),
-      ecpay_logistics_id: String(data.LogisticsID || data.AllPayLogisticsID || "") || null,
-      ecpay_cvs_payment_no: String(data.CVSPaymentNo || "") || null,
-      ecpay_cvs_validation_no: String(data.CVSValidationNo || "") || null,
+      logistics_status: String(body.LogisticsStatus || body.RtnCode || ""),
+      logistics_status_message: String(body.RtnMsg || ""),
+      ecpay_logistics_id: String(body.AllPayLogisticsID || body.LogisticsID || "") || null,
+      ecpay_cvs_payment_no: String(body.CVSPaymentNo || "") || null,
+      ecpay_cvs_validation_no: String(body.CVSValidationNo || "") || null,
       updated_at: new Date().toISOString()
     };
 
@@ -31,14 +50,17 @@ export default async function handler(req, res) {
 
     console.log("ECPay logistics status updated", {
       orderNo,
-      logisticsStatus: data.LogisticsStatus,
-      logisticsStatusName: data.LogisticsStatusName,
-      logisticsId: data.LogisticsID
+      logisticsStatus: update.logistics_status,
+      logisticsId: update.ecpay_logistics_id
     });
 
-    return json(res, { RtnCode: 1, RtnMsg: "OK" });
+    res.statusCode = 200;
+    res.setHeader("content-type", "text/plain; charset=utf-8");
+    return res.end("1|OK");
   } catch (error) {
     console.error("ecpay-logistics-notify error:", error);
-    return json(res, { RtnCode: 0, RtnMsg: "Server Error" }, 500);
+    res.statusCode = 200;
+    res.setHeader("content-type", "text/plain; charset=utf-8");
+    return res.end("0|Server Error");
   }
 }
