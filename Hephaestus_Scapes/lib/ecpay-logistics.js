@@ -13,6 +13,20 @@ import crypto from "crypto";
 const PROD_URL = "https://logistics.ecpay.com.tw/Express/Create";
 const TEST_URL = "https://logistics-stage.ecpay.com.tw/Express/Create";
 
+export function ecpayLogisticsConfig() {
+  const merchantId = String(process.env.ECPAY_LOGISTICS_MERCHANT_ID || "").trim();
+  const hashKey = String(process.env.ECPAY_LOGISTICS_HASH_KEY || "").trim();
+  const hashIV = String(process.env.ECPAY_LOGISTICS_HASH_IV || "").trim();
+  const env = String(process.env.ECPAY_LOGISTICS_ENV || "prod").trim().toLowerCase();
+  const stage = !["prod", "production", "live"].includes(env);
+
+  if (!merchantId) {
+    throw new Error("缺少 ECPAY_LOGISTICS_MERCHANT_ID");
+  }
+
+  return { merchantId, hashKey, hashIV, stage };
+}
+
 function normalizeEnv(value) {
   return String(value || "").trim().toLowerCase();
 }
@@ -90,7 +104,20 @@ function parseResponse(text) {
 export function buildC2CLogisticsParams({
   merchantId,
   merchantTradeNo,
-  merchantTradeDate,
+  merchantTradeDate = (() => {
+    const parts = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Asia/Taipei",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hourCycle: "h23"
+    }).formatToParts(new Date());
+    const get = type => parts.find(p => p.type === type)?.value || "00";
+    return `${get("year")}/${get("month")}/${get("day")} ${get("hour")}:${get("minute")}:${get("second")}`;
+  })(),
   logisticsSubType = "UNIMARTC2C",
   goodsAmount,
   collectionAmount,
@@ -226,3 +253,11 @@ export function verifyLogisticsCallback(params, hashKey, hashIV) {
 }
 
 export { makeLogisticsCheckMacValue };
+
+
+// Compatibility exports used by api/create-order.js.
+export const buildC2CLogisticsCreateParams = buildC2CLogisticsParams;
+export const createC2CLogisticsOrder = createC2CLogistics;
+export function parseC2CLogisticsCreateResponse(text) {
+  return parseResponse(text);
+}
