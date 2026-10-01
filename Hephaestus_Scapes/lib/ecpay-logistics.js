@@ -1,429 +1,228 @@
-import crypto from "node:crypto";
-import { ecpayDate } from "./ecpay.js";
+import crypto from "crypto";
 
 /**
- * ECPay 物流專用憑證
+ * ECPay domestic C2C logistics helper.
  *
- * 注意：物流 MerchantID / HashKey / HashIV 與目前的金流憑證分開。
- * 請在 Vercel Environment Variables 設定：
- *   ECPAY_LOGISTICS_MERCHANT_ID
- *   ECPAY_LOGISTICS_HASH_KEY
- *   ECPAY_LOGISTICS_HASH_IV
- *
- * 不在 GitHub 內寫入任何正式物流密鑰。
+ * IMPORTANT:
+ * - This module is intentionally separate from the payment (AIO) helper.
+ * - C2C logistics CheckMacValue uses the logistics MD5 flow.
+ * - The exact same parameter object is used both for CheckMacValue and POST.
+ * - Undefined/null/empty optional values are not sent.
  */
-export function ecpayLogisticsConfig() {
-  const merchantId = String(process.env.ECPAY_LOGISTICS_MERCHANT_ID || "").trim();
-  const hashKey = String(process.env.ECPAY_LOGISTICS_HASH_KEY || "").trim();
-  const hashIv = String(process.env.ECPAY_LOGISTICS_HASH_IV || "").trim();
-  const env = String(
-    process.env.ECPAY_LOGISTICS_ENV || process.env.ECPAY_ENV || "stage"
-  ).trim().toLowerCase();
-  const stage = !["prod", "production", "live"].includes(env);
 
-  if (!merchantId || !hashKey || !hashIv) {
-    throw new Error(
-      "缺少 ECPay 物流憑證：請在 Vercel 設定 ECPAY_LOGISTICS_MERCHANT_ID、ECPAY_LOGISTICS_HASH_KEY、ECPAY_LOGISTICS_HASH_IV"
-    );
-  }
+const PROD_URL = "https://logistics.ecpay.com.tw/Express/Create";
+const TEST_URL = "https://logistics-stage.ecpay.com.tw/Express/Create";
 
-  return {
-    merchantId,
-    hashKey,
-    hashIv,
-    stage,
-    mapUrl: stage
-      ? "https://logistics-stage.ecpay.com.tw/Express/map"
-      : "https://logistics.ecpay.com.tw/Express/map",
-    redirectUrl: stage
-      ? "https://logistics-stage.ecpay.com.tw/Express/v2/RedirectToLogisticsSelection"
-      : "https://logistics.ecpay.com.tw/Express/v2/RedirectToLogisticsSelection"
-  };
+function normalizeEnv(value) {
+  return String(value || "").trim().toLowerCase();
 }
 
+function isProduction(env) {
+  return ["prod", "production", "live"].includes(normalizeEnv(env));
+}
 
-/**
- * ECPay 國內物流 CheckMacValue。
- * 與 AIO 金流不同：國內物流使用 MD5，不是 SHA256。
- * 官方流程：A-Z 排序 → HashKey/HashIV → URL encode → .NET 字元替換 → MD5 → 大寫。
- */
-export function makeLogisticsCheckMacValue(params, hashKey, hashIv) {
-  const entries = Object.entries(params)
-    .filter(([key, value]) => {
-      // ECPay CheckMacValue 必須納入「實際送出的所有欄位」（除了 CheckMacValue）。
-      // 空字串欄位也會被 POST 出去，因此不能從檢查碼計算中略過，
-      // 否則像 SenderPhone=、SenderEmail=、ClientReplyURL=、PlatformID=
-      // 這些欄位會造成綠界端算出的 CheckMacValue 與本站不同。
-      return String(key).toLowerCase() !== "checkmacvalue" &&
-        value !== undefined && value !== null;
-    })
-    .sort(([a], [b]) => {
-      const aa = String(a).toLowerCase();
-      const bb = String(b).toLowerCase();
-      return aa < bb ? -1 : aa > bb ? 1 : 0;
-    });
-
-  const raw = `HashKey=${hashKey}&` +
-    entries.map(([key, value]) => `${key}=${String(value)}`).join("&") +
-    `&HashIV=${hashIv}`;
-
-  // encodeURIComponent 採 UTF-8 percent-encoding；再依 ECPay 官方
-  // .NET urlencode 規則把特定編碼還原，最後才做 MD5。
-  const encoded = encodeURIComponent(raw)
-    .toLowerCase()
-    .replace(/%2d/g, "-")
-    .replace(/%5f/g, "_")
-    .replace(/%2e/g, ".")
+function encodeEcpay(value) {
+  return encodeURIComponent(String(value))
+    .replace(/%20/g, "+")
     .replace(/%21/g, "!")
-    .replace(/%2a/g, "*")
+    .replace(/%27/g, "'")
     .replace(/%28/g, "(")
     .replace(/%29/g, ")")
-    .replace(/%20/g, "+");
-
-  return crypto.createHash("md5").update(encoded, "utf8").digest("hex").toUpperCase();
+    .replace(/%2A/g, "*")
+    .replace(/%7E/g, "~");
 }
 
-export function ecpayTimestamp() {
-  return Math.floor(Date.now() / 1000).toString();
+function makeLogisticsCheckMacValue(params, hashKey, hashIV) {
+  const pairs = Object.entries(params)
+    .filter(([key, value]) =>
+      key !== "CheckMacValue" &&
+      value !== undefined &&
+      value !== null &&
+      String(value) !== ""
+    )
+    .sort(([a], [b]) => a.toLowerCase().localeCompare(b.toLowerCase()));
+
+  const raw =
+    `HashKey=${hashKey}&` +
+    pairs.map(([key, value]) => `${key}=${value}`).join("&") +
+    `&HashIV=${hashIV}`;
+
+  const encoded = encodeEcpay(raw).toLowerCase();
+
+  return crypto
+    .createHash("md5")
+    .update(encoded, "utf8")
+    .digest("hex")
+    .toUpperCase();
 }
 
-function urlEncode(value) {
-  return encodeURIComponent(String(value));
+function cleanParams(input) {
+  const output = {};
+  for (const [key, value] of Object.entries(input || {})) {
+    if (value === undefined || value === null || String(value) === "") continue;
+    output[key] = value;
+  }
+  return output;
 }
 
-export function encryptLogisticsData(data) {
-  const { hashKey, hashIv } = ecpayLogisticsConfig();
-  const encoded = urlEncode(
-    typeof data === "string" ? data : JSON.stringify(data)
-  );
-
-  const cipher = crypto.createCipheriv(
-    "aes-128-cbc",
-    Buffer.from(hashKey, "utf8"),
-    Buffer.from(hashIv, "utf8")
-  );
-
-  return Buffer.concat([
-    cipher.update(encoded, "utf8"),
-    cipher.final()
-  ]).toString("base64");
+function formEncode(params) {
+  return Object.entries(params)
+    .map(([key, value]) =>
+      `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
+    )
+    .join("&");
 }
 
-export function decryptLogisticsData(encryptedData) {
-  const { hashKey, hashIv } = ecpayLogisticsConfig();
+function parseResponse(text) {
+  const result = {};
+  const raw = String(text || "").trim();
 
-  if (!encryptedData) {
-    throw new Error("ECPay logistics Data 為空");
+  // ECPay normally returns query-string-like data.
+  for (const [key, value] of new URLSearchParams(raw).entries()) {
+    result[key] = value;
   }
 
-  const decipher = crypto.createDecipheriv(
-    "aes-128-cbc",
-    Buffer.from(hashKey, "utf8"),
-    Buffer.from(hashIv, "utf8")
-  );
-
-  const decoded = Buffer.concat([
-    decipher.update(Buffer.from(String(encryptedData), "base64")),
-    decipher.final()
-  ]).toString("utf8");
-
-  try {
-    return JSON.parse(decodeURIComponent(decoded));
-  } catch {
-    throw new Error("ECPay logistics Data 解密後不是有效 JSON");
-  }
+  // Some responses may contain XML/HTML wrappers; preserve the raw response.
+  result.RawResponse = raw;
+  return result;
 }
 
-export function buildLogisticsSelectionRequest({
-  goodsAmount,
-  goodsName,
-  senderName,
-  senderZipCode,
-  senderAddress,
-  remark = "",
-  serverReplyURL,
-  clientReplyURL,
-  receiverAddress = "",
-  receiverCellPhone = "",
-  receiverPhone = "",
-  receiverName = "",
-  isCollection = "N"
-}) {
-  const { merchantId } = ecpayLogisticsConfig();
-
-  if (
-    !Number.isInteger(Number(goodsAmount)) ||
-    Number(goodsAmount) < 1 ||
-    Number(goodsAmount) > 20000
-  ) {
-    throw new Error("ECPay 物流商品金額必須介於 NT$1～20,000");
-  }
-
-  if (!goodsName) throw new Error("ECPay 物流商品名稱不可為空");
-
-  if (!senderName || !senderZipCode || !senderAddress) {
-    throw new Error("尚未設定 ECPay 寄件人資料，請修改 lib/ecpay-logistics-config.js");
-  }
-
-  if (!serverReplyURL || !clientReplyURL) {
-    throw new Error("物流回覆網址設定錯誤");
-  }
-
-  const data = {
-    TempLogisticsID: "0",
-    GoodsAmount: Number(goodsAmount),
-    IsCollection: isCollection === "Y" ? "Y" : "N",
-    GoodsName: String(goodsName)
-      .replace(/[\^‘`!@#%&*+\\"<>|_\[\]]/g, " ")
-      .slice(0, 50),
-    SenderName: String(senderName).slice(0, 10),
-    SenderZipCode: String(senderZipCode).slice(0, 6),
-    SenderAddress: String(senderAddress).slice(0, 60),
-    Remark: String(remark || "").slice(0, 60),
-    ServerReplyURL: String(serverReplyURL),
-    ClientReplyURL: String(clientReplyURL),
-    Temperature: "0001",
-    Specification: "0001",
-    ScheduledPickupTime: "4",
-    ReceiverAddress: String(receiverAddress || "").slice(0, 60),
-    ReceiverCellPhone: String(receiverCellPhone || "")
-      .replace(/\D/g, "")
-      .slice(0, 10),
-    ReceiverPhone: String(receiverPhone || "").slice(0, 20),
-    ReceiverName: String(receiverName || "").slice(0, 10),
-    EnableSelectDeliveryTime: "N",
-    EshopMemberID: ""
-  };
-
-  return {
-    MerchantID: merchantId,
-    RqHeader: {
-      Timestamp: ecpayTimestamp()
-    },
-    Data: encryptLogisticsData(data)
-  };
-}
-
-
-export function buildC2CLogisticsCreateParams({
-  orderNo,
+export function buildC2CLogisticsParams({
+  merchantId,
+  merchantTradeNo,
+  merchantTradeDate,
+  logisticsSubType = "UNIMARTC2C",
   goodsAmount,
   collectionAmount,
   goodsName,
-  logisticsSubType,
   senderName,
   senderCellPhone,
   senderZipCode,
   senderAddress,
   receiverName,
-  receiverPhone = "",
   receiverCellPhone,
   receiverEmail,
-  receiverStoreId,
   serverReplyURL,
-  remark = "",
-  isCollection = "N"
+  receiverStoreId,
+  remark,
 }) {
-  const { merchantId, hashKey, hashIv } = ecpayLogisticsConfig();
-  if (!orderNo) throw new Error("缺少物流訂單編號");
-  if (!Number.isInteger(Number(goodsAmount)) || Number(goodsAmount) < 1 || Number(goodsAmount) > 20000) {
-    throw new Error("ECPay 物流商品金額必須介於 NT$1～20,000");
-  }
-  if (!receiverStoreId) throw new Error("缺少超商取貨門市代碼");
-  if (!/^09\d{8}$/.test(String(receiverCellPhone || "").replace(/\D/g, ""))) {
-    throw new Error("ECPay 超商取貨需要有效的收件人手機");
-  }
-  if (!senderCellPhone && ["UNIMARTC2C", "HILIFEC2C"].includes(logisticsSubType)) {
-    throw new Error("缺少 ECPAY_LOGISTICS_SENDER_CELL_PHONE；7-ELEVEN / 萊爾富 C2C 建立物流單需要寄件人手機");
-  }
-
-  const collection = isCollection === "Y" ? Number(collectionAmount) : 0;
-  if (isCollection === "Y" && (!Number.isInteger(collection) || collection < 1)) {
-    throw new Error("貨到付款代收金額無效");
-  }
-  if (isCollection === "Y" && logisticsSubType === "UNIMARTC2C" && collection !== Number(goodsAmount)) {
-    throw new Error("7-ELEVEN C2C 貨到付款的代收金額必須等於商品金額");
-  }
-
-  // 重要：只把「實際要送給 ECPay 的欄位」放進 params。
-  // 可選欄位若沒有值就完全省略，而不是送空字串。
-  // 這樣 CheckMacValue 的輸入集合與 HTTP POST 的欄位集合 100% 一致，
-  // 也與 ECPay 官方 C2C 建單範例一致。
-  const params = {
+  const params = cleanParams({
     MerchantID: merchantId,
-    MerchantTradeNo: String(orderNo),
-    MerchantTradeDate: ecpayDate(),
+    MerchantTradeNo: merchantTradeNo,
+    MerchantTradeDate: merchantTradeDate,
     LogisticsType: "CVS",
-    LogisticsSubType: String(logisticsSubType),
+    LogisticsSubType: logisticsSubType,
     GoodsAmount: Number(goodsAmount),
-    CollectionAmount: collection,
-    IsCollection: isCollection === "Y" ? "Y" : "N",
-    GoodsName: String(goodsName || "Hephaestus Scapes 商品")
-      .replace(/[\^‘`!@#%&*+\\"<>|_\[\]]/g, " ")
-      .slice(0, 50),
-    SenderName: String(senderName || "").slice(0, 10),
-    SenderCellPhone: String(senderCellPhone || "").replace(/\D/g, "").slice(0, 10),
-    SenderZipCode: String(senderZipCode || "").slice(0, 6),
-    SenderAddress: String(senderAddress || "").slice(0, 60),
-    ReceiverName: String(receiverName || "").slice(0, 10),
-    ReceiverCellPhone: String(receiverCellPhone || "").replace(/\D/g, "").slice(0, 10),
-    ReceiverEmail: String(receiverEmail || "").slice(0, 50),
-    ServerReplyURL: String(serverReplyURL),
-    ReceiverStoreID: String(receiverStoreId).slice(0, 6)
-  };
+    IsCollection: "Y",
+    CollectionAmount: Number(collectionAmount),
+    GoodsName: goodsName,
+    SenderName: senderName,
+    SenderCellPhone: senderCellPhone,
+    SenderZipCode: senderZipCode,
+    SenderAddress: senderAddress,
+    ReceiverName: receiverName,
+    ReceiverCellPhone: receiverCellPhone,
+    ReceiverEmail: receiverEmail,
+    ServerReplyURL: serverReplyURL,
+    ReceiverStoreID: receiverStoreId,
+    Remark: remark,
+  });
 
-  const clean = Object.fromEntries(
-    Object.entries(params).filter(([, value]) => value !== undefined && value !== null && String(value) !== "")
-  );
-
-  if (receiverPhone) clean.ReceiverPhone = String(receiverPhone).slice(0, 20);
-  if (remark) clean.Remark = String(remark).slice(0, 200);
-
-  clean.CheckMacValue = makeLogisticsCheckMacValue(clean, hashKey, hashIv);
-  return clean;
-}
-
-export async function createC2CLogisticsOrder(params, timeoutMs = 20000) {
-  const { stage } = ecpayLogisticsConfig();
-  const url = stage
-    ? "https://logistics-stage.ecpay.com.tw/Express/Create"
-    : "https://logistics.ecpay.com.tw/Express/Create";
-  const body = new URLSearchParams();
-  for (const [key, value] of Object.entries(params)) {
-    body.set(key, String(value ?? ""));
-  }
-
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "content-type": "application/x-www-form-urlencoded", "accept": "text/html" },
-      body: body.toString(),
-      signal: controller.signal
-    });
-    const text = await response.text();
-    if (!response.ok) throw new Error(`ECPay logistics HTTP ${response.status}: ${text.slice(0, 300)}`);
-    return { text, response };
-  } catch (error) {
-    if (error?.name === "AbortError") throw new Error("ECPay 建立物流訂單逾時");
-    throw error;
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-export function parseC2CLogisticsCreateResponse(text) {
-  const raw = String(text || "").trim();
-  if (!raw) throw new Error("ECPay 建立物流訂單沒有回傳資料");
-  if (/^0\|/.test(raw)) throw new Error(raw.replace(/^0\|\s*/, "") || "ECPay 建立物流訂單失敗");
-  if (!/^1\|/.test(raw)) throw new Error(`ECPay 建立物流訂單回傳格式無法辨識：${raw.slice(0, 200)}`);
-
-  const query = raw.slice(2).trim();
-  const params = Object.fromEntries(new URLSearchParams(query).entries());
-  if (String(params.RtnCode) !== "1") throw new Error(params.RtnMsg || "ECPay 建立物流訂單失敗");
-  if (!params.AllPayLogisticsID) throw new Error("ECPay 建立物流訂單成功但缺少物流編號");
   return params;
 }
 
-export async function postLogisticsRequest(url, payload, timeoutMs = 20000) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json"
-      },
-      body: JSON.stringify(payload),
-      signal: controller.signal
-    });
-
-    const text = await response.text();
-
-    if (!response.ok) {
-      throw new Error(
-        `ECPay logistics HTTP ${response.status}: ${text.slice(0, 300)}`
-      );
-    }
-
-    return { response, text };
-  } catch (error) {
-    if (error?.name === "AbortError") {
-      throw new Error("ECPay logistics API 回應逾時");
-    }
-    throw error;
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-export function parseLogisticsResponse(responseText) {
-  const text = String(responseText || "").trim();
-
-  if (!text) {
-    throw new Error("ECPay logistics 沒有回傳資料");
+export async function createC2CLogistics({
+  merchantId = process.env.ECPAY_LOGISTICS_MERCHANT_ID,
+  hashKey = process.env.ECPAY_LOGISTICS_HASH_KEY,
+  hashIV = process.env.ECPAY_LOGISTICS_HASH_IV,
+  env = process.env.ECPAY_LOGISTICS_ENV,
+  ...args
+}) {
+  if (!merchantId || !hashKey || !hashIV) {
+    throw new Error("ECPAY logistics credentials are incomplete");
   }
 
-  if (/<!doctype|<html|<form[\s>]/i.test(text)) {
-    return {
-      type: "html",
-      html: text
-    };
+  const params = buildC2CLogisticsParams({
+    merchantId,
+    ...args,
+  });
+
+  const checkMacValue = makeLogisticsCheckMacValue(params, hashKey, hashIV);
+  const requestParams = { ...params, CheckMacValue: checkMacValue };
+
+  const url = isProduction(env) ? PROD_URL : TEST_URL;
+
+  // Safe diagnostics: never print HashKey/HashIV.
+  console.log("[ECPAY_C2C] request", {
+    url,
+    MerchantID: requestParams.MerchantID,
+    MerchantTradeNo: requestParams.MerchantTradeNo,
+    LogisticsType: requestParams.LogisticsType,
+    LogisticsSubType: requestParams.LogisticsSubType,
+    GoodsAmount: requestParams.GoodsAmount,
+    IsCollection: requestParams.IsCollection,
+    CollectionAmount: requestParams.CollectionAmount,
+    ReceiverStoreID: requestParams.ReceiverStoreID,
+    CheckMacValue: requestParams.CheckMacValue,
+  });
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Accept": "text/plain, */*",
+    },
+    body: formEncode(requestParams),
+  });
+
+  const text = await response.text();
+  const parsed = parseResponse(text);
+
+  console.log("[ECPAY_C2C] response", {
+    httpStatus: response.status,
+    RtnCode: parsed.RtnCode,
+    RtnMsg: parsed.RtnMsg,
+    AllPayLogisticsID: parsed.AllPayLogisticsID,
+    CVSPaymentNo: parsed.CVSPaymentNo,
+    CVSValidationNo: parsed.CVSValidationNo,
+  });
+
+  if (!response.ok) {
+    throw new Error(`ECPay logistics HTTP ${response.status}: ${text}`);
   }
 
-  let response;
+  const rtnCode = String(parsed.RtnCode ?? "");
+  const rtnMsg = String(parsed.RtnMsg ?? "");
 
-  try {
-    response = JSON.parse(text);
-  } catch {
-    throw new Error("ECPay logistics 回傳格式無法辨識");
+  if (rtnCode && rtnCode !== "1") {
+    throw new Error(rtnMsg || `ECPay logistics error ${rtnCode}`);
   }
 
-  if (Number(response.TransCode) !== 1) {
-    throw new Error(
-      response.TransMsg || "ECPay logistics 傳輸失敗"
-    );
-  }
-
-  if (!response.Data) {
-    throw new Error("ECPay logistics 回傳缺少 Data");
-  }
-
-  const data = decryptLogisticsData(response.Data);
-
-  if (Number(data.RtnCode) !== 1) {
-    throw new Error(
-      data.RtnMsg || "ECPay logistics 執行失敗"
-    );
+  if (/CheckMacValue/i.test(rtnMsg)) {
+    throw new Error(rtnMsg);
   }
 
   return {
-    type: "data",
-    data
+    ...parsed,
+    CheckMacValue: checkMacValue,
+    requestParams,
   };
 }
 
-export function normalizeSelectedStore(data) {
-  if (!data || typeof data !== "object") {
-    throw new Error("門市資料無效");
-  }
+/**
+ * Verify a logistics callback using the same logistics MD5 algorithm.
+ * Returns false instead of throwing on malformed/missing input.
+ */
+export function verifyLogisticsCallback(params, hashKey, hashIV) {
+  if (!params || !hashKey || !hashIV) return false;
+  const received = String(params.CheckMacValue || "").toUpperCase();
+  if (!received) return false;
 
-  return {
-    tempLogisticsId: String(data.TempLogisticsID || ""),
-    logisticsType: String(data.LogisticsType || ""),
-    logisticsSubType: String(data.LogisticsSubType || ""),
-    receiverName: String(data.ReceiverName || ""),
-    receiverPhone: String(data.ReceiverPhone || ""),
-    receiverCellPhone: String(
-      data.ReceiverCellPhone || data.ReceiverCellphone || ""
-    ),
-    receiverAddress: String(data.ReceiverAddress || ""),
-    receiverZipCode: String(data.ReceiverZipCode || ""),
-    receiverStoreId: String(data.ReceiverStoreID || ""),
-    receiverStoreName: String(data.ReceiverStoreName || ""),
-    rtnCode: Number(data.RtnCode || 0),
-    rtnMsg: String(data.RtnMsg || "")
-  };
+  const calculated = makeLogisticsCheckMacValue(params, hashKey, hashIV);
+  return crypto.timingSafeEqual(
+    Buffer.from(received),
+    Buffer.from(calculated)
+  );
 }
+
+export { makeLogisticsCheckMacValue };
