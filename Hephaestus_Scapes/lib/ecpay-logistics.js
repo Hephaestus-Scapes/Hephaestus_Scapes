@@ -50,10 +50,12 @@ export function ecpayLogisticsConfig() {
 export function makeLogisticsCheckMacValue(params, hashKey, hashIv) {
   const entries = Object.entries(params)
     .filter(([key, value]) => {
+      // ECPay CheckMacValue 必須納入「實際送出的所有欄位」（除了 CheckMacValue）。
+      // 空字串欄位也會被 POST 出去，因此不能從檢查碼計算中略過，
+      // 否則像 SenderPhone=、SenderEmail=、ClientReplyURL=、PlatformID=
+      // 這些欄位會造成綠界端算出的 CheckMacValue 與本站不同。
       return String(key).toLowerCase() !== "checkmacvalue" &&
-        value !== undefined &&
-        value !== null &&
-        String(value) !== "";
+        value !== undefined && value !== null;
     })
     .sort(([a], [b]) => {
       const aa = String(a).toLowerCase();
